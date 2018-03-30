@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grades.mapping.QueryRecordMapper">
+    <resultMap id="queryRecordResultMap" type="QueryRecord">
+        <id property="id" column="table_info_id"/>
+        <result property="name" column="table_info_name"/>
+        <result property="userId" column="table_info_userid"/>
+        <result property="pageViews" column="table_info_pv"/>
+    </resultMap>
+
+    <!--获取用户名下所有表
+    select user_id,query_record_query_id,table_info_name
+from users join table_info on user_id= table_info_userid join query_record on query_record_table_id = table_info_id
+where user_id=1;
+
+    <select id="getAllRecord" resultType="queryRecordResultMap">
+
+    </select>
+    -->
+</mapper>

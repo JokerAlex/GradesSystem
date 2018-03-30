@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grades.mapping.TableInfoMapper">
+
+    <resultMap id="tableInfoResultMap" type="TableInfo">
+        <id property="id" column="table_info_id"/>
+        <result property="name" column="table_info_name"/>
+        <result property="userId" column="table_info_userid"/>
+        <result property="pageViews" column="table_info_pv"/>
+    </resultMap>
+
+    <!--获取用户名下所有表-->
+    <select id="getAllTables" resultMap="tableInfoResultMap">
+        SELECT table_info_id,table_info_name,table_info_userid,table_info_pv
+        FROM table_info
+        WHERE table_info_userid = #{userId};
+    </select>
+    <!--删除表信息-->
+    <delete id="delTable" parameterType="int">
+        DELETE FROM table_info WHERE table_info_id = #{tableId};
+    </delete>
+    <!--插入表信息-->
+    <insert id="insertTableInfo" parameterType="TableInfo" useGeneratedKeys="true" keyProperty="table_info_id">
+        INSERT INTO table_info (table_info_name,table_info_userid)
+        VALUES (#{name},#{userId});
+    </insert>
+    <!--更新访问量-->
+    <update id="updatePageViews">
+        UPDATE table_info SET table_info_pv = table_info_pv + 1 WHERE table_info_id = #{tableId};
+    </update>
+</mapper>

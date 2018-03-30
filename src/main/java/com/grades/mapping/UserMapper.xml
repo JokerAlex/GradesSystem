@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grades.mapping.UserMapper">
+
+    <resultMap id="userResultMap" type="User">
+        <id property="id" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="name" column="user_true_name"/>
+        <result  property="email" column="user_email"/>
+        <result property="college" column="college_name"/>
+        <result property="grade" column="user_grade"/>
+    </resultMap>
+
+    <!--用户名密码登录-->
+    <select id="findUserByName" resultMap="userResultMap">
+        SELECT user_id,user_name,user_true_name,user_email,college_name,user_grade
+        FROM users JOIN college ON users.user_college=college.college_id
+        WHERE user_name = #{userName} AND user_passwd = #{userPwd};
+    </select>
+    <!--邮箱密码登录-->
+    <select id="findUserByEmail" resultMap="userResultMap">
+        SELECT user_id,user_name,user_true_name,user_email,college_name,user_grade
+        FROM users JOIN college ON users.user_college=college.college_id
+        WHERE user_email = #{userEmail} AND user_passwd = #{userPwd};
+    </select>
+    <!--修改密码前检验密码是否正确-->
+    <select id="checkPwd" resultType="String">
+        SELECT user_id FROM users WHERE user_id = #{userId} AND user_passwd = #{userPwd};
+    </select>
+    <!--查找用户名-->
+    <select id="findUserName" parameterType="String" resultType="String">
+        SELECT user_name
+        FROM users
+        WHERE user_name = #{userName};
+    </select>
+    <!--用户注册-->
+    <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="user_id">
+        INSERT INTO users (user_name,user_true_name,user_passwd,user_email,user_college,user_grade)
+        VALUES (#{userName},#{name},#{passWd},#{email},#{collegeId},#{grade});
+    </insert>
+    <!--修改密码-->
+    <update id="changPwd">
+        UPDATE users SET user_passwd = #{userPwd} WHERE user_id = #{userId};
+    </update>
+    <!--用户信息维护-->
+    <update id="updateUserInfo" parameterType="User">
+        UPDATE users SET
+            user_true_name = #{name},
+            user_email = #{email},
+            user_college = #{collegeId},
+            user_grade = #{grade}
+        WHERE user_id = #{id};
+    </update>
+    <update id="updateLastLoginTime" parameterType="User">
+        UPDATE users SET
+        user_last_login = #{loginTime}
+        WHERE user_id = #{id};
+    </update>
+
+</mapper>
