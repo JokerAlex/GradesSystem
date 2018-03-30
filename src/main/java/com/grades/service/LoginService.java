@@ -19,7 +19,7 @@ public interface LoginService {
     */
     User loginByUserEmail(String userEmail,String userPwd);
     /**
-    * @description:用户登录时间
+    * @Description:用户登录时间
     * @Param: [user]
     * @return: void
     * @Author: Alex
