@@ -3,6 +3,7 @@ package com.grades.serviceImpl;
 import com.grades.mapping.UserMapper;
 import com.grades.model.User;
 import com.grades.service.LoginService;
+import com.grades.utils.PasswordEncrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,9 @@ public class LoginServiceImpl implements LoginService {
     public User loginByUserName(String userName, String userPwd) {
         User user;
         if (userName != null && !userName.equals("")){
-            user = userMapper.findUserByName(userName,userPwd);
+            //加密密码对比
+            String pw = PasswordEncrypt.encrypt(userPwd);
+            user = userMapper.findUserByName(userName,pw);
             user.setLoginTime(new Date().toString());
             return user;
         }
@@ -30,7 +33,8 @@ public class LoginServiceImpl implements LoginService {
     public User loginByUserEmail(String userEmail, String userPwd) {
         User user;
         if (userEmail != null && !userEmail.equals("")){
-            user = userMapper.findUserByEmail(userEmail,userPwd);
+            String pw = PasswordEncrypt.encrypt(userPwd);
+            user = userMapper.findUserByEmail(userEmail,pw);
             user.setLoginTime(new Date().toString());
             return user;
         }
@@ -43,7 +47,7 @@ public class LoginServiceImpl implements LoginService {
         }
     }
 
-    public boolean checkUserName(String userName) {
+    public boolean isUserNameAvailable(String userName) {
         if (userName == null){
             return false;
         }
@@ -53,10 +57,19 @@ public class LoginServiceImpl implements LoginService {
         return false;
     }
 
-    public boolean register(User user) {
+    public String register(User user) {
+        boolean isError = true;
+        boolean isUserNameAvailable = false;
+        boolean isRegister = false;
         if (user != null){
-            return userMapper.insertUser(user);
+            isError = false;
+            isUserNameAvailable = isUserNameAvailable(user.getUserName());
+            if (isUserNameAvailable){
+                String tempPw = PasswordEncrypt.encrypt(user.getPassWd());
+                user.setPassWd(tempPw);
+                isRegister = userMapper.insertUser(user);
+            }
         }
-        return false;
+        return "{\"isError\":\""+isError+"\",\"isUserNameAvailable\":\""+isUserNameAvailable+"\",\"isRegister\":\""+isRegister+"\"}";
     }
 }
