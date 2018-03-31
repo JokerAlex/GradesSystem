@@ -11,10 +11,10 @@
     <title>Title</title>
 </head>
 <body>
-<form action="/GradesSystem/login.do" method="post">
-    <input type="text" name="userName">
-    <input type="text" name="userPwd">
-    <input type="submit" value="提交">
+<h1>上传附件</h1>
+<form method="post" action="" enctype="multipart/form-data">
+    <input type="file" name="uploadFile"/>
+    <button type="submit" >提交</button>
 </form>
 </body>
 </html>
