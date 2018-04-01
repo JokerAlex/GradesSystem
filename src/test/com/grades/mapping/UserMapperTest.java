@@ -41,7 +41,7 @@ public class UserMapperTest {
 
     @Test
     public void insertUser(){
-        User user = new User("test3","zzz","zxc","zxc@qq.com",22,"2016");
+        User user = new User("test","zzz","zxc","zxc@qq.com",22,"2016");
         boolean flag=userMapper.insertUser(user);
         System.out.println(flag);
     }
