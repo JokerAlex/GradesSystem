@@ -12,7 +12,10 @@
 </head>
 <body>
 <h1>上传附件</h1>
-<form method="post" action="" enctype="multipart/form-data">
+<%
+    session.setAttribute("userId","1");
+%>
+<form method="post" action="/GradesSystem/upload.do" enctype="multipart/form-data">
     <input type="file" name="uploadFile"/>
     <button type="submit" >提交</button>
 </form>

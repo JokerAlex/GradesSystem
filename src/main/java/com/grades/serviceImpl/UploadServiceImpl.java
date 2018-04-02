@@ -10,8 +10,10 @@ import java.io.IOException;
 
 @Service
 public class UploadServiceImpl implements UploadService {
+
+
     public String upload(CommonsMultipartFile file, HttpServletRequest request) {
-        if (!file.isEmpty()){
+        if (!file.isEmpty() && request != null){
             //获取文件类型
             String fileType = file.getOriginalFilename().substring(file.getOriginalFilename().indexOf("."));
             String fileName = request.getSession().getAttribute("userId").toString()+System.currentTimeMillis()
