@@ -29,4 +29,34 @@
     <update id="updatePageViews">
         UPDATE table_info SET table_info_pv = table_info_pv + 1 WHERE table_info_id = #{tableId};
     </update>
+
+    <!-- 创建新上传的成绩表 -->
+    <update id="createTable">
+        CREATE TABLE `${table_name}` (
+        <foreach item="item" index="index" collection="list" separator=",">
+            `${item}` VARCHAR (20) DEFAULT NULL
+        </foreach>
+        )
+        ENGINE = MyISAM;
+    </update>
+    <!-- 新成绩表,数据插入 -->
+    <insert id="insertData" parameterType="TableInfo" useGeneratedKeys="true" keyProperty="table_info_id">
+        INSERT INTO ${table_name}
+        VALUES
+        <foreach item="row" index="index" collection="list" separator=",">
+            (
+            <foreach item="item" index="index2" collection="row" separator=",">
+                #{item}
+            </foreach>
+            )
+        </foreach>
+    </insert>
+    <!-- 新成绩表,单条数据插入 -->
+    <insert id="insertDataOne" parameterType="TableInfo" useGeneratedKeys="true" keyProperty="table_info_id">
+        INSERT INTO #{table_name}
+        VALUES
+        <foreach item="item" index="index" collection="list" separator="," open="（" close="）">
+            #{item}
+        </foreach>
+    </insert>
 </mapper>
