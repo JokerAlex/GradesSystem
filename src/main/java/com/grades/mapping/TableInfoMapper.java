@@ -7,7 +7,11 @@ import java.util.List;
 
 public interface TableInfoMapper {
 
-    List<TableInfo> getAllTables(int userId);
+    List<TableInfo> getAllTablesByUser(int userId);
+
+    List<TableInfo> getAllTablesByGrade(String userGrade);
+
+    List<TableInfo> searchTables(@Param("userId") int userId,@Param("userGrade") String userGrade,@Param("tableName") String tableName);
 
     String findTable(String table_info_name);
 
