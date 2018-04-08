@@ -29,6 +29,10 @@
     <update id="updatePageViews">
         UPDATE table_info SET table_info_pv = table_info_pv + 1 WHERE table_info_id = #{tableId};
     </update>
+    <!-- 查找表名 -->
+    <select id="findTable" parameterType="String" resultType="String">
+        SELECT table_info_name FROM table_info WHERE table_info_name = #{table_info_name};
+    </select>
 
     <!-- 创建新上传的成绩表 -->
     <update id="createTable">

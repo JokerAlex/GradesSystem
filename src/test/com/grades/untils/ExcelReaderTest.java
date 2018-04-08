@@ -45,18 +45,18 @@ public class ExcelReaderTest {
         List<String> listHead = listResult.get(0);
         //创建表
         System.out.print(tableInfoMapper.createTable("test" , listHead));
-        //System.out.println(listResult.size());
+        System.out.println(listResult.size());
         listResult.remove(0);
-        //System.out.println(listResult.size());
+        System.out.println(listResult.size());
 
         //分组插入数据，每组10条
-        for (int i = 0 ; i < listResult.size(); i+= 10){
+        for (int i = 0 ; i < listResult.size(); i+= 20){
             List<List<String>> temp = new ArrayList<List<String>>();
-            if (i + 10 > listResult.size()){
-                int ready = listResult.size()/10*10;
-                temp.addAll(listResult.subList(ready,listResult.size()));
+            if (i + 20 > listResult.size()){
+                int remain = listResult.size() % 20;
+                temp.addAll(listResult.subList(listResult.size() - remain,listResult.size()));
             }else {
-                temp.addAll(listResult.subList(i,i + 10));
+                temp.addAll(listResult.subList(i,i + 20));
             }
             //System.out.println(i+"\t"+temp.size());
             System.out.print(tableInfoMapper.insertData("test", temp));

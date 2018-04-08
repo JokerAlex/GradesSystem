@@ -1,16 +1,15 @@
 package com.grades.model;
 
 import java.util.List;
+import java.util.Map;
 
 public class QueryRecord {
     private int queryRecordId;
-    private List queryTableIds;
     private String queryId;
-    private String tableStatus;
+    private Map tableStatus;
 
-    public QueryRecord(int queryRecordId, List queryTableIds, String queryId, String tableStatus) {
+    public QueryRecord(int queryRecordId, String queryId, Map tableStatus) {
         this.queryRecordId = queryRecordId;
-        this.queryTableIds = queryTableIds;
         this.queryId = queryId;
         this.tableStatus = tableStatus;
     }
@@ -23,14 +22,6 @@ public class QueryRecord {
         this.queryRecordId = queryRecordId;
     }
 
-    public List getQueryTableId() {
-        return queryTableIds;
-    }
-
-    public void setQueryTableId(List queryTableIds) {
-        this.queryTableIds = queryTableIds;
-    }
-
     public String getQueryId() {
         return queryId;
     }
@@ -39,11 +30,11 @@ public class QueryRecord {
         this.queryId = queryId;
     }
 
-    public String getTableStatus() {
+    public Map getTableStatus() {
         return tableStatus;
     }
 
-    public void setTableStatus(String tableStatus) {
+    public void setTableStatus(Map tableStatus) {
         this.tableStatus = tableStatus;
     }
 }

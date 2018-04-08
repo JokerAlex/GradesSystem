@@ -9,6 +9,8 @@ public interface TableInfoMapper {
 
     List<TableInfo> getAllTables(int userId);
 
+    String findTable(String table_info_name);
+
     boolean delTable(int tableId);
 
     boolean insertTableInfo(TableInfo tableInfo);
