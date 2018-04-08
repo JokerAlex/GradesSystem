@@ -10,6 +10,7 @@ public class User {
     private String college;
     private String grade;
     private String loginTime;
+    private int identity;
 
     public User(){}
 
@@ -20,7 +21,7 @@ public class User {
      * @Author: Alex
      * @Date:
     */
-    public User(int id, String username, String name, String email, String college, String grade, String loginTime) {
+    public User(int id, String username, String name, String email, String college, String grade, String loginTime, int identity) {
         this.id = id;
         this.userName = username;
         this.name = name;
@@ -28,6 +29,7 @@ public class User {
         this.college = college;
         this.grade = grade;
         this.loginTime = loginTime;
+        this.identity = identity;
     }
 
     /**
@@ -132,5 +134,13 @@ public class User {
 
     public void setLoginTime(String loginTime) {
         this.loginTime = loginTime;
+    }
+
+    public int getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(int identity) {
+        this.identity = identity;
     }
 }
