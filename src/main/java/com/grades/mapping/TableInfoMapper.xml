@@ -11,10 +11,28 @@
     </resultMap>
 
     <!--获取用户名下所有表-->
-    <select id="getAllTables" resultMap="tableInfoResultMap">
+    <select id="getAllTablesByUser" resultMap="tableInfoResultMap">
         SELECT table_info_id,table_info_name,table_info_userid,table_info_pv
         FROM table_info
         WHERE table_info_userid = #{userId};
+    </select>
+    <!--获取同学院同年级所有表-->
+    <select id="getAllTablesByGrade" resultMap="tableInfoResultMap">
+        SELECT table_info_id,table_info_name,table_info_userid,table_info_pv
+        FROM table_info JOIN users ON table_info_userid = users.user_id
+        WHERE users.user_grade = #{userGrade};
+    </select>
+    <!-- 查询表 -->
+    <select id="searchTables" resultMap="tableInfoResultMap">
+        SELECT table_info_id,table_info_name,table_info_userid,table_info_pv
+        FROM table_info JOIN users ON table_info_userid = users.user_id
+        WHERE users.user_id = #{userId}
+        <if test="grade != null">
+            AND users.user_grade = #{userGrade}
+        </if>
+        <if test="tableName != null">
+            AND table_info.table_info_name LIKE #{tableName}
+        </if>
     </select>
     <!--删除表信息-->
     <delete id="delTable" parameterType="int">
