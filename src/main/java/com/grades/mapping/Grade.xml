@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grades.mapping.GradeMapper">
+
+    <resultMap id="gradeResultMap" type="Grade">
+        <id property="gradeId" column="grade_id"/>
+    </resultMap>
+    <!-- 读取所有年级 -->
+    <select id="getAllGrades" resultType="gradeResultMap">
+        SELECT grade_id FROM grade;
+    </select>
+    <!-- 插入年级 -->
+    <insert id="insertGrade" parameterType="String">
+        INSERT INTO grade VALUES (#{gradeId});
+    </insert>
+</mapper>
