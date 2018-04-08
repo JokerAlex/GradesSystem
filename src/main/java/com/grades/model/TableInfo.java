@@ -6,10 +6,10 @@ public class TableInfo {
     private int userId;
     private int pageViews;
 
-    public TableInfo(int id, String name, int userid, int pageViews) {
+    public TableInfo(int id, String name, int userId, int pageViews) {
         this.id = id;
         this.name = name;
-        this.userId = userid;
+        this.userId = userId;
         this.pageViews = pageViews;
     }
 
@@ -33,8 +33,8 @@ public class TableInfo {
         return userId;
     }
 
-    public void setUserid(int userid) {
-        this.userId = userid;
+    public void setUserid(int userId) {
+        this.userId = userId;
     }
 
     public int getPageViews() {
