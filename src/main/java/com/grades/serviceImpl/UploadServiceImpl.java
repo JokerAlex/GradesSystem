@@ -1,6 +1,7 @@
 package com.grades.serviceImpl;
 
 import com.grades.mapping.TableInfoMapper;
+import com.grades.model.TableInfo;
 import com.grades.service.UploadService;
 import com.grades.utils.ExcelReader;
 import org.apache.commons.io.FileUtils;
@@ -77,9 +78,10 @@ public class UploadServiceImpl implements UploadService {
         return "{\"readResult\":\"false\",\"rows\":\""+readResultRows+"\"}";
     }
 
-    public String fileWrite(String tableName, List<List<String>> lists) {
+    public String fileWrite(int userId, String tableName, List<List<String>> lists) {
         boolean createResult;
         boolean insertResult = false;
+        boolean updateTableInfoResult = false;
         //创建表
         List<String> listHead = lists.get(0);
         createResult = tableInfoMapper.createTable(tableName , listHead);
@@ -102,6 +104,10 @@ public class UploadServiceImpl implements UploadService {
                 }
             }
         }
-        return "{\"createResult\":\""+createResult+"\",\"insertResult\":\""+insertResult+"\"}";
+        if (insertResult){
+            //表信息更新
+            updateTableInfoResult = tableInfoMapper.insertTableInfo(new TableInfo(0, tableName, userId, 0));
+        }
+        return "{\"createResult\":\""+createResult+"\",\"insertResult\":\""+insertResult+"\",\"updateTableInfoResult\":\""+updateTableInfoResult+"\"}";
     }
 }

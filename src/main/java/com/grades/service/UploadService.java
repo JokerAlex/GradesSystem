@@ -15,5 +15,5 @@ public interface UploadService {
 
     String fileRead(String fileName) throws Exception;
 
-    String fileWrite(String tableName, List<List<String>> lists);
+    String fileWrite(int userId, String tableName, List<List<String>> lists);
 }
