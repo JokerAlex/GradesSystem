@@ -36,8 +36,8 @@
     </select>
     <!--用户注册-->
     <insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="user_id">
-        INSERT INTO users (user_name,user_true_name,user_passwd,user_email,user_college,user_grade)
-        VALUES (#{userName},#{name},#{passWd},#{email},#{collegeId},#{grade});
+        INSERT INTO users (user_name,user_true_name,user_passwd,user_email,user_college,user_grade,user_identity)
+        VALUES (#{userName},#{name},#{passWd},#{email},#{collegeId},#{grade},#{identity});
     </insert>
     <!--修改密码-->
     <update id="changPwd">
