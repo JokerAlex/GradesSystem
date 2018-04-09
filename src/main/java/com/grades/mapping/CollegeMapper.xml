@@ -8,7 +8,7 @@
         <result property="collegeName" column="college_name"/>
     </resultMap>
     <!-- 读取数据 -->
-    <select id="getAllColleges" resultType="collegeResultMap">
+    <select id="getAllColleges" resultMap="collegeResultMap">
         SELECT college_id,college_name FROM college;
     </select>
     <!-- 删除数据 -->
