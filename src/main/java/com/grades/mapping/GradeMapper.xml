@@ -7,7 +7,7 @@
         <id property="gradeId" column="grade_id"/>
     </resultMap>
     <!-- 读取所有年级 -->
-    <select id="getAllGrades" resultType="gradeResultMap">
+    <select id="getAllGrades" resultMap="gradeResultMap">
         SELECT grade_id FROM grade;
     </select>
     <!-- 插入年级 -->
