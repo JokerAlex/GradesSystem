@@ -55,13 +55,14 @@ public class User {
      * @Author: Alex
      * @Date:
      */
-    public User(String userName, String name, String passWd, String email, int collegeId, String grade) {
+    public User(String userName, String name, String passWd, String email, int collegeId, String grade,int identity) {
         this.userName = userName;
         this.name = name;
         this.passWd = passWd;
         this.email = email;
         this.collegeId = collegeId;
         this.grade = grade;
+        this.identity = identity;
     }
 
     public int getId() {
