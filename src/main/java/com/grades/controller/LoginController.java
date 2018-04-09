@@ -5,11 +5,12 @@ import com.grades.model.User;
 import com.grades.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @Controller
 @SessionAttributes({"user"})
@@ -23,21 +24,16 @@ public class LoginController {
         this.loginService=loginService;
     }
 
-    @RequestMapping(value = "/login.do",method = RequestMethod.POST)
-    public ModelAndView doLogin(String userName,String userPwd){
-        ModelAndView mav = new ModelAndView();
-        User user = loginService.loginByUserName(userName, userPwd);
-        if (user != null){
-            mav.addObject("user",user);
-            mav.setViewName("success");
-            return mav;
-        }
-        mav.addObject("error","登录失败");
-        mav.setViewName("error");
-        return mav;
+    @ResponseBody
+    @RequestMapping(value = "/login",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
+    public User doLogin(@RequestBody User user, HttpSession session){
+        User userLogin = loginService.loginByUserName(user.getUserName(),user.getPassWd());
+        System.out.println(userLogin.getCollege());
+        session.setAttribute("user",userLogin);
+        return userLogin;
     }
 
-    @RequestMapping(value = "/register.do",method = RequestMethod.POST)
+    @RequestMapping(value = "/register.do",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
     public String doRegister(@RequestBody User user){
         String registerResult = loginService.register(user);
         return "{\"isRegister\":\""+registerResult+"\"}";
