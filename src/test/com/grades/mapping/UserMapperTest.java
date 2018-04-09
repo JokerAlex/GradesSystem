@@ -2,6 +2,7 @@ package com.grades.mapping;
 
 
 import com.grades.model.User;
+import com.grades.utils.PasswordEncrypt;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ public class UserMapperTest {
 
     @Test
     public void findUserByName(){
-        User user=userMapper.findUserByName("test","111");
-        System.out.println(user.getId()+user.getName()+user.getUserName());
+        User user=userMapper.findUserByName("test",PasswordEncrypt.encrypt("111"));
+        System.out.println(user.getId()+user.getName()+user.getUserName()+user.getCollege());
     }
 
     @Test
@@ -41,7 +42,7 @@ public class UserMapperTest {
 
     @Test
     public void insertUser(){
-        User user = new User("test","zzz","zxc","zxc@qq.com",22,"2016");
+        User user = new User("test","zzz","zxc","zxc@qq.com",22,"2016",0);
         boolean flag=userMapper.insertUser(user);
         System.out.println(flag);
     }
