@@ -1,6 +1,10 @@
 package com.grades.serviceImpl;
 
+import com.grades.mapping.CollegeMapper;
+import com.grades.mapping.GradeMapper;
 import com.grades.mapping.UserMapper;
+import com.grades.model.College;
+import com.grades.model.Grade;
 import com.grades.model.User;
 import com.grades.service.LoginService;
 import com.grades.utils.PasswordEncrypt;
@@ -8,16 +12,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class LoginServiceImpl implements LoginService {
     private UserMapper userMapper;
+    private CollegeMapper collegeMapper;
+    private GradeMapper gradeMapper;
 
     @Autowired
-    public LoginServiceImpl(UserMapper userMapper){
+    public LoginServiceImpl(UserMapper userMapper, CollegeMapper collegeMapper, GradeMapper gradeMapper){
         this.userMapper=userMapper;
+        this.collegeMapper = collegeMapper;
+        this.gradeMapper = gradeMapper;
     }
 
+    //用户名密码登录
     public User loginByUserName(String userName, String userPwd) {
         User user;
         if (userName != null && !userName.equals("")){
@@ -30,6 +40,7 @@ public class LoginServiceImpl implements LoginService {
         return null;
     }
 
+    //用户名邮箱登录
     public User loginByUserEmail(String userEmail, String userPwd) {
         User user;
         if (userEmail != null && !userEmail.equals("")){
@@ -41,6 +52,7 @@ public class LoginServiceImpl implements LoginService {
         return null;
     }
 
+    //获取登录时间
     public void loginTime(User user) {
         if (user != null){
             userMapper.updateLastLoginTime(user);
@@ -71,5 +83,13 @@ public class LoginServiceImpl implements LoginService {
             }
         }
         return "{\"isError\":\""+isError+"\",\"isUserNameAvailable\":\""+isUserNameAvailable+"\",\"isRegister\":\""+isRegister+"\"}";
+    }
+
+    public List<College> getAllColleges() {
+        return collegeMapper.getAllColleges();
+    }
+
+    public List<Grade> getAllGrades() {
+        return gradeMapper.getAllGrades();
     }
 }

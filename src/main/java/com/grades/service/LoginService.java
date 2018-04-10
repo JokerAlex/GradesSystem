@@ -1,6 +1,8 @@
 package com.grades.service;
 
-import com.grades.model.User;
+import com.grades.model.*;
+
+import java.util.List;
 
 public interface LoginService {
 
@@ -14,6 +16,10 @@ public interface LoginService {
     boolean isUserNameAvailable(String userName);
 
     String register(User user);
+
+    List<College> getAllColleges();
+
+    List<Grade> getAllGrades();
 
 
 }
