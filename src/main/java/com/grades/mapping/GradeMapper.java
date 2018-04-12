@@ -8,5 +8,5 @@ public interface GradeMapper {
 
     List<Grade> getAllGrades();
 
-    boolean insertGrade(String gradeId);
+    int insertGrade(List<Grade> gradeList);
 }
