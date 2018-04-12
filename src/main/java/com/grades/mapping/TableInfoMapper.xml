@@ -62,7 +62,7 @@
         ENGINE = MyISAM;
     </update>
     <!-- 新成绩表,数据插入 -->
-    <insert id="insertData" parameterType="TableInfo" useGeneratedKeys="true" keyProperty="table_info_id">
+    <insert id="insertData">
         INSERT INTO ${table_name}
         VALUES
         <foreach item="row" index="index" collection="list" separator=",">
@@ -74,7 +74,7 @@
         </foreach>
     </insert>
     <!-- 新成绩表,单条数据插入 -->
-    <insert id="insertDataOne" parameterType="TableInfo" useGeneratedKeys="true" keyProperty="table_info_id">
+    <insert id="insertDataOne">
         INSERT INTO #{table_name}
         VALUES
         <foreach item="item" index="index" collection="list" separator="," open="（" close="）">
