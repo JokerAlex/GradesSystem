@@ -27,10 +27,10 @@
         SELECT table_info_id,table_info_name,table_info_userid,table_info_pv
         FROM table_info JOIN users ON table_info_userid = users.user_id
         WHERE users.user_id = #{userId}
-        <if test="grade != null">
+        <if test="grade != null &amp;&amp; !grade.trim().equals(&quot;&quot;)">
             AND users.user_grade = #{userGrade}
         </if>
-        <if test="tableName != null">
+        <if test="tableName != null &amp;&amp; !tableName.trim().equals(&quot;&quot;)">
             AND table_info.table_info_name LIKE #{tableName}
         </if>
     </select>
