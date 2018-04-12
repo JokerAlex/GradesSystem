@@ -11,6 +11,15 @@
     <select id="getAllColleges" resultMap="collegeResultMap">
         SELECT college_id,college_name FROM college;
     </select>
+    <!-- 添加学院信息 -->
+    <insert id="insertCollege">
+        INSERT INTO college
+        VALUES
+        <foreach item="item" index="index" collection="list" open="(" close=")" separator=",">
+            #{item.collegeId},
+            #{item.collegeName}
+        </foreach>
+    </insert>
     <!-- 删除数据 -->
     <delete id="delCollege">
         DELETE FROM college WHERE college_id = #{collegeId};
