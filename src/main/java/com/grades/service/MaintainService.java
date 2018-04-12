@@ -1,6 +1,8 @@
 package com.grades.service;
 
-import com.grades.model.User;
+import com.grades.model.*;
+
+import java.util.List;
 
 public interface MaintainService {
 
@@ -8,7 +10,17 @@ public interface MaintainService {
 
     boolean updateUserInfo(User user);
 
+    List<College> getAllColleges();
+
+    int insertCollege(List<College> collegeList);
+
     String delCollege(String collegeId);
 
     String updateCollege(String collegeId, String collegeName, String collegeIdOld);
+
+    List<Grade> getAllGrades();
+
+    int insertGrade(List<Grade> gradeList);
+
+    List<TableInfo> getAllTables(String userId, String userGrade, String tableName);
 }

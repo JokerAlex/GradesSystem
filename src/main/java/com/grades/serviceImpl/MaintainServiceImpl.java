@@ -1,11 +1,18 @@
 package com.grades.serviceImpl;
 
 import com.grades.mapping.CollegeMapper;
+import com.grades.mapping.GradeMapper;
+import com.grades.mapping.TableInfoMapper;
 import com.grades.mapping.UserMapper;
+import com.grades.model.College;
+import com.grades.model.Grade;
+import com.grades.model.TableInfo;
 import com.grades.model.User;
 import com.grades.service.MaintainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -13,11 +20,15 @@ public class MaintainServiceImpl implements MaintainService {
 
     private UserMapper userMapper;
     private CollegeMapper collegeMapper;
+    private TableInfoMapper tableInfoMapper;
+    private GradeMapper gradeMapper;
 
     @Autowired
-    public MaintainServiceImpl(UserMapper userMapper, CollegeMapper collegeMapper){
+    public MaintainServiceImpl(UserMapper userMapper, CollegeMapper collegeMapper, TableInfoMapper tableInfoMapper, GradeMapper gradeMapper){
         this.userMapper = userMapper;
         this.collegeMapper = collegeMapper;
+        this.tableInfoMapper = tableInfoMapper;
+        this.gradeMapper = gradeMapper;
     }
 
     //修改密码
@@ -48,6 +59,19 @@ public class MaintainServiceImpl implements MaintainService {
         return flag;
     }
 
+    //获取所有学院信息
+    public List<College> getAllColleges() {
+        return collegeMapper.getAllColleges();
+    }
+
+    //插入学院信息
+    public int insertCollege(List<College> collegeList) {
+        if (collegeList.size() != 0){
+            return collegeMapper.insertCollege(collegeList);
+        }
+        return 0;
+    }
+
     //学院信息删除
     public String delCollege(String collegeId) {
         boolean delResult = false;
@@ -68,5 +92,32 @@ public class MaintainServiceImpl implements MaintainService {
             updateResult = collegeMapper.updateCollege(id,collegeName,idOld);
         }
         return "{\"updateResult\":\""+updateResult+"\"}";
+    }
+
+    //获取所有年级信息
+    public List<Grade> getAllGrades() {
+        return gradeMapper.getAllGrades();
+    }
+
+    //插入年级信息
+    public int insertGrade(List<Grade> gradeList) {
+        if (gradeList.size() != 0){
+            return gradeMapper.insertGrade(gradeList);
+        }
+        return 0;
+    }
+
+    //获取用户上传的所有表
+    public List<TableInfo> getAllTables(String userId, String userGrade, String tableName) {
+        if (userId != null && !userId.trim().equals("")){
+            if (userGrade == null){
+                userGrade = "";
+            }
+            if (tableName == null){
+                tableName = "";
+            }
+            return tableInfoMapper.searchTables(Integer.valueOf(userId),userGrade,tableName);
+        }
+        return null;
     }
 }
