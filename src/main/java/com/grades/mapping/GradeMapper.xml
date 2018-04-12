@@ -11,7 +11,10 @@
         SELECT grade_id FROM grade;
     </select>
     <!-- 插入年级 -->
-    <insert id="insertGrade" parameterType="String">
-        INSERT INTO grade VALUES (#{gradeId});
+    <insert id="insertGrade">
+        INSERT INTO grade VALUES
+        <foreach item="item" index="index" collection="list" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
     </insert>
 </mapper>
