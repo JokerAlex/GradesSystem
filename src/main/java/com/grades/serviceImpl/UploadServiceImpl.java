@@ -24,11 +24,11 @@ public class UploadServiceImpl implements UploadService {
 
     private TableInfoMapper tableInfoMapper;
 
-    public static List<List<String>> getReadResultList() {
+    public List<List<String>> getReadResultList() {
         return readResultList;
     }
 
-    public static int getReadResultRows() {
+    public int getReadResultRows() {
         return readResultRows;
     }
 
