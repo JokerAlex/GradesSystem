@@ -17,6 +17,12 @@ public class ExcelReader {
     private final static String excel2003L =".xls";    //2003- 版本的excel
     private final static String excel2007U =".xlsx";   //2007+ 版本的excel
 
+    /**
+     * 获取工作簿
+     * @param fileName
+     * @return wb
+     * @throws Exception
+     */
     public static Workbook getWorkbook(String fileName) throws Exception{
         Workbook wb = null;
         InputStream inStr = new FileInputStream(fileName);
@@ -31,6 +37,12 @@ public class ExcelReader {
         return wb;
     }
 
+    /**
+     * 获取工作表
+     * @param wb
+     * @param sheetIndex
+     * @return sheet
+     */
     public static Sheet getSheet(Workbook wb,int sheetIndex){
         if (wb == null){
             throw new RuntimeException("工作簿为空");
@@ -42,6 +54,11 @@ public class ExcelReader {
         return wb.getSheetAt(sheetIndex);
     }
 
+    /**
+     * 获取单元格内容
+     * @param cell
+     * @return cellValue
+     */
     public static String getCellValue(Cell cell) {
         String cellValue = "";
         if (cell == null){
@@ -79,6 +96,13 @@ public class ExcelReader {
         return cellValue;
     }
 
+    /**
+     * 获取工作表所有行的数据
+     * @param sheet
+     * @param startLine
+     * @param endLine
+     * @return List<List<String>>
+     */
     public static List<List<String>> getExcelRows(Sheet sheet, int startLine, int endLine){
         List<List<String>> listResult = new ArrayList<List<String>>();
         // 如果开始行号和结束行号都是-1的话，则全表读取
@@ -108,5 +132,14 @@ public class ExcelReader {
             listResult.add(i,rowList);
         }
         return listResult;
+    }
+
+    /**
+     * 获取工作表总行数
+     * @param sheet
+     * @return
+     */
+    public static int getRowNumber(Sheet sheet){
+        return sheet.getPhysicalNumberOfRows();
     }
 }
