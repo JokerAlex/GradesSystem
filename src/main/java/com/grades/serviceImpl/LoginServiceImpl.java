@@ -1,5 +1,6 @@
 package com.grades.serviceImpl;
 
+import com.alibaba.fastjson.JSON;
 import com.grades.mapping.CollegeMapper;
 import com.grades.mapping.GradeMapper;
 import com.grades.mapping.UserMapper;
@@ -82,7 +83,8 @@ public class LoginServiceImpl implements LoginService {
                 isRegister = userMapper.insertUser(user);
             }
         }
-        return "{\"isError\":\""+isError+"\",\"isUserNameAvailable\":\""+isUserNameAvailable+"\",\"isRegister\":\""+isRegister+"\"}";
+        String result = "{\"isError\":\""+isError+"\",\"isUserNameAvailable\":\""+isUserNameAvailable+"\",\"isRegister\":\""+isRegister+"\"}";
+        return result;
     }
 
     public List<College> getAllColleges() {

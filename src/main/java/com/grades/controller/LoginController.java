@@ -36,7 +36,6 @@ public class LoginController {
     @ResponseBody
     @RequestMapping(value = "/register",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
     public String doRegister(@RequestBody User user){
-        System.out.println(user.getUserName()+user.getUserName()+user.getPassWd()+user.getEmail()+user.getCollege()+user.getGrade());
         String registerResult = loginService.register(user);
         return registerResult;
     }
