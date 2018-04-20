@@ -38,6 +38,9 @@
     <delete id="delTable" parameterType="int">
         DELETE FROM table_info WHERE table_info_id = #{tableId};
     </delete>
+    <update id="dropTable" parameterType="String">
+        DROP TABLE ${tableName};
+    </update>
     <!--插入表信息-->
     <insert id="insertTableInfo" parameterType="TableInfo" useGeneratedKeys="true" keyProperty="table_info_id">
         INSERT INTO table_info (table_info_name,table_info_userid)

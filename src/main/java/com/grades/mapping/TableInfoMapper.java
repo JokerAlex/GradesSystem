@@ -17,6 +17,8 @@ public interface TableInfoMapper {
 
     boolean delTable(int tableId);
 
+    boolean dropTable(String tableName);
+
     boolean insertTableInfo(TableInfo tableInfo);
 
     boolean updatePageViews(int tableId);
