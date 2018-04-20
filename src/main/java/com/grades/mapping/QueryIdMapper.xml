@@ -84,7 +84,7 @@
     <!-- 更新发布记录中的表状态 -->
     <update id="updateTableStatus">
         UPDATE query_tables SET query_record_table_status = #{status}
-        WHERE query_record_table_id = {tableId};
+        WHERE query_record_table_id = #{tableId};
     </update>
 
 </mapper>
