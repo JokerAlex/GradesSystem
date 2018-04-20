@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface MaintainService {
 
-    String changPwd(String userId, String oldPwd, String newPwd);
+    String changPwd(User user, String oldPwd, String newPwd);
 
-    boolean updateUserInfo(User user);
+    String updateUserInfo(User user);
 
     List<College> getAllColleges();
 
@@ -22,5 +22,9 @@ public interface MaintainService {
 
     int insertGrade(List<Grade> gradeList);
 
-    List<TableInfo> getAllTables(String userId, String userGrade, String tableName);
+    List<TableInfo> getAllTables(User user, String userGrade, String tableName);
+
+    public String delTable(TableInfo tableInfo);
+
+    public String insertNewRecord(int[] tableIds,int userId);
 }
