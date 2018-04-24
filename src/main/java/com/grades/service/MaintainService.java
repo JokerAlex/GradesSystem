@@ -24,7 +24,11 @@ public interface MaintainService {
 
     List<TableInfo> getAllTables(User user, String userGrade, String tableName);
 
-    public String delTable(TableInfo tableInfo);
+    String delTable(TableInfo tableInfo);
 
-    public String insertNewRecord(int[] tableIds,int userId);
+    List<QueryRecord> getQueryRecords(int userId);
+
+    String insertNewRecord(String[] tableIds,int userId);
+
+    String delRecord(String queryId,int userId);
 }

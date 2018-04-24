@@ -47,7 +47,7 @@ public class MaintainController {
      * @return {"delResult":"true/false","dropResult":"true/false"}
      */
     @ResponseBody
-    @RequestMapping(value = "delTable")
+    @RequestMapping(value = "/delTable")
     public String delTable(@RequestBody TableInfo tableInfo){
         return maintainService.delTable(tableInfo);
     }
@@ -55,6 +55,52 @@ public class MaintainController {
 
     /**
      * 已上传文件列表页面end
+     */
+
+    /**
+     * 发布记录页面
+     */
+
+    /**
+     * 获取发布记录
+     * @param request
+     * @return List<QueryRecord>
+     */
+    @ResponseBody
+    @RequestMapping(value = "/getRecords")
+    public List<QueryRecord> getRecords(HttpServletRequest request){
+        User user = (User)request.getSession().getAttribute("user");
+        return maintainService.getQueryRecords(user.getId());
+    }
+
+    /**
+     * 生成新的发布记录
+     * @param tableIds
+     * @param request
+     * @return {"insertRecordResult":"true/false","insertTableResult":"true/false"}
+     */
+    @ResponseBody
+    @RequestMapping(value = "/insertRecord")
+    public String insertRecord(String[] tableIds,HttpServletRequest request){
+        User user = (User)request.getSession().getAttribute("user");
+        return maintainService.insertNewRecord(tableIds,user.getId());
+    }
+
+    /**
+     * 删除发布记录
+     * @param queryId
+     * @param request
+     * @return {"isDel":"true/false"}
+     */
+    @ResponseBody
+    @RequestMapping(value = "/delRecords")
+    public String delRecords(String queryId,HttpServletRequest request){
+        User user = (User)request.getSession().getAttribute("user");
+        return maintainService.delRecord(queryId,user.getId());
+    }
+
+    /**
+     * 发布记录页面end
      */
 
 

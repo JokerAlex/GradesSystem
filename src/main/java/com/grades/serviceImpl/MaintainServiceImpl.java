@@ -175,26 +175,63 @@ public class MaintainServiceImpl implements MaintainService {
     }
 
     /**
+     * 获取用户所有发布记录
+     * @param userId
+     * @return List<QueryRecord>
+     */
+    public List<QueryRecord> getQueryRecords(int userId){
+        return queryIdMapper.getRecordIdAndTables(userId);
+    }
+
+    /**
      * 生成新的发布记录
      * @param tableIds
      * @param userId
      * @return {"insertRecordResult":"true/false","insertTableResult":"true/false"}
      */
-    public String insertNewRecord(int[] tableIds,int userId){
+    public String insertNewRecord(String[] tableIds,int userId){
         //用时间作为发布记录的名称
         String queryName = new Date().toString().replace(" ","");
         boolean insertRecordResult = queryIdMapper.insertRecordId(queryName,userId);
         boolean insertTableResult = false;
         if (insertRecordResult){
-            int queryId = queryIdMapper.getRecordId(queryName,userId);
+            int[] queryId = queryIdMapper.getRecordId(queryName,userId);
             List tableList = new ArrayList();
-            for (int i:tableIds){
-                tableList.add(i);
+            for (String tableId:tableIds){
+                tableList.add(Integer.valueOf(tableId));
             }
-            insertTableResult = queryIdMapper.insertIdAndTables(queryId,tableList,"该表可查询");
+            insertTableResult = queryIdMapper.insertIdAndTables(queryId[0],tableList,"该表可查询");
         }
         return "{\"insertRecordResult\":\""+insertRecordResult+"\",\"insertTableResult\":\""+insertTableResult+"\"}";
     }
 
-
+    /**
+     * 删除发布记录
+     * @param queryId
+     * @param userId
+     * @return {"isDel":"true/false"}
+     */
+    public String delRecord(String queryId,int userId){
+        boolean isDel = false;
+        List queryIds = new ArrayList();
+        if (queryId != null){//删除选中记录
+            queryIds.add(Integer.valueOf(queryId));
+            boolean isTableRecordDel = queryIdMapper.delIdAndTables(queryIds);
+            boolean isRecordDel = queryIdMapper.delQueryId(queryIds,userId);
+            if (isTableRecordDel && isRecordDel){
+                isDel = true;
+            }
+        } else {//删除全部记录
+           int[] queryIdMapperRecordId = queryIdMapper.getRecordId(null,userId);
+           for (int i : queryIdMapperRecordId){
+               queryIds.add(i);
+           }
+           boolean isTableRecordDel = queryIdMapper.delIdAndTables(queryIds);
+           boolean isRecordDel = queryIdMapper.delQueryId(queryIds,userId);
+           if (isTableRecordDel && isRecordDel){
+               isDel = true;
+           }
+        }
+        return "{\"isDel\":\""+isDel+"\"}";
+    }
 }
