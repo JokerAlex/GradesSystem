@@ -45,7 +45,14 @@
     <select id="getRecordId">
         SELECT query_id_id
         FROM query_id
-        WHERE qeury_idname = #{qeuryIdName} AND query_id_userid = #{userId};
+        <where>
+            <if test="queryIdName != null">
+                qeury_idname = #{queryIdName}
+            </if>
+            <if test="userId != null">
+                AND query_id_userid = #{userId}
+            </if>
+        </where>
     </select>
     <!-- id记录生成 -->
     <insert id="insertRecordId" useGeneratedKeys="true" keyProperty="query_id_id">
@@ -57,7 +64,10 @@
         DELETE FROM query_id
         <where>
             <if test="queryId != null">
-                query_id_id = #{queryId}
+                query_id_id IN
+                <foreach collection="list" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
             </if>
             <if test="userId != null">
                 AND query_id_userid = #{userId}
@@ -79,7 +89,10 @@
     </insert>
     <!-- 删除 -->
     <delete id="delIdAndTables">
-        DELETE FROM query_tables WHERE query_id_id = #{queryId};
+        DELETE FROM query_tables WHERE query_id_id IN
+        <foreach index="index" item="item" collection="list" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
     </delete>
     <!-- 更新发布记录中的表状态 -->
     <update id="updateTableStatus">
