@@ -58,7 +58,7 @@ public class UploadController {
      * @return {"readResult":"false/true"}
      */
     @ResponseBody
-    @RequestMapping(value = "fileRead")
+    @RequestMapping(value = "/fileRead")
     public String readExcel(){
         String result = null;
         try {
@@ -85,7 +85,7 @@ public class UploadController {
      * @return "{"createResult":"false/true","insertResult":"false/true","updateTableInfoResult":"false/true"}
      */
     @ResponseBody
-    @RequestMapping(value = "fileWrite")
+    @RequestMapping(value = "/fileWrite")
     public String writeToDb(HttpServletRequest request){
         User user = (User)request.getSession().getAttribute("user");
         String result = uploadServiceImpl.fileWrite(user.getId(),uploadServiceImpl.getTableName(),uploadServiceImpl.getReadResultList());
@@ -97,7 +97,7 @@ public class UploadController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "writeProgress")
+    @RequestMapping(value = "/writeProgress")
     public float getWriteProgress(){
         return uploadServiceImpl.getWriteProgress();
     }
