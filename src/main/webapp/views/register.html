@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/button.css">
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container" style="height:600px ">
+<!--登陆框框-->
+
+<div style="margin:0 auto;margin-top:5%; width:50%; height:100%; background-color: #FAFAFA;border-radius:5%;opacity: 0.9">
+<form id="registerForm">
+  <div class="form-group" style="margin:0 auto; margin-top:15%; width:80%;">
+    <center><h1>Register</h1></center>
+    <hr style="width:300px;height:1px;border:none;border-top:1px solid #d6d6d6;"/>
+
+    <label for="exampleInputEmail1">username</label>
+    <div class="input-group">
+    <div class="input-group-addon">user&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</div>
+    <input type="text" class="form-control" id="username" placeholder="username">
+    </div>
+
+  
+    <label for="exampleInputEmail1">user_true_name</label>
+    <div class="input-group">
+    <div class="input-group-addon">user&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</div>
+    <input type="text" class="form-control" id="usertruename" placeholder="usertruename">
+    </div>
+
+<label for="exampleInputPassword1">Password</label>
+    <div class="input-group">
+    <div class="input-group-addon">password</div>
+    <input type="password" class="form-control" id="password" placeholder="Password">
+    </div>
+
+      <label for="exampleInputPassword1">Password</label>
+      <div class="input-group">
+          <div class="input-group-addon">password</div>
+          <input type="password" class="form-control" id="password2" placeholder="Password">
+      </div>
+  
+  <label for="exampleInputEmail1">Email address</label>
+    <div class="input-group">
+    <div class="input-group-addon">user&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</div>
+    <input type="text" class="form-control" id="email" placeholder="e-mail">
+    </div>
+
+  <label for="exampleInputEmail1">college</label><br>
+    <select class="form-control" id="collegeId">
+    </select>
+  
+
+  <label for="exampleInputEmail1">Grade</label><br>
+    <select class="form-control" id="grade">
+    </select>
+
+  <label for="exampleInputEmail1">Identity</label><br>
+    <select class="form-control" id="identity">
+        <option value="1">辅导员</option>
+        <option value="2">教师</option>
+    </select>
+
+  
+
+  
+  <br>
+  <center><button type="submit" class="btn btn-default" id="sub" style="width:100%">Submit</button>
+  <a href="register.html"style="color: #bfc9ca;display: block;font-size: 13px;margin-top: 15px;text-align: center">haven't register?</a>
+  </center>
+
+  </div>
+</form>
+</div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+            type : "get",
+            async : true,
+            url : "/GradesSystem/college.do",
+            dataType : "json",
+            success : function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    $("#collegeId").append("<option value='"+data[i].collegeId+"'>" + data[i].collegeName + "</option>");
+                }
+            }
+        });
+        $.ajax({
+            type : "get",
+            async : true,
+            url : "/GradesSystem/grade.do",
+            dataType : "json",
+            success : function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    $("#grade").append("<option value='"+data[i].gradeId+"'>" + data[i].gradeId + "</option>");
+                }
+            }
+        });
+    });
+
+
+var check = true;
+$("#sub").click(function(){
+    $("input").each(function(){
+      if($(this).val()==""){
+        alert("不能有空");
+        check = false;
+        return false;
+      }
+    });
+    if ($("#password").val() != $("#password2").val()){
+        alert("两次输入的密码不一致");
+        check = false;
+    };
+    var user = {
+        userName:$("#username").val(),
+        passWd:$("#password").val(),
+        name:$("#usertruename").val(),
+        email:$("#email").val(),
+        collegeId:parseInt($("#collegeId").val()),
+        grade:$("#grade").val(),
+        identity:$("#identity").val(),
+    };
+    if(check==true){
+      $.ajax({
+        type : "post",
+        url : "/GradesSystem/register.do" ,
+        async : true,
+        data: JSON.stringify(user),
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+           if (data != null) {
+               var result = JSON.parse(data);
+               if (result.isError === "false"){
+                   if (result.isUserNameAvailable === "true"){
+                       if (result.isRegister === "true"){
+                           alert("这测成功，请登录");
+                           window.location.href = "login.html";
+                       }
+                   } else {
+                       alert("该用户名已存在");
+                   }
+               } else {
+                   alert("注册失败，请重试");
+               }
+           } else {
+               alert("注册失败，请重试");
+           }
+        },
+        error: function (data) {
+            alert(data+"网络错误");
+        }
+      });
+    } 
+});
+</script>
+</body>
+</html>

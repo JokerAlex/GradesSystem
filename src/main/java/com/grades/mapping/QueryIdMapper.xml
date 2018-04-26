@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grades.mapping.QueryIdMapper">
+
+    <resultMap id="tableStatusResult" type="TableStatus">
+        <result property="tableName" column="table_info_name"/>
+        <result property="tableStatus" column="table_status"/>
+    </resultMap>
+
+    <resultMap id="recordIdAndTable" type="QueryRecord">
+        <id property="queryRecordId" column="query_id"/>
+        <result property="queryIdName" column="id_name"/>
+        <!--
+        <association property="tableStatus" resultMap="tableStatusResult" javaType="TableStatus" column="table_info_name"/>
+        -->
+        <collection property="tableStatus" resultMap="tableStatusResult"/>
+    </resultMap>
+
+    <!--
+     query_id表
+     -->
+    <!-- 获取发布记录id及id下的表 -->
+    <select id="getRecordIdAndTables" parameterType="int" resultMap="recordIdAndTable">
+        SELECT qi.query_id_id AS query_id,
+        qi.query_id_idname AS id_name,
+        tf.table_info_name AS table_info_name,
+        qt.query_record_table_status AS table_status
+        FROM query_id qi
+        JOIN query_tables qt ON qi.query_id_id = qt.query_id_id
+        JOIN table_info tf ON qt.query_record_table_id = tf.table_info_id
+        WHERE qi.query_id_userid = #{userId};
+    </select>
+    <!--
+    <select id="getRecordIdAndTables2" parameterType="int" resultMap="recordIdAndTable">
+        select qi.query_id_id AS query_id,
+        qi.query_id_idname AS id_name,
+        qt.query_record_table_id AS table_id,
+        qt.query_record_table_status AS table_status
+        from query_id qi join query_tables qt on qi.query_id_id = qt.query_id_id
+        where qi.query_id_userid = #{userId};
+    </select>
+    -->
+    <!-- 获取新生成的记录的id -->
+    <select id="getRecordId">
+        SELECT query_id_id
+        FROM query_id
+        <where>
+            <if test="queryIdName != null">
+                qeury_idname = #{queryIdName}
+            </if>
+            <if test="userId != null">
+                AND query_id_userid = #{userId}
+            </if>
+        </where>
+    </select>
+    <!-- id记录生成 -->
+    <insert id="insertRecordId" useGeneratedKeys="true" keyProperty="query_id_id">
+        INSERT INTO query_id (query_idname,query_id_userid)
+        VALUES (#{queryIdName},#{userId});
+    </insert>
+    <!-- id记录删除 -->
+    <delete id="delQueryId">
+        DELETE FROM query_id
+        <where>
+            <if test="queryId != null">
+                query_id_id IN
+                <foreach collection="list" item="item" open="(" close=")" separator=",">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="userId != null">
+                AND query_id_userid = #{userId}
+            </if>
+        </where>
+    </delete>
+    <!--
+
+     query_tables表
+
+     -->
+    <!-- 插入新记录 -->
+    <insert id="insertIdAndTables">
+        INSERT INTO query_tables
+        VALUES
+        <foreach item="item" index="index" collection="list" open="(" close=")" separator=",">
+            #{queryId},#{item},#{status}
+        </foreach>
+    </insert>
+    <!-- 删除 -->
+    <delete id="delIdAndTables">
+        DELETE FROM query_tables WHERE query_id_id IN
+        <foreach index="index" item="item" collection="list" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+    <!-- 更新发布记录中的表状态 -->
+    <update id="updateTableStatus">
+        UPDATE query_tables SET query_record_table_status = #{status}
+        WHERE query_record_table_id = #{tableId};
+    </update>
+
+</mapper>

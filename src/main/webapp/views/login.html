@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/button.css">
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+<body>
+<div class="container" style="height:600px">
+<!--登陆框框-->
+
+<div style="overflow:hidden;margin:0 auto;margin-top:5%; width:50%; height:70%; background-color: #FAFAFA;border-radius:5%;opacity: 0.9">
+<form id="loginForm" action="javascript:void (0)" method="post">
+  <div class="form-group" style="margin:0 auto; margin-top:15%; width:80%">
+    <center><h1>Login</h1></center>
+    <hr style="width:300px;height:1px;border:none;border-top:1px solid #d6d6d6;"/>
+    <label for="exampleInputEmail1">Email address</label>
+    <div class="input-group">
+    <div class="input-group-addon">user&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</div>
+    <input type="text" class="form-control" id="username" placeholder="username">
+    </div>
+
+  
+    <label for="exampleInputPassword1">Password</label>
+    <div class="input-group">
+    <div class="input-group-addon">password</div>
+    <input type="password" class="form-control" id="password" placeholder="Password">
+    </div>
+  <br>
+  <center><button type="submit" class="btn btn-default" id="sub" onclick="subForm()" style="width:100%" >Submit</button>
+  <a href="register.html"style="color: #bfc9ca;display: block;font-size: 13px;margin-top: 15px;text-align: center">haven't register?</a>
+  </center>
+
+  </div>
+</form>
+</div>
+</div>
+
+
+<script type="text/javascript">
+function subForm(){
+    var user = {
+        userName : $("#username").val(),
+        passWd : $("#password").val()
+    };
+    if(user.userName==""||user.passWd==""){
+        alert("用户名或密码不能为空");
+        return false;
+      }
+    $.ajax({
+        type : "post",
+        url : "/GradesSystem/login.do" ,
+        async : true,
+        contentType: "application/json;charset=utf-8",
+        dataType: "json",
+        data: JSON.stringify(user),
+        success: function (data) {
+           if (data != null) {
+               console.log(data);
+               window.location.href = "homepage.html";
+           } else {
+               alert("密码或用户名错误");
+           }
+        },
+        error:function (data) {
+            alert(data+"登录失败,请稍后重试");
+        }
+    });
+}
+</script>
+</body>
+</html>
