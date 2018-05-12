@@ -24,7 +24,7 @@
     <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
     <property name="url" value="jdbc:mysql://localhost:3306/grades?characterEncoding=UTF-8&amp;useSSL=false"/>
     <property name="username" value="root"/>
-    <property name="password" value="root"/>
+    <property name="password" value="root023301"/>
   </bean>
 
   <bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
