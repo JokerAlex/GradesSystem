@@ -10,10 +10,10 @@
 <div class="container" style="height:600px">
 <!--主按钮-->
 <div class="row">
-<div class=col-md-3><button id="btn1" class="button" style="border-radius:10%;height:200px;width:100%">新建查询</button></div>
-<div class=col-md-3><button id="btn2" class="button" style="border-radius:10%;height:300px;width:100%">查询列表</button></div>
-<div class=col-md-3><button id="btn3" class="button" style="border-radius:10%;height:400px;width:100%">个人信息</button></div>
-<div class=col-md-3><button id="btn4" class="button" style="border-radius:10%;height:500px;width:100%">修改密码</button></div>
+<div class=col-md-3><button id="btn1" class="button" style="border-radius:10%;height:200px;width:100%;opacity:0.8">新建查询</button></div>
+<div class=col-md-3><button id="btn2" class="button" style="border-radius:10%;height:300px;width:100%;opacity:0.8">查询列表</button></div>
+<div class=col-md-3><button id="btn3" class="button" style="border-radius:10%;height:400px;width:100%;opacity:0.8">个人信息</button></div>
+<div class=col-md-3><button id="btn4" class="button" style="border-radius:10%;height:500px;width:100%;opacity:0.8">发布列表</button></div>
 </div>
 </div>
 
@@ -21,31 +21,47 @@
   $(document).ready(function(){
 
   	$("#btn1").mouseenter(function(){
-  	  $(this).css("height","600px")
+  	  $(this).css("height","600px");
+      $(this).css("background-color","#00FFFF");
+      $(this).css("opacity","1");
   	});
   	$("#btn1").mouseleave(function(){
-  	  $(this).css("height","200px")
+  	  $(this).css("height","200px");
+      $(this).css("background-color","#EEE");
+      $(this).css("opacity","0.8");
   	});
 
   	$("#btn2").mouseenter(function(){
-  	  $(this).css("height","600px")
+  	  $(this).css("height","600px");
+      $(this).css("background-color","#00EEEE");
+      $(this).css("opacity","1");
   	});
   	$("#btn2").mouseleave(function(){
-  	  $(this).css("height","300px")
+  	  $(this).css("height","300px");
+      $(this).css("background-color","#EEE");
+      $(this).css("opacity","0.8");
   	});
 
   	$("#btn3").mouseenter(function(){
-  	  $(this).css("height","600px")
+  	  $(this).css("height","600px");
+      $(this).css("background-color","#00CDCD");
+      $(this).css("opacity","1");
   	});
   	$("#btn3").mouseleave(function(){
-  	  $(this).css("height","400px")
+  	  $(this).css("height","400px");
+      $(this).css("background-color","#EEE");
+      $(this).css("opacity","0.8");
   	});
 
   	$("#btn4").mouseenter(function(){
-  	  $(this).css("height","600px")
+  	  $(this).css("height","600px");
+      $(this).css("background-color","#008B8B");
+      $(this).css("opacity","1");
   	});
   	$("#btn4").mouseleave(function(){
-  	  $(this).css("height","500px")
+  	  $(this).css("height","500px");
+      $(this).css("background-color","#EEE");
+      $(this).css("opacity","0.8");
   	});
 
     $("#btn1").click(function(){

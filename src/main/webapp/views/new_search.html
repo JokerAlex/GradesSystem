@@ -4,7 +4,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="stylesheet" href="css/bootstrap.min.css">
 <link rel="stylesheet" href="css/button.css">
-<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js
+
+"></script>
 </head>
 <body>
 <div class="container" style="height:600px">
@@ -19,18 +21,26 @@
 
   <div style="overflow:hidden;margin:0 auto;margin-top:5%; width:50%; height:100%; background-color: #FAFAFA;border-radius:5%;opacity: 0.9">
     <form id="uploadForm" method="post" action="/GradesSystem/upload.do" enctype="multipart/form-data">
-      <div class="form-group" style="margin:0 auto; margin-top:20%; width:80%">
+      <div class="form-group " style="margin:0 auto; margin-top:20%; width:80%">
         <center><h1>新建查询</h1></center>
         <hr style="width:300px;height:1px;border:none;border-top:1px solid #d6d6d6;"/>
-        <input type="text" class="form-control" id="listname" name="tableName" placeholder="设置名称如第一学期期末成绩" onblur="checklistname()">
-        <span id="listnamestatus" style="float: right; display: none">test</span>
+        <input type="text" class="form-control " id="listname" name="tableName" placeholder="设置名称如第一学期期末成绩" onblur="checklistname()">
+        <span id="listnamestatus" style="float: right;">test</span>
         <br>
         <label for="exampleInputFile">File input</label>
         <input type="file" id="file" name="uploadFile">
       </div>
       <br>
+      <div class="progress" style="margin:0 auto; width:80%">
+          <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+          </div>
+      </div>
+      <div style="margin:0 auto; width:80%;text-align: center" id="progress_reminder">
+        <span>adasdasd</span>
+      </div>
       <center><button type="submit" class="btn btn-default" id="sub" style="width:80%">Submit</button></center>
     </form>
+      <!--<iframe id="id_iframe" name="nm_iframe" style="display:none;"></iframe>-->
   </div>
 </div>
 
@@ -51,22 +61,34 @@
 
 
   function checklistname(){
-
+      // $("div.form-group").removeClass("has-error");
+      // $("div.form-group").addClass("has-success");
       $.ajax({
           type : "post",
           url : "/GradesSystem/checkTableName" ,
           async : true,
-          data: JSON.stringify({
-              tableName:$("#listname").val(),
-        }),
-              contentType: "application/json;charset=utf-8",
+          data:$("#listname").val(),
+          contentType: "application/json;charset=utf-8",
           dataType: "json",
           success: function (data) {
           var json = eval(data);
-          var isavailable = json.isavailable;
-          $("#listnamestatus").css("display","");
-          $("#listnamestatus").html(isavailable);
-          },
+          var isavailable = json.isAvailable;
+          console.log(isavailable);
+          if(isavailable == "true"){
+            $("div.form-group").removeClass("has-error");
+            $("div.form-group").addClass("has-success");
+            $("#listnamestatus").css("color","#5bec22");
+            $("#listnamestatus").html("该表名可用");
+            $("#listnamestatus").show();
+          }
+          else{ 
+            $("div.form-group").removeClass("has-success");
+            $("div.form-group").addClass("has-error");
+            $("#listnamestatus").css("color","#ed0718");
+            $("#listnamestatus").html("该表名不可用");
+            $("#listnamestatus").show();
+          }
+        },
       error:function (data) {
       }
   });
@@ -76,16 +98,72 @@
   if(listname!="" && fileinput!="")$("#sub").attr("disabled",false);
   console.log(listname+fileinput);
   }
+
   function checktablenull(){
       var listname = $("#listname").val();
       var fileinput= $("#listfile").val();
       if(listname!="" && fileinput!="")$("#sub").attr("disabled",false);
   }
 
+  function progress(){
+    $.ajax({
+          type : "get",
+          url : "/GradesSystem/getUploadStatus" ,
+          async : true,
+          contentType: "application/json;charset=utf-8",
+          dataType: "json",
+          success: function (data) {
+          var json = eval(data);
+          var uploadStatus = parseInt(json.uploadStatus);
+          var readProgress = parseFloat(json.readProgress);
+          var writeProgress = parseFloat(json.writeProgress);
+          var errorCode = parseInt(json.errorCode);
+          if(errorCode == 1){
+            if(uploadStatus == 0){
+              //未上传完成 do nothing
+            }
+            else if(uploadStatus == 1){
+              //读取进度条
+                console.log(readProgress);
+              $("div.progress-bar").css("width",readProgress+'%');
+              $("#progress_reminder").text("正在读取文件");
+            }
+            else if(uploadStatus == 2){
+              //写入进度条
+              $("div.progress-bar").css("width",writeProgress+'%');
+              $("#progress_reminder").text("正在写入数据库");
+              if(writeProgress == 100.0){
+                  alert("写入成功!");
+              }
+            }
+          }
+          else{
+              alert(json.errorInfo);
+              return false;
+          }
+        },
+      error:function (data) {
+      }
+  });
+    setTimeout(progress,10);
+  }
+
   $(document).ready(function(){
+      $("#progress_reminder").hide();
+      $("div.progress").hide();
+      $("#listnamestatus").hide();
       $("#sub").attr("disabled",true);
       $("#listfile").on("change",function(){
           checktablenull();
+      });
+      $("#sub").click(function(){
+        //alert("haha");
+        $("div.progress").show();
+        $("#progress_reminder").show();
+        $("#sub").hide();
+        // var testpro = new Testpro();
+        // testpro.run();
+        progress();
       });
   });
 //导航栏
