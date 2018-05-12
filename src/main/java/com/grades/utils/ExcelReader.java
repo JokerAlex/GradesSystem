@@ -16,6 +16,11 @@ public class ExcelReader {
 
     private final static String excel2003L =".xls";    //2003- 版本的excel
     private final static String excel2007U =".xlsx";   //2007+ 版本的excel
+    private static int readProgress = 0;
+
+    public static int getReadProgress(){
+        return readProgress;
+    }
 
     /**
      * 获取工作簿
@@ -104,6 +109,7 @@ public class ExcelReader {
      * @return List<List<String>>
      */
     public static List<List<String>> getExcelRows(Sheet sheet, int startLine, int endLine){
+        readProgress = 0;
         List<List<String>> listResult = new ArrayList<List<String>>();
         // 如果开始行号和结束行号都是-1的话，则全表读取
         if (startLine == -1)
@@ -130,6 +136,7 @@ public class ExcelReader {
                 rowList.add(j,temp);
             }
             listResult.add(i,rowList);
+            readProgress = i;
         }
         return listResult;
     }
