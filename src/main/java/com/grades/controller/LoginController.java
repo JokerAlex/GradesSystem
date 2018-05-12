@@ -25,18 +25,18 @@ public class LoginController {
     @ResponseBody
     @RequestMapping(value = "/login",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
     public String doLogin(@RequestBody User user, HttpSession session){
-        int status = -1;
+        int loginCode = -1;
         String resultMsg;
         User userLogin = loginService.loginByUserName(user.getUserName(),user.getPassWd());
         if (userLogin != null){
             loginService.loginTime(userLogin);
-            status = 1;
+            loginCode = 1;
             resultMsg = "登录成功";
         }else {
             resultMsg = "用户名或密码错误";
         }
         session.setAttribute("user",userLogin);
-        return "{\"status\":\""+status+"\",\"resultMsg\":\""+resultMsg+"\"}";
+        return "{\"loginCode\":\""+loginCode+"\",\"resultMsg\":\""+resultMsg+"\"}";
     }
 
     @ResponseBody
