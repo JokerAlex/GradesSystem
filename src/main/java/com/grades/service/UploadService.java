@@ -9,11 +9,11 @@ import java.util.List;
 public interface UploadService {
 
 
-    String upload(String tableName, CommonsMultipartFile file, HttpServletRequest request);
+    void upload(String tableName, CommonsMultipartFile file, HttpServletRequest request);
 
     String checkTableName(String talbeName);
 
-    String fileRead(String fileName) throws Exception;
+    void fileRead(String fileName) throws Exception;
 
-    String fileWrite(int userId, String tableName, List<List<String>> lists);
+    void fileWrite(int userId, String tableName, List<List<String>> lists);
 }

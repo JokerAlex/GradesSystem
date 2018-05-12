@@ -5,10 +5,7 @@ import com.grades.model.*;
 import com.grades.serviceImpl.UploadServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,8 +31,9 @@ public class UploadController {
      */
     @ResponseBody
     @RequestMapping(value = "/checkTableName")
-    public String checkTableName(String tableName,HttpServletRequest request){
+    public String checkTableName(@RequestBody String tableName, HttpServletRequest request){
         User user = (User) request.getSession().getAttribute("user");
+        System.out.println(tableName);
         String result = uploadServiceImpl.checkTableName(user.getId()+"_"+tableName);
         return result;
     }
@@ -48,59 +46,20 @@ public class UploadController {
      */
     @ResponseBody
     @RequestMapping(value = "/upload")
-    public String doUpload(@RequestParam("tableName") String tableName,@RequestParam("uploadFile") CommonsMultipartFile file, HttpServletRequest request){
-        String result = uploadServiceImpl.upload(tableName,file,request);
-        System.out.println(uploadServiceImpl.getFilePath());
-        return result;
+    public String doUploadReadWrite(@RequestParam("tableName") String tableName,@RequestParam("uploadFile") CommonsMultipartFile file, HttpServletRequest request){
+        uploadServiceImpl.upload(tableName,file,request);
+        return "homepage";
     }
 
-    /**
-     * 读取文件内容
-     * @return {"readResult":"false/true"}
-     */
-    @ResponseBody
-    @RequestMapping(value = "/fileRead")
-    public String readExcel(){
-        String result = null;
-        try {
-            result = uploadServiceImpl.fileRead(uploadServiceImpl.getFilePath());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
 
     /**
-     * 读取进度
+     * 获取状态信息
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/readProgress")
-    public float getReadProgress(){
-        return uploadServiceImpl.getReadProgress();
-    }
-
-    /**
-     * 将文件内容写入数据库
-     * @param request
-     * @return "{"createResult":"false/true","insertResult":"false/true","updateTableInfoResult":"false/true"}
-     */
-    @ResponseBody
-    @RequestMapping(value = "/fileWrite")
-    public String writeToDb(HttpServletRequest request){
-        User user = (User)request.getSession().getAttribute("user");
-        String result = uploadServiceImpl.fileWrite(user.getId(),uploadServiceImpl.getTableName(),uploadServiceImpl.getReadResultList());
-        return result;
-    }
-
-    /**
-     * 写入进度
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/writeProgress")
-    public float getWriteProgress(){
-        return uploadServiceImpl.getWriteProgress();
+    @RequestMapping(value = "/getUploadStatus")
+    public String getUploadStatus(){
+        return uploadServiceImpl.getUploadStatus();
     }
 
 }

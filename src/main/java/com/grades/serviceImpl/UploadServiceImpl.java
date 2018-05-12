@@ -21,31 +21,59 @@ public class UploadServiceImpl implements UploadService {
 
     private String filePath;//文件保存位置
     private String tableName;//设置的表名
-    private List<List<String>> readResultList;//读取结果
+    private List<List<String>> readResultList = new ArrayList<List<String>>();//读取结果
     private int readResultRows = 0;//总行数
     private int writeProgress = 0;//写入进度
+    private int uploadStatus= 0;//0为未上传1上传完成2读取完成
+    private int errorCode = 1;
+    private String errorInfo = "";
 
     private TableInfoMapper tableInfoMapper;
 
     public List<List<String>> getReadResultList() {
-        return readResultList;
+        return this.readResultList;
     }
 
     public String getTableName(){
-        return tableName;
+        return this.tableName;
     }
 
     public String getFilePath(){
-        return filePath;
+        return this.filePath;
+    }
+
+
+    public String getUploadStatus(){
+        String readProgress;
+        String writeProgress;
+        if (errorCode != 1){
+            this.uploadStatus = 0;
+        }
+        if (uploadStatus == 0){
+            readProgress = "0";
+            writeProgress = "0";
+        }else if (uploadStatus == 1){
+            readProgress = ""+this.getReadProgress();
+            System.out.println(readProgress+"--------------------------------");
+            writeProgress = "0";
+        }else{
+            readProgress = "0";
+            writeProgress = ""+this.getWriteProgress();
+        }
+        return "{\"uploadStatus\":\""+this.uploadStatus+"\"," +
+                "\"readProgress\":\""+readProgress+"\"," +
+                "\"writeProgress\":\""+writeProgress+"\"," +
+                "\"errorCode\":\""+errorCode+"\"," +
+                "\"errorInfo\":\""+errorInfo+"\"}";
     }
 
     public float getReadProgress(){
-        float result = (float)readResultRows/(float)readResultList.size();
+        float result = ((float)ExcelReader.getReadProgress()/(float)readResultRows)*100;
         return result;
     }
 
     public float getWriteProgress(){
-        float result = (float)writeProgress/(float)readResultList.size();
+        float result = ((float)writeProgress/(float)readResultList.size())*100;
         return result;
     }
 
@@ -60,11 +88,17 @@ public class UploadServiceImpl implements UploadService {
      * @param request
      * @return {"uploadResult:"false/true"}
      */
-    public String upload(String tableName,CommonsMultipartFile file, HttpServletRequest request) {
+    public void upload(String tableName,CommonsMultipartFile file, HttpServletRequest request) {
+        this.errorCode = 1;
+        this.errorInfo = "";
+        User user = new User();
+
+        //文件上传
+
         if (!file.isEmpty() && request != null){
             //获取文件类型
             String fileType = file.getOriginalFilename().substring(file.getOriginalFilename().indexOf("."));
-            User user = (User) request.getSession().getAttribute("user");
+            user = (User) request.getSession().getAttribute("user");
             String fileName = user.getId() + System.currentTimeMillis() + fileType;
             String path = request.getSession().getServletContext().getRealPath("/upload/");
             File destFile = new File(path,fileName);
@@ -72,13 +106,35 @@ public class UploadServiceImpl implements UploadService {
                 // FileUtils.copyInputStreamToFile()这个方法里对IO进行了自动操作，不需要额外的再去关闭IO流
                 FileUtils.copyInputStreamToFile(file.getInputStream(), destFile);// 复制临时文件到指定目录下
             } catch (IOException e) {
+                this.errorCode = -1;
+                this.errorInfo = "文件上传时错误";
                 e.printStackTrace();
             }
             this.tableName = tableName;
-            filePath = path+fileName;
-            return "{\"uploadResult:\"true\"}";
+            this.uploadStatus = 1;
+            this.filePath = path+fileName;
+        } else {
+            this.errorCode = -1;
+            this.errorInfo = "文件上传时错误";
         }
-        return "{\"uploadResult:\"false\"}";
+
+        //文件读取
+
+        if (errorCode == 1){
+            try {
+                this.fileRead(filePath);
+            } catch (Exception e) {
+                this.errorCode = -2;
+                this.errorInfo = "读取文件时发生错误";
+                e.printStackTrace();
+            }
+        }
+
+        //文件写库
+
+        if (errorCode == 1){
+            this.fileWrite(user.getId(),this.tableName,this.readResultList);
+        }
     }
 
     /**
@@ -91,7 +147,7 @@ public class UploadServiceImpl implements UploadService {
         if (tableName != null && !tableName.trim().equals("")){
             result = tableInfoMapper.findTable(tableName);
         }
-        if (result != null){
+        if (result == null){
             return "{\"isAvailable\":\"true\"}";
         }
         return "{\"isAvailable\":\"false\"}";
@@ -103,7 +159,10 @@ public class UploadServiceImpl implements UploadService {
      * @return {"readResult":"false/true"}
      * @throws Exception
      */
-    public String fileRead(String fileName) throws Exception {
+    public void fileRead(String fileName) throws Exception {
+        //存储单元初始化
+        this.readResultList.clear();
+        this.readResultRows = 0;
         //获取工作表
         Workbook wb = ExcelReader.getWorkbook(fileName);
         //获取工作簿
@@ -113,9 +172,12 @@ public class UploadServiceImpl implements UploadService {
         //读取数据
         readResultList = ExcelReader.getExcelRows(sheet,-1,-1);
         if (readResultList.size() == readResultRows){
-            return "{\"readResult\":\"true\"}";
+            this.uploadStatus = 2;
+        } else {
+            this.errorCode = -2;
+            this.errorInfo = "读取文件时发生错误";
         }
-        return "{\"readResult\":\"false\"}";
+
     }
 
     /**
@@ -125,7 +187,8 @@ public class UploadServiceImpl implements UploadService {
      * @param lists
      * @return "{"createResult":"false/true","insertResult":"false/true","updateTableInfoResult":"false/true"}
      */
-    public String fileWrite(int userId, String tableName, List<List<String>> lists) {
+    public void fileWrite(int userId, String tableName, List<List<String>> lists) {
+        this.writeProgress = 0;//写入进度初始化为0
         int groupSize = 20;//分组大小
         String tempTableName = userId+"_"+tableName;
         boolean createResult;
@@ -134,7 +197,8 @@ public class UploadServiceImpl implements UploadService {
         //创建表
         List<String> listHead = lists.get(0);
         createResult = tableInfoMapper.createTable(tempTableName, listHead);
-        if (createResult){
+        System.out.println(createResult);
+        if (!createResult){
             //去掉头部-列名
             lists.remove(0);
             //分组插入数据
@@ -153,12 +217,24 @@ public class UploadServiceImpl implements UploadService {
                     break;
                 }
             }
+        } else {
+            this.errorCode = -3;
+            this.errorInfo = "创建数据表时错误";
         }
         if (insertResult){
             //表信息更新
-            updateTableInfoResult = tableInfoMapper.insertTableInfo(new TableInfo(0, tableName, userId, 0));
+            updateTableInfoResult = tableInfoMapper.insertTableInfo(new TableInfo(0, userId+"_"+tableName, userId, 0));
+            if (!updateTableInfoResult){
+                this.errorCode = -5;
+                this.errorInfo = "更新数据表信息时错误";
+            }
+        } else {
+            this.errorCode = -4;
+            this.errorInfo = "插入数据时错误";
         }
-        writeProgress = 0;
-        return "{\"createResult\":\""+createResult+"\",\"insertResult\":\""+insertResult+"\",\"updateTableInfoResult\":\""+updateTableInfoResult+"\"}";
+        //文件写入数据库完成，uploadStatus重置为0
+        this.uploadStatus = 0;
+
+
     }
 }
