@@ -9,8 +9,5 @@
         <module name="GradesSystem" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="GradesSystem" target="1.5" />
-    </bytecodeTargetLevel>
   </component>
 </project>

@@ -1,7 +1,7 @@
 package com.grades.serviceImpl;
 
 import com.grades.mapping.TableInfoMapper;
-import com.grades.model.TableInfo;
+import com.grades.model.*;
 import com.grades.service.UploadService;
 import com.grades.utils.ExcelReader;
 import org.apache.commons.io.FileUtils;
@@ -60,12 +60,12 @@ public class UploadServiceImpl implements UploadService {
      * @param request
      * @return {"uploadResult:"false/true"}
      */
-    public String upload(CommonsMultipartFile file, HttpServletRequest request) {
+    public String upload(String tableName,CommonsMultipartFile file, HttpServletRequest request) {
         if (!file.isEmpty() && request != null){
             //获取文件类型
             String fileType = file.getOriginalFilename().substring(file.getOriginalFilename().indexOf("."));
-            String fileName = request.getSession().getAttribute("userId").toString()+System.currentTimeMillis()
-                    +fileType;
+            User user = (User) request.getSession().getAttribute("user");
+            String fileName = user.getId() + System.currentTimeMillis() + fileType;
             String path = request.getSession().getServletContext().getRealPath("/upload/");
             File destFile = new File(path,fileName);
             try {
@@ -74,8 +74,9 @@ public class UploadServiceImpl implements UploadService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            this.tableName = tableName;
             filePath = path+fileName;
-            return "{\"uploadResult:\"true\"";
+            return "{\"uploadResult:\"true\"}";
         }
         return "{\"uploadResult:\"false\"}";
     }
@@ -91,7 +92,6 @@ public class UploadServiceImpl implements UploadService {
             result = tableInfoMapper.findTable(tableName);
         }
         if (result != null){
-            this.tableName = tableName;
             return "{\"isAvailable\":\"true\"}";
         }
         return "{\"isAvailable\":\"false\"}";

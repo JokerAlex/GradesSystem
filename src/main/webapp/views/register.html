@@ -135,29 +135,27 @@ $("#sub").click(function(){
         contentType: "application/json;charset=utf-8",
         dataType: "json",
         success: function (data) {
+            console.log(data);
            if (data != null) {
                var result = JSON.parse(data);
-               if (result.isError === "false"){
-                   if (result.isUserNameAvailable === "true"){
-                       if (result.isRegister === "true"){
-                           alert("这测成功，请登录");
-                           window.location.href = "login.html";
-                       }
-                   } else {
-                       alert("该用户名已存在");
-                   }
-               } else {
-                   alert("注册失败，请重试");
+               console.log(result);
+               if (result.status == 1){
+                   alert(result.resultMsg);
+                   window.location.href = "homepage.html";
+               } else if (result.status == -3) {
+                   alert(result.resultMsg);
+               } else if (result.status == -2) {
+                   alert(result.resultMsg);
+               } else if (result.status == -1) {
+                   alert(result.resultMsg);
                }
-           } else {
-               alert("注册失败，请重试");
            }
         },
         error: function (data) {
             alert(data+"网络错误");
         }
       });
-    } 
+    }
 });
 </script>
 </body>

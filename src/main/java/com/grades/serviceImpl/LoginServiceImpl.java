@@ -35,7 +35,9 @@ public class LoginServiceImpl implements LoginService {
             //加密密码对比
             String pw = PasswordEncrypt.encrypt(userPwd);
             user = userMapper.findUserByName(userName,pw);
-            user.setLoginTime(new Date().toString());
+            if (user != null){
+                user.setLoginTime(new Date().toString());
+            }
             return user;
         }
         return null;
@@ -47,7 +49,9 @@ public class LoginServiceImpl implements LoginService {
         if (userEmail != null && !userEmail.equals("")){
             String pw = PasswordEncrypt.encrypt(userPwd);
             user = userMapper.findUserByEmail(userEmail,pw);
-            user.setLoginTime(new Date().toString());
+            if (user != null){
+                user.setLoginTime(new Date().toString());
+            }
             return user;
         }
         return null;
@@ -71,19 +75,32 @@ public class LoginServiceImpl implements LoginService {
     }
 
     public String register(User user) {
-        boolean isError = true;
-        boolean isUserNameAvailable = false;
-        boolean isRegister = false;
+        boolean isUserNameAvailable;
+        boolean isRegister;
+        int status;
+        String resultMsg;
         if (user != null){
-            isError = false;
             isUserNameAvailable = isUserNameAvailable(user.getUserName());
             if (isUserNameAvailable){
                 String tempPw = PasswordEncrypt.encrypt(user.getPassWd());
                 user.setPassWd(tempPw);
                 isRegister = userMapper.insertUser(user);
+                if (isRegister){
+                    status = 1;
+                    resultMsg = "注册成功！";
+                }else {
+                    status = -3;
+                    resultMsg = "注册失败！";
+                }
+            }else{
+                status = -2;
+                resultMsg = "用户名不可用！";
             }
+        }else {
+            status = -1;
+            resultMsg = "参数错误！";
         }
-        String result = "{\"isError\":\""+isError+"\",\"isUserNameAvailable\":\""+isUserNameAvailable+"\",\"isRegister\":\""+isRegister+"\"}";
+        String result = "{\"status\":\""+status+"\",\"resultMsg\":\""+resultMsg+"\"}";
         return result;
     }
 
