@@ -88,7 +88,7 @@ public class UploadServiceImpl implements UploadService {
      * @param request
      * @return {"uploadResult:"false/true"}
      */
-    public void upload(String tableName,CommonsMultipartFile file, HttpServletRequest request) {
+    public String upload(CommonsMultipartFile file, HttpServletRequest request) {
         this.errorCode = 1;
         this.errorInfo = "";
         User user = new User();
@@ -110,7 +110,6 @@ public class UploadServiceImpl implements UploadService {
                 this.errorInfo = "文件上传时错误";
                 e.printStackTrace();
             }
-            this.tableName = tableName;
             this.uploadStatus = 1;
             this.filePath = path+fileName;
         } else {
@@ -135,6 +134,13 @@ public class UploadServiceImpl implements UploadService {
         if (errorCode == 1){
             this.fileWrite(user.getId(),this.tableName,this.readResultList);
         }
+
+        //返回信息
+        if (errorCode == 1){
+            return "{\"uploadResult\":\"true\"}";
+        } else {
+            return "{\"uploadResult\":\"false\"}";
+        }
     }
 
     /**
@@ -148,6 +154,7 @@ public class UploadServiceImpl implements UploadService {
             result = tableInfoMapper.findTable(tableName);
         }
         if (result == null){
+            this.tableName = tableName;
             return "{\"isAvailable\":\"true\"}";
         }
         return "{\"isAvailable\":\"false\"}";
@@ -190,7 +197,7 @@ public class UploadServiceImpl implements UploadService {
     public void fileWrite(int userId, String tableName, List<List<String>> lists) {
         this.writeProgress = 0;//写入进度初始化为0
         int groupSize = 20;//分组大小
-        String tempTableName = userId+"_"+tableName;
+        String tempTableName = tableName;
         boolean createResult;
         boolean insertResult = false;
         boolean updateTableInfoResult = false;
@@ -223,7 +230,7 @@ public class UploadServiceImpl implements UploadService {
         }
         if (insertResult){
             //表信息更新
-            updateTableInfoResult = tableInfoMapper.insertTableInfo(new TableInfo(0, userId+"_"+tableName, userId, 0));
+            updateTableInfoResult = tableInfoMapper.insertTableInfo(new TableInfo(0, tableName, userId, 0));
             if (!updateTableInfoResult){
                 this.errorCode = -5;
                 this.errorInfo = "更新数据表信息时错误";

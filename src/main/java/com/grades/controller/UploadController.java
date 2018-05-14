@@ -46,9 +46,9 @@ public class UploadController {
      */
     @ResponseBody
     @RequestMapping(value = "/upload")
-    public String doUploadReadWrite(@RequestParam("tableName") String tableName,@RequestParam("uploadFile") CommonsMultipartFile file, HttpServletRequest request){
-        uploadServiceImpl.upload(tableName,file,request);
-        return "homepage";
+    public String doUploadReadWrite(@RequestParam(value = "file") CommonsMultipartFile file, HttpServletRequest request){
+        String result = uploadServiceImpl.upload(file,request);
+        return result;
     }
 
 

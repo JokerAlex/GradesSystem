@@ -9,7 +9,7 @@ import java.util.List;
 public interface UploadService {
 
 
-    void upload(String tableName, CommonsMultipartFile file, HttpServletRequest request);
+    String upload(CommonsMultipartFile file, HttpServletRequest request);
 
     String checkTableName(String talbeName);
 
