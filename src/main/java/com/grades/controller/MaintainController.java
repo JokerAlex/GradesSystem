@@ -41,6 +41,13 @@ public class MaintainController {
         return maintainService.getAllTables(user,userGrade,tableName);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/getT")
+    public List<TableInfo> getTable(HttpServletRequest request){
+        User user = (User)request.getSession().getAttribute("user");
+        return maintainService.getAllTables(user,null,null);
+    }
+
     /**
      * 删除表
      * @param tableInfo
