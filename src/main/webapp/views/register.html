@@ -139,14 +139,10 @@ $("#sub").click(function(){
            if (data != null) {
                var result = JSON.parse(data);
                console.log(result);
-               if (result.status == 1){
+               if (result.registerCode === "1"){
                    alert(result.resultMsg);
                    window.location.href = "homepage.html";
-               } else if (result.status == -3) {
-                   alert(result.resultMsg);
-               } else if (result.status == -2) {
-                   alert(result.resultMsg);
-               } else if (result.status == -1) {
+               } else {
                    alert(result.resultMsg);
                }
            }
