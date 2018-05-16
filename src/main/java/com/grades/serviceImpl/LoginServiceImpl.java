@@ -77,7 +77,7 @@ public class LoginServiceImpl implements LoginService {
     public String register(User user) {
         boolean isUserNameAvailable;
         boolean isRegister;
-        int status;
+        int registerCode;
         String resultMsg;
         if (user != null){
             isUserNameAvailable = isUserNameAvailable(user.getUserName());
@@ -86,21 +86,21 @@ public class LoginServiceImpl implements LoginService {
                 user.setPassWd(tempPw);
                 isRegister = userMapper.insertUser(user);
                 if (isRegister){
-                    status = 1;
+                    registerCode = 1;
                     resultMsg = "注册成功！";
                 }else {
-                    status = -3;
+                    registerCode = -3;
                     resultMsg = "注册失败！";
                 }
             }else{
-                status = -2;
+                registerCode = -2;
                 resultMsg = "用户名不可用！";
             }
         }else {
-            status = -1;
+            registerCode = -1;
             resultMsg = "参数错误！";
         }
-        String result = "{\"status\":\""+status+"\",\"resultMsg\":\""+resultMsg+"\"}";
+        String result = "{\"registerCode\":\""+registerCode+"\",\"resultMsg\":\""+resultMsg+"\"}";
         return result;
     }
 
