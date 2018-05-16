@@ -1,5 +1,6 @@
 package com.grades.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.grades.model.*;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public interface MaintainService {
 
     List<QueryRecord> getQueryRecords(int userId);
 
-    String insertNewRecord(String[] tableIds,int userId);
+    JSONObject insertNewRecord(String[] tableIds, int userId);
 
     String delRecord(String queryId,int userId);
 }

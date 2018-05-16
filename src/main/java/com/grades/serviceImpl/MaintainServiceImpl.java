@@ -1,5 +1,6 @@
 package com.grades.serviceImpl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.grades.mapping.*;
 import com.grades.model.*;
 import com.grades.service.MaintainService;
@@ -146,12 +147,12 @@ public class MaintainServiceImpl implements MaintainService {
      */
     public List<TableInfo> getAllTables(User user, String userGrade, String tableName) {
         String grade;
-        if (userGrade == null){
+        if (userGrade.equals("false")){
             grade = "";
         }else {
             grade = user.getGrade();
         }
-        if (tableName == null){
+        if (tableName == null || tableName.trim().equals("")){
             tableName = "";
         }
         return tableInfoMapper.searchTables(user.getId(),grade,tableName);
@@ -189,11 +190,13 @@ public class MaintainServiceImpl implements MaintainService {
      * @param userId
      * @return {"insertRecordResult":"true/false","insertTableResult":"true/false"}
      */
-    public String insertNewRecord(String[] tableIds,int userId){
+    public JSONObject insertNewRecord(String[] tableIds, int userId){
         //用时间作为发布记录的名称
         String queryName = new Date().toString().replace(" ","");
         boolean insertRecordResult = queryIdMapper.insertRecordId(queryName,userId);
         boolean insertTableResult = false;
+        int insertCode = -1;
+        String inserResult = "";
         if (insertRecordResult){
             int[] queryId = queryIdMapper.getRecordId(queryName,userId);
             List tableList = new ArrayList();
@@ -201,8 +204,23 @@ public class MaintainServiceImpl implements MaintainService {
                 tableList.add(Integer.valueOf(tableId));
             }
             insertTableResult = queryIdMapper.insertIdAndTables(queryId[0],tableList,"该表可查询");
+            if (insertTableResult){
+
+            }
         }
-        return "{\"insertRecordResult\":\""+insertRecordResult+"\",\"insertTableResult\":\""+insertTableResult+"\"}";
+        if (insertRecordResult && insertTableResult){
+            insertCode = 0;
+            inserResult = "记录生成成功";
+        } else {
+            insertCode = -1;
+            inserResult = "记录生错误";
+        }
+        String qrcodeAddress = "http://localhost:8080/views/QueryListStu.html"+queryName;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("insertCode",insertCode);
+        jsonObject.put("insertResult",inserResult);
+        jsonObject.put("address",qrcodeAddress);
+        return jsonObject;
     }
 
     /**

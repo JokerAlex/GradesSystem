@@ -1,17 +1,16 @@
 package com.grades.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.grades.model.*;
 import com.grades.service.MaintainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @SessionAttributes({"user"})
@@ -29,24 +28,24 @@ public class MaintainController {
 
     /**
      * 获取所有表，模糊查询
-     * @param request
-     * @param userGrade (true/false)
-     * @param tableName
+     * @param
+     * @param searchMap(userGrade,tableName)
      * @return List<TableInfo>
      */
     @ResponseBody
     @RequestMapping(value = "/getTables")
-    public List<TableInfo> getTables(HttpServletRequest request, String userGrade, String tableName){
+    public List<TableInfo> getTables(@RequestBody Map<String,String> searchMap, HttpServletRequest request){
         User user = (User)request.getSession().getAttribute("user");
-        return maintainService.getAllTables(user,userGrade,tableName);
+        System.out.println(user.getId()+user.getUserName()+searchMap.get("userGrade")+searchMap.get("tableName"));
+        return maintainService.getAllTables(user, searchMap.get("userGrade"), searchMap.get("tableName"));
     }
 
-    @ResponseBody
+    /*@ResponseBody
     @RequestMapping(value = "/getT")
     public List<TableInfo> getTable(HttpServletRequest request){
         User user = (User)request.getSession().getAttribute("user");
         return maintainService.getAllTables(user,null,null);
-    }
+    }*/
 
     /**
      * 删除表
@@ -88,9 +87,14 @@ public class MaintainController {
      */
     @ResponseBody
     @RequestMapping(value = "/insertRecord")
-    public String insertRecord(String[] tableIds,HttpServletRequest request){
+    public JSONObject insertRecord(@RequestParam(required = false,value = "tableIds[]") List<String> tableIds, HttpServletRequest request){
         User user = (User)request.getSession().getAttribute("user");
-        return maintainService.insertNewRecord(tableIds,user.getId());
+        for (String i:tableIds){
+            System.out.println(i);
+        }
+        //JSONObject jsonObject = maintainService.insertNewRecord(tableIds,user.getId());
+
+        return null;
     }
 
     /**
