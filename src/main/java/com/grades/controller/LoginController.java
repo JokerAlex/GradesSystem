@@ -1,6 +1,7 @@
 package com.grades.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.grades.model.*;
 import com.grades.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @SessionAttributes({"user"})
@@ -24,10 +26,12 @@ public class LoginController {
 
     @ResponseBody
     @RequestMapping(value = "/login",method = RequestMethod.POST,produces = "application/json;charset=UTF-8")
-    public String doLogin(@RequestBody User user, HttpSession session){
+    public JSONObject doLogin(@RequestBody Map<String,String> userMap, HttpSession session){
         int loginCode = -1;
         String resultMsg;
-        User userLogin = loginService.loginByUserName(user.getUserName(),user.getPassWd());
+        JSONObject jsonObject = new JSONObject();
+
+        User userLogin = loginService.loginByUserName(userMap.get("userName"),userMap.get("passWd"));
         if (userLogin != null){
             loginService.loginTime(userLogin);
             loginCode = 1;
@@ -35,8 +39,11 @@ public class LoginController {
         }else {
             resultMsg = "用户名或密码错误";
         }
+        jsonObject.put("loginCode",loginCode);
+        jsonObject.put("resultMsg",resultMsg);
+        jsonObject.put("user",userLogin);
         session.setAttribute("user",userLogin);
-        return "{\"loginCode\":\""+loginCode+"\",\"resultMsg\":\""+resultMsg+"\"}";
+        return jsonObject;
     }
 
     @ResponseBody

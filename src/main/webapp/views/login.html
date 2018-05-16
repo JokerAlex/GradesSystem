@@ -11,58 +11,92 @@
     <!--登陆框框-->
 
     <div style="overflow:hidden;margin:0 auto;margin-top:5%; width:50%; height:70%; background-color: #FAFAFA;border-radius:5%;opacity: 0.9">
-
         <div class="form-group" style="margin:0 auto; margin-top:15%; width:80%">
             <center><h1>Login</h1></center>
             <hr style="width:300px;height:1px;border:none;border-top:1px solid #d6d6d6;"/>
             <label for="exampleInputEmail1">Email address Or Username</label>
             <div class="input-group">
                 <div class="input-group-addon">user&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</div>
-                <input type="text" class="form-control" id="username" placeholder="username">
+                <input type="text" class="form-control" id="username" placeholder="username" oninput="remove_input_class()">
             </div>
 
 
             <label for="exampleInputPassword1">Password</label>
             <div class="input-group">
                 <div class="input-group-addon">password</div>
-                <input type="password" class="form-control" id="password" placeholder="Password">
+                <input type="password" class="form-control" id="password" placeholder="Password" oninput="remove_input_class()">
             </div>
-            <br>
-            <center><button type="button" class="btn btn-default" id="sub" style="width:100%" >Submit</button>
-                <a href="register.html"style="color: #bfc9ca;display: block;font-size: 13px;margin-top: 15px;text-align: center">haven't register?</a>
+            <div style="text-align:right;color: grey"><label><input type="checkbox" id="remember"><span>记住密码</span></label></div>
+
+            <div id="login_reminder" class="form-group" style="text-align:right;color:red"><span class="login_reminder_span">用户名或密码错误，请重新输入</span></div>
+
+            <center>
+                <button type="button" class="btn btn-default" id="sub" style="width:100%">Submit</button>
+                <a href="register.html"
+                   style="color: #bfc9ca;display: block;font-size: 13px;margin-top: 15px;text-align: center">haven't
+                    register?</a>
             </center>
 
         </div>
-
     </div>
 </div>
 
 
 <script type="text/javascript">
-    $("#sub").click(function(){
+    $("#login_reminder").hide();
+    function remove_input_class(){
+        $("div.form-group").removeClass("has-error");
+        $("#login_reminder").hide();
+        check_localstorage_username();
+    }
+    function check_remember_pw(){
+        var strName = $("#username").val();
+        var strPass = $("#password").val();
+        if($("#remember").prop("checked")){
+            localStorage.setItem(strName,strPass);
+        }
+        else{
+            localStorage.removeItem(strName);
+        }
+    }
+    function check_localstorage_username(){
+        var strName = $("#username").val();
+        var strPass = localStorage.getItem(strName);
+        if(strPass){
+            $("#password").val(strPass);
+            console.log(strPass);
+        }
+    }
+
+    $("#sub").click(function () {
+        $("#login_reminder").show();
+        $("div.form-group").addClass("has-error");
         var user = {
-            userName:$("#username").val(),
-            passWd:$("#password").val()
+            userName: $("#username").val(),
+            passWd: $("#password").val()
         };
-        if(user.userName==""||user.passWd==""){
-            alert("用户名或密码不能为空");
+        if (user.userName == "" || user.passWd == "") {
+            $(".login_reminder_span").text("用户名或密码不能为空");
             return false;
         }
         $.ajax({
-            type : "post",
-            url : "/GradesSystem/login.do" ,
-            async : true,
+            type: "post",
+            url: "/GradesSystem/login.do",
+            async: true,
             data: JSON.stringify(user),
             contentType: "application/json;charset=utf-8",
             dataType: "json",
             success: function (data) {
                 console.log(data);
-                var result = eval(data);
-                if (result.loginCode === "1") {
+                if (data.loginCode === 1) {
+                    check_remember_pw();
+                    $("#login_reminder").hide();
+                    $("div.form-group").removeClass("has-error");
                     window.location.href = "homepage.html";
                 } else {
-                    $("h1").css("color","red");
-                    alert(result.resultMsg);
+                    $("#login_reminder").show();
+                    $("div.form-group").addClass("has-error");
+                    console.log(data.resultMsg);
                 }
             },
             error: function (data) {
