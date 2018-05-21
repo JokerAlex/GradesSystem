@@ -31,23 +31,13 @@
         JOIN table_info tf ON qt.query_record_table_id = tf.table_info_id
         WHERE qi.query_id_userid = #{userId};
     </select>
-    <!--
-    <select id="getRecordIdAndTables2" parameterType="int" resultMap="recordIdAndTable">
-        select qi.query_id_id AS query_id,
-        qi.query_id_idname AS id_name,
-        qt.query_record_table_id AS table_id,
-        qt.query_record_table_status AS table_status
-        from query_id qi join query_tables qt on qi.query_id_id = qt.query_id_id
-        where qi.query_id_userid = #{userId};
-    </select>
-    -->
     <!-- 获取新生成的记录的id -->
-    <select id="getRecordId">
+    <select id="getRecordId" resultType="Integer">
         SELECT query_id_id
         FROM query_id
         <where>
             <if test="queryIdName != null">
-                qeury_idname = #{queryIdName}
+                query_id_idname = #{queryIdName}
             </if>
             <if test="userId != null">
                 AND query_id_userid = #{userId}
@@ -56,7 +46,7 @@
     </select>
     <!-- id记录生成 -->
     <insert id="insertRecordId" useGeneratedKeys="true" keyProperty="query_id_id">
-        INSERT INTO query_id (query_idname,query_id_userid)
+        INSERT INTO query_id (query_id_idname,query_id_userid)
         VALUES (#{queryIdName},#{userId});
     </insert>
     <!-- id记录删除 -->
@@ -83,8 +73,8 @@
     <insert id="insertIdAndTables">
         INSERT INTO query_tables
         VALUES
-        <foreach item="item" index="index" collection="list" open="(" close=")" separator=",">
-            #{queryId},#{item},#{status}
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{queryId},#{item},#{status})
         </foreach>
     </insert>
     <!-- 删除 -->
