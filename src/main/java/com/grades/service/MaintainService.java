@@ -25,7 +25,7 @@ public interface MaintainService {
 
     List<TableInfo> getAllTables(User user, String userGrade, String tableName);
 
-    String delTable(TableInfo tableInfo);
+    String delTable(List<TableInfo> tableInfo);
 
     List<QueryRecord> getQueryRecords(int userId);
 

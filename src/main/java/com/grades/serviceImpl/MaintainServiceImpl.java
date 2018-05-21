@@ -160,16 +160,19 @@ public class MaintainServiceImpl implements MaintainService {
 
     /**
      * 删除表及其信息
-     * @param tableInfo
+     * @param tableInfos
      * @return {"delResult":"true/false","dropResult":"true/false"}
      */
-    public String delTable(TableInfo tableInfo){
+    public String delTable(List<TableInfo> tableInfos){
         boolean delResult = false;
         boolean dropResult = false;
-        if (tableInfo != null){
-            delResult = tableInfoMapper.delTable(tableInfo.getId());
-            dropResult = tableInfoMapper.dropTable(tableInfo.getName());
-            queryIdMapper.updateTableStatus("该表已删除",tableInfo.getId());
+        if (tableInfos.size() != 0){
+            delResult = tableInfoMapper.delTable(tableInfos);
+            for (int i=0 ;i<tableInfos.size();i++){
+                dropResult = tableInfoMapper.dropTable(tableInfos.get(i).getName());
+                System.out.println("dropResult-------->"+dropResult);
+                queryIdMapper.updateTableStatus("该表已删除",tableInfos.get(i).getId());
+            }
 
         }
         return "{\"delResult\":\""+delResult+"\",\"dropResult\":\""+dropResult+"\"}";

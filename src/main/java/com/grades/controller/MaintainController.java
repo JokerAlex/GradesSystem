@@ -53,8 +53,11 @@ public class MaintainController {
      * @return {"delResult":"true/false","dropResult":"true/false"}
      */
     @ResponseBody
-    @RequestMapping(value = "/delTable")
-    public String delTable(@RequestBody TableInfo tableInfo){
+    @RequestMapping(value = "/delTables")
+    public String delTable(@RequestBody List<TableInfo> tableInfo){
+        for (TableInfo tableInfo1:tableInfo){
+            System.out.println(tableInfo1.getId()+"-------->"+tableInfo1.getName());
+        }
         return maintainService.delTable(tableInfo);
     }
 
@@ -79,7 +82,8 @@ public class MaintainController {
         return maintainService.getQueryRecords(user.getId());
     }
 
-    /**
+    /**required = false,
+     * @RequestParam(required = false,value = "tableIds[]")
      * 生成新的发布记录
      * @param tableIds
      * @param request
@@ -87,14 +91,10 @@ public class MaintainController {
      */
     @ResponseBody
     @RequestMapping(value = "/insertRecord")
-    public JSONObject insertRecord(@RequestParam(required = false,value = "tableIds[]") List<String> tableIds, HttpServletRequest request){
+    public JSONObject insertRecord(@RequestParam(value = "tableIds[]") String[] tableIds, HttpServletRequest request){
         User user = (User)request.getSession().getAttribute("user");
-        for (String i:tableIds){
-            System.out.println(i);
-        }
-        //JSONObject jsonObject = maintainService.insertNewRecord(tableIds,user.getId());
-
-        return null;
+        JSONObject jsonObject = maintainService.insertNewRecord(tableIds,user.getId());
+        return jsonObject;
     }
 
     /**
