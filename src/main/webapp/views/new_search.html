@@ -122,6 +122,8 @@
       if(listname!="" && fileinput!="")$("#sub").attr("disabled",false);
   }
 
+
+  var isUploadFinish = false;
   function uploadfile(){
       var formData = new FormData($("#uploadForm")[0]);
     $.ajax({
@@ -138,10 +140,10 @@
               console.log("-----aaaa----");
             var json = eval(data);
             var uploadResult = json.uploadResult;
-            if(uploadResult == "true"){
-              window.location.href = "QueryListPtea.html";
+            if(uploadResult == "true") {
+                //window.location.href = "QueryListPtea.html";
+                isUploadFinish = true;
             }
-            //progress();
           },
           error : function(){
             console.log("------------error!-----------");
@@ -152,7 +154,7 @@
   function progress(){
     $.ajax({
           type : "get",
-          url : "/GradesSystem/getUploadStatus" ,
+          url : "/GradesSystem/getUploadStatus.do",
           async : true,
           contentType: "application/json;charset=utf-8",
           dataType: "json",
@@ -192,6 +194,24 @@
     setTimeout(progress,10);
   }
 
+  /*function readAndWrite(){
+      $.ajax({
+          type : "get",
+          url : "/GradesSystem/readAndWrite.do" ,
+          async : true,
+          contentType: "application/json;charset=utf-8",
+          dataType: "json",
+          success: function (data) {
+              var result = eval(data);
+              if (result.isFinish === "true"){
+                  console.log(data);
+              } else {
+                  alert("文件读写出错");
+              }
+          }
+      });
+  }*/
+
   $(document).ready(function(){
       $("#progress_reminder").hide();
       $("div.progress").hide();
@@ -204,8 +224,8 @@
         $("div.progress").show();
         $("#progress_reminder").show();
         $("#sub").hide();
-        progress();
-        uploadfile();
+          uploadfile();
+          progress();
       });
   });
 //导航栏

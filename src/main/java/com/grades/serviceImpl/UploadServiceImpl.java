@@ -67,9 +67,15 @@ public class UploadServiceImpl implements UploadService {
                 "\"errorInfo\":\""+errorInfo+"\"}";
     }
 
+    public int getErrorCode(){
+        return this.errorCode;
+    }
+
     public float getReadProgress(){
-        float result = ((float)ExcelReader.getReadProgress()/(float)readResultRows)*100;
-        return result;
+        if (ExcelReader.getReadProgress() != 0 && readResultRows != 0) {
+            return ((float) ExcelReader.getReadProgress() / (float) readResultRows) * 100;
+        }
+        return 0;
     }
 
     public float getWriteProgress(){
@@ -184,6 +190,7 @@ public class UploadServiceImpl implements UploadService {
             this.errorCode = -2;
             this.errorInfo = "读取文件时发生错误";
         }
+
 
     }
 

@@ -51,6 +51,25 @@ public class UploadController {
         return result;
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/readAndWrite")
+    public String readAneWrite( HttpServletRequest request){
+        User user = (User) request.getSession().getAttribute("user");
+        try {
+            uploadServiceImpl.fileRead(uploadServiceImpl.getFilePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        uploadServiceImpl.fileWrite(user.getId(),uploadServiceImpl.getTableName(),uploadServiceImpl.getReadResultList());
+
+        if (uploadServiceImpl.getErrorCode() == 1){
+            return "{\"isFinish\":\"true\"";
+        }
+
+        return "{\"isFinish\":\"false\"";
+    }
+
 
     /**
      * 获取状态信息

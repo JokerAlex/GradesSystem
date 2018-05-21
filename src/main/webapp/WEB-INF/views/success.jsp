@@ -11,12 +11,7 @@
     <title>Title</title>
 </head>
 <body>
-<h1>${user.id}</h1>
-<h1>${user.username}</h1>
-<h1>${user.name}</h1>
-<h1>${user.email}</h1>
-<h1>${user.college}</h1>
-<h1>${user.grade}</h1>
+<%response.setHeader("Location","views/QueryListPtea.html"); %>
 
 
 </body>

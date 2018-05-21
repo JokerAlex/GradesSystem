@@ -42,11 +42,13 @@
     </bean>
 
 
+    <!--
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/views/"/>
         <property name="suffix" value=".html"/>
 
     </bean>
+    -->
 
     <!--2*1024*1024即2M resolveLazily属性启用是为了推迟文件解析，以便捕获文件大小异常 -->
     <bean id="multipartResolver"
