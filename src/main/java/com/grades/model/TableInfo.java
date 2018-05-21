@@ -6,6 +6,14 @@ public class TableInfo {
     private int userId;
     private int pageViews;
 
+    public TableInfo() {
+    }
+
+    public TableInfo(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public TableInfo(int id, String name, int userId, int pageViews) {
         this.id = id;
         this.name = name;
