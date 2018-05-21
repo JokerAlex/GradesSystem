@@ -40,11 +40,14 @@
         </where>
     </select>
     <!--删除表信息-->
-    <delete id="delTable" parameterType="int">
-        DELETE FROM table_info WHERE table_info_id = #{tableId};
+    <delete id="delTable" parameterType="list">
+        DELETE FROM table_info WHERE table_info_id IN
+        <foreach index="index" item="item" collection="list" open="(" close=")" separator=",">
+            #{item.id}
+        </foreach>
     </delete>
     <update id="dropTable" parameterType="String">
-        DROP TABLE ${tableName};
+        DROP TABLE IF EXISTS ${tableName};
     </update>
     <!--插入表信息-->
     <insert id="insertTableInfo" parameterType="TableInfo" useGeneratedKeys="true" keyProperty="table_info_id">

@@ -15,9 +15,9 @@ public interface TableInfoMapper {
 
     String findTable(String table_info_name);
 
-    boolean delTable(int tableId);
+    boolean delTable(List tableId);
 
-    boolean dropTable(String tableName);
+    boolean dropTable(@Param("tableName") String tableName);
 
     boolean insertTableInfo(TableInfo tableInfo);
 
