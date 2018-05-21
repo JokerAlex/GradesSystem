@@ -56,10 +56,15 @@
                         </label>
                     </div>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" id="search" placeholder="查询成绩">
+                        <input type="text" class="form-control" id="search" placeholder="查询成绩" oninput="do_search()">
                     </div>
-                    <div class="col-md-4">
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg" id="btnqrcode">点击生成二维码</button>
+                    <div class="col-md-4 col-md-2">
+                        <button type="button" class="btn btn-info" data-toggle="modal"
+                                data-target=".bs-example-modal-lg" id="btnqrcode">点击生成二维码
+                        </button>
+                    </div>
+                    <div class="col-md-4 col-md-2">
+                        <button type="button" class="btn btn-danger" id="delbtn">删除表格</button>
                     </div>
                 </div>
             </td>
@@ -67,6 +72,7 @@
 
 
         <!--这是表单正式开始的第一行-->
+
     </table>
 
 </div>
@@ -125,42 +131,87 @@
 
     //二维码
     $("#btnqrcode").click(function () {
-        var tableIds = [];
-        $(":checkbox").each(function(){
-            if($(this).prop("checked")){
+        var i = 0;
+        var tableIds = new Array();
+        $(":checkbox").each(function () {
+            if ($(this).prop("checked")) {
+                i++;
                 tableIds.push($(this).val());
             }
         });
-        console.log(tableIds);
-        $.ajax({
-            type: "post",
-            url: "/GradesSystem/insertRecord.do",
-            async: true,
-            data: {
-                tableIds : tableIds
-            },
-            contentType: "application/json;charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                console.log(data);
-                if(data.insertCode == 0){
-                    $("#qrcode").html("");//清空历史二维码
-                    $('#qrcode').qrcode({
-                        render: "canvas",
-                        text: data.address
-                    });
-                    console.log(data.address);
+        console.log(i);
+        if(i == 0)alert("您没有勾选！");
+        else{
+            console.log(tableIds);
+            $.ajax({
+                type: "post",
+                url: "/GradesSystem/insertRecord.do",
+                data: {
+                    tableIds: tableIds
+                },
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    if (data.insertCode == 0) {
+                        $("#qrcode").html("");//清空历史二维码
+                        $('#qrcode').qrcode({
+                            render: "canvas",
+                            text: data.address
+                        });
+                        console.log(data.address);
+                    }
+                    else {
+                        $("#qrcode").html("wrong");
+                    }
+                },
+                error: function (data) {
+                    alert(data + "获取表格信息失败");
                 }
-                else{
-                    $("#qrcode").html("wrong");
-                }
-            },
-            error: function (data) {
-                alert(data + "获取表格信息失败");
-            }
-        });
+            });
+        }
     });
 
+    //删除
+    $("#delbtn").click(function () {
+        var i = 0;
+        var tableInfo = new Array();
+        $(":checkbox").each(function (index) {
+            if ($(this).prop("checked")) {
+                i++;
+                var arr = {
+                    "id": $(this).val(),
+                    "name": $("span#tablerelname").eq(index-1).text()
+                }
+                tableInfo.push(arr);
+            }
+        });
+        if(i == 0)alert("您没有勾选！");
+        else{
+            alert("您确定要删除？");
+            console.log(tableInfo);
+            $.ajax({
+                type: "post",
+                url: "/GradesSystem/delTables.do",
+                data: JSON.stringify(tableInfo),
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    var result = eval(data);
+                    if (result.delResult === "true") {
+                        alert("删除成功");
+                        do_search();
+                    } else {
+                        alert("删除失败");
+                    }
+
+                },
+                error: function (data) {
+                    alert(data + "获取表格信息失败");
+                }
+            });
+        }
+
+    });
 
     //查看<a>标签
     $("a.look").each(function (i) {
@@ -168,20 +219,10 @@
             alert(get_listname(i + 1));
         });
     });
-    //删除<a>标签
-    $("a.del").each(function (i) {
-        $(this).click(function () {
-            alert(get_listname(i + 1));
-        });
-    });
 
-    $(document).ready(function () {
-        var usergrade = "false";
-        var search_name = "";
-        var search_table = {
-            userGrade: usergrade.toString(),
-            tableName: search_name.toString()
-        };
+
+    //加载
+    function loadtables(search_table){
         $.ajax({
             type: "post",
             url: "/GradesSystem/getTables.do",
@@ -191,19 +232,24 @@
             dataType: "json",
             success: function (data) {
                 for (var i = 0; i < data.length; i++) {
-                    $("#search_table").append("<tr><td style='width:20%'><label><input type='checkbox' value="+data[i].id+"></label></td><td style='width:50%'>"
+                    $("#search_table").append("<tr><td style='width:20%'><label><input type='checkbox' value="
+                        + data[i].id + "></label></td><td style='width:50%'><span id='tablerelname' style='display: none'>"
+                        + data[i].name + "</span>"
                         + data[i].name.substring(data[i].name.indexOf("_") + 1)
-                        + "</td><td><a class='look'>查看</a><a class='del'>删除</a></td></tr>");
+                        + "</td><td><a class='look'>查看</a></td></tr>");
                 }
             },
             error: function (data) {
                 alert(data + "获取表格信息失败");
             }
         });
-    });
+    }
+    $(document).ready(function () {
+        do_search();
+        });
 
     //模糊搜索匹配
-    $(document).ready(function () {
+    function do_search() {
         var usergrade = "false";
         var search_name = "";
 
@@ -211,40 +257,20 @@
             usergrade = "true";
         else usergrade = "false";
 
-        $("#search").blur(function () {
-            search_name = $("#search").val();
-            $("tr").each(function (index) {
-                if (index == 0) ;
-                else {
-                    $(this).remove();
-                }
-            });
-            var search_table = {
-                userGrade: usergrade.toString(),
-                tableName: search_name.toString()
-            };
-            console.log(search_table);
-            $.ajax({
-                type: "post",
-                url: "/GradesSystem/getTables.do",
-                async: true,
-                data: JSON.stringify(search_table),
-                contentType: "application/json;charset=utf-8",
-                dataType: "json",
-                success: function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        $("#search_table").append("<tr><td style='width:20%'><label><input type='checkbox'></label></td><td style='width:50%'>"
-                            + data[i].name.substring(data[i].name.indexOf("_") + 1)
-                            + "</td><td><a class='look'>查看</a><a class='del'>删除</a></td></tr>");
-                    }
-                },
-                error: function (data) {
-                    alert(data + "获取表格信息失败");
-                }
-            });
+        search_name = $("#search").val();
+        $("tr").each(function (index) {
+            if (index == 0) ;
+            else {
+                $(this).remove();
+            }
         });
-    });
-
+        var search_table = {
+            userGrade: usergrade.toString(),
+            tableName: search_name.toString()
+        };
+        console.log(search_table);
+        loadtables(search_table);
+    }
 </script>
 </body>
 </html>
