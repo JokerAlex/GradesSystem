@@ -15,6 +15,8 @@ public interface LoginService {
 
     boolean isUserNameAvailable(String userName);
 
+    public String checkUserName(String userName);
+
     String register(User user);
 
     List<College> getAllColleges();

@@ -31,7 +31,16 @@ public class LoginController {
         String resultMsg;
         JSONObject jsonObject = new JSONObject();
 
-        User userLogin = loginService.loginByUserName(userMap.get("userName"),userMap.get("passWd"));
+        User userByUserName = loginService.loginByUserName(userMap.get("userName"),userMap.get("passWd"));
+        User userByUserEmail = loginService.loginByUserEmail(userMap.get("userName"),userMap.get("passWd"));
+
+        User userLogin;
+        if (userByUserName != null){
+            userLogin = userByUserName;
+        } else {
+            userLogin = userByUserEmail;
+        }
+
         if (userLogin != null){
             loginService.loginTime(userLogin);
             loginCode = 1;
@@ -44,6 +53,12 @@ public class LoginController {
         jsonObject.put("user",userLogin);
         session.setAttribute("user",userLogin);
         return jsonObject;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/checkUserName")
+    public String checkUserName(@RequestBody String userName){
+        return loginService.checkUserName(userName);
     }
 
     @ResponseBody

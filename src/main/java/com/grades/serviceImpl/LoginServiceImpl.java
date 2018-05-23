@@ -74,33 +74,51 @@ public class LoginServiceImpl implements LoginService {
         return false;
     }
 
-    public String register(User user) {
+    //判断用户名是否可用
+    public String checkUserName(String userName){
         boolean isUserNameAvailable;
-        boolean isRegister;
         int registerCode;
         String resultMsg;
-        if (user != null){
+        isUserNameAvailable = isUserNameAvailable(userName);
+        if (isUserNameAvailable) {
+            registerCode = 1;
+            resultMsg = "用户名可用！";
+        }else{
+            registerCode = -3;
+            resultMsg = "用户名不可用！";
+        }
+        return "{\"registerCode\":\"" + registerCode + "\",\"resultMsg\":\"" + resultMsg + "\"}";
+    }
+
+    //注册
+    public String register(User user) {
+        boolean isRegister;
+        int registerCode;
+        boolean isUserNameAvailable;
+        String resultMsg;
+        if (user != null) {
             isUserNameAvailable = isUserNameAvailable(user.getUserName());
             if (isUserNameAvailable){
                 String tempPw = PasswordEncrypt.encrypt(user.getPassWd());
                 user.setPassWd(tempPw);
                 isRegister = userMapper.insertUser(user);
-                if (isRegister){
+                if (isRegister) {
                     registerCode = 1;
                     resultMsg = "注册成功！";
-                }else {
-                    registerCode = -3;
+                } else {
+                    registerCode = -2;
                     resultMsg = "注册失败！";
                 }
-            }else{
-                registerCode = -2;
+            } else {
+                registerCode = -3;
                 resultMsg = "用户名不可用！";
             }
-        }else {
+
+        } else {
             registerCode = -1;
             resultMsg = "参数错误！";
         }
-        String result = "{\"registerCode\":\""+registerCode+"\",\"resultMsg\":\""+resultMsg+"\"}";
+        String result = "{\"registerCode\":\"" + registerCode + "\",\"resultMsg\":\"" + resultMsg + "\"}";
         return result;
     }
 
