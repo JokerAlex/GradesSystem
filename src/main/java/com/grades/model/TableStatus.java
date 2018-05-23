@@ -5,12 +5,22 @@ public class TableStatus {
     private String tableName;
     private String tableStatus;
 
-    public TableStatus() {
-    }
-
-    public TableStatus(String tableName, String tableStatus) {
+    public TableStatus(int tableId, String tableName, String tableStatus) {
+        this.tableId = tableId;
         this.tableName = tableName;
         this.tableStatus = tableStatus;
+    }
+
+    public TableStatus() {
+
+    }
+
+    public int getTableId() {
+        return tableId;
+    }
+
+    public void setTableId(int tableId) {
+        this.tableId = tableId;
     }
 
     public String getTableName() {
