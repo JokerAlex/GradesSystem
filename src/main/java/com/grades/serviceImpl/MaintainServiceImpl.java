@@ -171,7 +171,7 @@ public class MaintainServiceImpl implements MaintainService {
             for (int i=0 ;i<tableInfos.size();i++){
                 dropResult = tableInfoMapper.dropTable(tableInfos.get(i).getName());
                 System.out.println("dropResult-------->"+dropResult);
-                queryIdMapper.updateTableStatus("该表已删除",tableInfos.get(i).getId());
+                queryIdMapper.updateTableStatus("该表已删除",tableInfos.get(i).getName());
             }
 
         }
@@ -189,22 +189,22 @@ public class MaintainServiceImpl implements MaintainService {
 
     /**
      * 生成新的发布记录
-     * @param tableIds
+     * @param tableNames
      * @param userId
      * @return {"insertRecordResult":"true/false","insertTableResult":"true/false"}
      */
-    public JSONObject insertNewRecord(String[] tableIds, int userId){
+    public JSONObject insertNewRecord(String[] tableNames, int userId){
         //用时间作为发布记录的名称
         String queryName = new Date().toString().replace(" ","");
         boolean insertRecordResult = queryIdMapper.insertRecordId(queryName,userId);
         boolean insertTableResult = false;
         int insertCode = -1;
         String inserResult = "";
+        int[] queryId = queryIdMapper.getRecordId(queryName,userId);
         if (insertRecordResult){
-            int[] queryId = queryIdMapper.getRecordId(queryName,userId);
             List tableList = new ArrayList();
-            for (String tableId:tableIds){
-                tableList.add(Integer.valueOf(tableId));
+            for (String tableName:tableNames){
+                tableList.add(tableName);
             }
             insertTableResult = queryIdMapper.insertIdAndTables(queryId[0],tableList,"该表可查询");
             if (insertTableResult){
@@ -218,7 +218,7 @@ public class MaintainServiceImpl implements MaintainService {
             insertCode = -1;
             inserResult = "记录生错误";
         }
-        String qrcodeAddress = "http://localhost:8080/views/QueryListStu.html"+queryName;
+        String qrcodeAddress = String.valueOf(queryId[0]);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("insertCode",insertCode);
         jsonObject.put("insertResult",inserResult);

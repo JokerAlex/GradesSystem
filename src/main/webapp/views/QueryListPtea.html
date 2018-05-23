@@ -132,22 +132,22 @@
     //二维码
     $("#btnqrcode").click(function () {
         var i = 0;
-        var tableIds = new Array();
-        $(":checkbox").each(function () {
+        var tableNames = new Array();
+        $(":checkbox").each(function (index) {
             if ($(this).prop("checked")) {
                 i++;
-                tableIds.push($(this).val());
+                tableNames.push($("span#tablerelname").eq(index-1).text());
             }
         });
         console.log(i);
         if(i == 0)alert("您没有勾选！");
         else{
-            console.log(tableIds);
+            console.log(tableNames);
             $.ajax({
                 type: "post",
                 url: "/GradesSystem/insertRecord.do",
                 data: {
-                    tableIds: tableIds
+                    tableNames : tableNames
                 },
                 dataType: "json",
                 success: function (data) {
@@ -156,7 +156,7 @@
                         $("#qrcode").html("");//清空历史二维码
                         $('#qrcode').qrcode({
                             render: "canvas",
-                            text: data.address
+                            text: "http://localhost:8080/views/QueryListStu.html"+data.address
                         });
                         console.log(data.address);
                     }
