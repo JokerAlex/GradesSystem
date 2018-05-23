@@ -4,15 +4,23 @@
 <mapper namespace="com.grades.mapping.Search">
 
     <select id="getAll" resultType="java.util.HashMap">
-        SELECT * FROM ${tableName};
+        SELECT
+        <foreach collection="list" item="colName" index="index" separator=",">
+            `${colName}`
+        </foreach>
+        FROM ${tableName};
     </select>
 
     <select id="getOne" resultType="java.util.HashMap">
-        SELECT * FROM ${tableName}
+        SELECT
+        <foreach collection="list" item="colName" index="index" separator=",">
+            `${colName}`
+        </foreach>
+        FROM ${tableName}
         WHERE ${stuIdName} = #{id} AND ${stuName} = #{name};
     </select>
-    <select id="getColName" resultType="String">
-        SHOW COLUMNS FROM #{tableName};
+    <select id="getColNames" resultType="String">
+        SHOW COLUMNS FROM ${tableName};
     </select>
 
 </mapper>

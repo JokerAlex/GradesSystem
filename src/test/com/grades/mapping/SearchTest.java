@@ -19,7 +19,7 @@ public class SearchTest {
     private Search search;
 
 
-    private void printMap(List<HashMap<String,String>> list){
+    private void printMap(List<Map<String,String>> list){
         for (int i = 0;i < 10;i++){
             Map map = list.get(i);
             for (Object key:map.keySet()
@@ -35,15 +35,26 @@ public class SearchTest {
 
     @Test
     public void getAll(){
-        List<HashMap<String,String>> list = search.getAll("1_aaa");
+        List<String> colNames = search.getColNames("1_bb");
+        List<Map<String,String>> list = search.getAll(colNames,"1_bb");
         System.out.println("list----------->"+list.size());
         printMap(list);
     }
 
     @Test
     public void getOne(){
-        List<HashMap<String,String>> list = search.getOne("1_aaa","学号","2016220401014","姓名","赵建成");
+        List<String> colNames = search.getColNames("1_bb");
+        List<Map<String,String>> list = search.getOne(colNames,"1_bb",colNames.get(0),"2016220401014",colNames.get(1),"赵建成");
         System.out.println("list----------->"+list.size());
         printMap(list);
+    }
+
+    @Test
+    public void getColNames(){
+        List<String> list = search.getColNames("1_bb");
+        for (String name:list
+             ) {
+            System.out.print(name+"\t");
+        }
     }
 }
