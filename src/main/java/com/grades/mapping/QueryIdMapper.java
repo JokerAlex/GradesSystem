@@ -21,7 +21,7 @@ public interface QueryIdMapper {
 
     boolean delIdAndTables(List queryId);
 
-    boolean updateTableStatus(@Param("status") String status, @Param("tableId") int tableId);
+    boolean updateTableStatus(@Param("status") String status, @Param("tableName") String tableName);
 
 
 }

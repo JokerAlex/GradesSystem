@@ -24,11 +24,10 @@
     <select id="getRecordIdAndTables" parameterType="int" resultMap="recordIdAndTable">
         SELECT qi.query_id_id AS query_id,
         qi.query_id_idname AS id_name,
-        tf.table_info_name AS table_info_name,
+        qt.query_record_table_name AS table_info_name,
         qt.query_record_table_status AS table_status
         FROM query_id qi
         JOIN query_tables qt ON qi.query_id_id = qt.query_id_id
-        JOIN table_info tf ON qt.query_record_table_id = tf.table_info_id
         WHERE qi.query_id_userid = #{userId};
     </select>
     <!-- 获取新生成的记录的id -->
@@ -87,7 +86,7 @@
     <!-- 更新发布记录中的表状态 -->
     <update id="updateTableStatus">
         UPDATE query_tables SET query_record_table_status = #{status}
-        WHERE query_record_table_id = #{tableId};
+        WHERE query_record_table_name = #{tableName};
     </update>
 
 </mapper>
