@@ -156,7 +156,7 @@
                         $("#qrcode").html("");//清空历史二维码
                         $('#qrcode').qrcode({
                             render: "canvas",
-                            text: "http://localhost:8080/views/QueryListStu.html"+data.address
+                            text: "http://localhost:8080/views/QueryListPstu.html?queryName="+data.address
                         });
                         console.log(data.address);
                     }
