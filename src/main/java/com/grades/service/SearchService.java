@@ -1,11 +1,16 @@
 package com.grades.service;
 
+import com.grades.model.QueryRecord;
+
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public interface SearchService {
 
-    List<Map<String,String>> getAll(String tableName);
+    List<LinkedHashMap<String,String>> getAll(String tableName);
 
-    List<Map<String,String>> getOne(String tableName, String id, String name);
+    Map<String,String> getOne(String tableName, String id, String name);
+
+    QueryRecord getTablesByQueryName(String queryName);
 }

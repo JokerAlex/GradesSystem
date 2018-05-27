@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/button.css">
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+<body>
+<div class="container" style="height:600px">
+<center><h1>查询列表</h1></center>
+<hr style="width:50%;height:1px;border:none;border-top:1px solid #d6d6d6;"/>
+
+<!-- 成绩查询列表 -->
+  <table id="table_list" class="table table-striped table-hover" style="margin:0 auto;width:80%;text-align: center" >
+    <th style="text-align:center;">查询名称</th><th style="text-align:center;">状态</th><th style="text-align:center;">操作</th>
+    
+  </table>
+
+
+  <!-- 查询结果列表 -->
+  <table id="grade_list" class="table table-striped table-hover" style="margin:0 auto;width:80%;text-align: center" >
+    <th style="text-align:center;">课程</th><th style="text-align:center;">分数</th>
+    
+    <tr>
+      <td colspan="2"><button type="button" class="btn btn-default" id="retbtn">返回</button></td>
+    </tr>
+  </table>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+  //change table
+  $("#table_list").show();
+  $("#grade_list").hide();
+  //截取url
+  var url_sub = window.location.search;
+  url_sub = $.trim(url_sub.substring(url_sub.indexOf('=')+1));
+  console.log(url_sub);
+  
+  //加载
+  $.ajax({
+      type : "post",
+      url : "/GradesSystem/getTablesByQueryName.do",
+      dataType: "json",
+      contentType: "application/json;charset=utf-8",
+      data: url_sub,
+      success: function(data){
+        var json = eval(data);
+        var tableStatus = json.tableStatus;
+        var i = 0;
+        for(i=0;i<tableStatus.length;i++){
+          $("#table_list").append("<tr><td>"+tableStatus[i].tableName.substring(tableStatus[i].tableName.indexOf("_")+1)+"</td><td>"+tableStatus[i].tableStatus+"</td><td><a id='search_table' value='"+tableStatus[i].tableName+"'>查询</a></td></tr>");
+        }
+        doSearch();
+      },
+      error: function(){
+
+      }
+  });
+});
+
+function doSearch(){
+    //查询
+    $("a").click(function(){
+        //table change
+        $("#table_list").hide();
+        $("#grade_list").show();
+        var tableName = $(this).attr("value");
+        info_list = {
+            name: "赵建成",
+            id: "2016220401014",
+            tableName: tableName
+        };
+        $.ajax({
+            type : "post",
+            url : "/GradesSystem/getOne.do",
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify(info_list),
+            dataType: "json",
+            success: function(data){
+                var grademap = eval(data);
+                console.log(grademap);
+                for(var key in grademap){
+                    $("#grade_list tr").eq(-1).before("<tr><td>"+key+"</td><td>"+grademap[key]+"</td></tr>");
+                }
+            },
+            error: function(){
+
+            }
+        });
+    });
+}
+
+//返回
+$("#retbtn").click(function(){
+    var max_tr = $("#grade_list").find("tr").length-1;
+    console.log(max_tr);
+    $("#grade_list tr").each(function(index){
+        if(index != 0 && index != max_tr){
+            $(this).remove();
+            console.log("remove one <tr>");
+        }
+        console.log(index);
+    });
+    $("#grade_list").hide();
+    $("#table_list").show();
+});
+</script>
+</body>
+</html>
