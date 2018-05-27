@@ -30,6 +30,7 @@
             <mvc:mapping path="/views/*.html"/>
             <mvc:exclude-mapping path="/views/login.html"/>
             <mvc:exclude-mapping path="/views/register.html"/>
+            <mvc:exclude-mapping path="/views/QueryListPstu.html"/>
             <bean class="com.grades.interceptor.LoginInterceptor"></bean>
         </mvc:interceptor>
     </mvc:interceptors>
