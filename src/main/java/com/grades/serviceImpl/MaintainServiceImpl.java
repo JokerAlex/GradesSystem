@@ -218,11 +218,10 @@ public class MaintainServiceImpl implements MaintainService {
             insertCode = -1;
             inserResult = "记录生错误";
         }
-        String qrcodeAddress = String.valueOf(queryId[0]);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("insertCode",insertCode);
         jsonObject.put("insertResult",inserResult);
-        jsonObject.put("address",qrcodeAddress);
+        jsonObject.put("address",queryName);
         return jsonObject;
     }
 
