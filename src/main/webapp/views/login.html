@@ -28,7 +28,7 @@
             </div>
             <div style="text-align:right;color: grey"><label><input type="checkbox" id="remember"><span>记住密码</span></label></div>
 
-            <div id="login_reminder" class="form-group" style="text-align:right;color:red"><span class="login_reminder_span">用户名或密码错误，请重新输入</span></div>
+            <div id="login_reminder" class="form-group" style="text-align:right;color:red"><span class="login_reminder_span"></span></div>
 
             <center>
                 <button type="button" class="btn btn-default" id="sub" style="width:100%">Submit</button>
@@ -70,13 +70,13 @@
 
     $("#sub").click(function () {
         $("#login_reminder").show();
-        $("div.form-group").addClass("has-error");
         var user = {
             userName: $("#username").val(),
             passWd: $("#password").val()
         };
         if (user.userName == "" || user.passWd == "") {
             $(".login_reminder_span").text("用户名或密码不能为空");
+            $("div.form-group").addClass("has-error");
             return false;
         }
         $.ajax({
@@ -92,9 +92,11 @@
                     check_remember_pw();
                     $("#login_reminder").hide();
                     $("div.form-group").removeClass("has-error");
+                    $("div.form-group").addClass("has-success");
                     window.location.href = "homepage.html";
                 } else {
                     $("#login_reminder").show();
+                    $(".login_reminder_span").text("用户名或密码错误，请重新输入");
                     $("div.form-group").addClass("has-error");
                     console.log(data.resultMsg);
                 }
