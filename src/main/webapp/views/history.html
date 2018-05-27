@@ -63,7 +63,7 @@ function loadTable(){
                             +json[j].tableStatus
                             +"</td><td rowspan='"
                             +json.length
-                            +"'><button type='button' class='btn btn-info' data-toggle='modal' data-target='.bs-example-modal-lg' id='btnqrcode' value='"+data[i].queryRecordId+"'>点击生成二维码</button></td><td rowspan='"
+                            +"'><button type='button' class='btn btn-info' data-toggle='modal' data-target='.bs-example-modal-lg' id='btnqrcode' value='"+data[i].queryIdName+"'>点击生成二维码</button></td><td rowspan='"
                             +json.length
                             +"'><button style='float: left' type='button' class='btn btn-danger' id='btndel'value='"+data[i].queryRecordId+"'>删除</button></td></tr>"
                         );
@@ -75,6 +75,8 @@ function loadTable(){
                     }
                 }
             }
+            delTable();
+            qrcodeShow();
         },
         error: function(){
 
@@ -134,43 +136,48 @@ function get_listname(n){
 }
 
 //显示二维码
-$("button#btnqrcode").click(function(){
-    alert($(this).val());
-    var queryId = $(this).val();
-    console.log(queryId);
-    $("#qrcode").html("");//清空历史二维码
-    $('#qrcode').qrcode({
-        render: "canvas",
-        text: "http://localhost:8080/views/QueryListStu.html"+queryId
+function qrcodeShow(){
+    $("button#btnqrcode").click(function(){
+        //alert($(this).val());
+        var queryIdName = $(this).val();
+        console.log(queryIdName);
+        $("#qrcode").html("");//清空历史二维码
+        $('#qrcode').qrcode({
+            render: "canvas",
+            text: "http://localhost:8080/views/QueryListPstu.html?queryName="+queryIdName
+        });
     });
-});
+}
 
-//删除
-$("button#btndel").click(function(){
-    var queryId = $(this).val();
-    console.log(queryId);
-    alert("您确定要删除？");
-    $.ajax({
-        url:"/GradesSystem/delRecords.do",
-        type:"post",
-        contentType: "application/json;charset=utf-8",
-        data: queryId,
-        dataType:"json",
-        success: function(data){
-            var result = eval(data);
-            if (result.isDel === "true") {
-                console.log(data+"删除成功");
-                loadTable();
-            } else {
-                alert("删除失败")
+function delTable(){
+    //删除
+    $("button#btndel").click(function(){
+        var queryId = $(this).val();
+        console.log(queryId);
+        alert("您确定要删除？");
+        $.ajax({
+            url:"/GradesSystem/delRecords.do",
+            type:"post",
+            contentType: "application/json;charset=utf-8",
+            data: queryId,
+            dataType:"json",
+            success: function(data){
+                var result = eval(data);
+                if (result.isDel === "true") {
+                    console.log(data+"删除成功");
+                    loadTable();
+                } else {
+                    alert("删除失败")
+                }
+
+            },
+            error: function(){
+                alert("网络错误");
             }
+        });
 
-        },
-        error: function(){
-            alert("网络错误");
-        }
     });
-});
+}
 </script>
 </body>
 </html>
