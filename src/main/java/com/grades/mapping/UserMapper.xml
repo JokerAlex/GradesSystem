@@ -8,6 +8,7 @@
         <result property="userName" column="user_name"/>
         <result property="name" column="user_true_name"/>
         <result  property="email" column="user_email"/>
+        <result property="collegeId" column="user_college"/>
         <result property="college" column="college_name"/>
         <result property="grade" column="user_grade"/>
         <result property="identity" column="user_identity"/>
@@ -15,7 +16,7 @@
 
     <!--用户名密码登录-->
     <select id="findUserByName" resultMap="userResultMap">
-        SELECT u.user_id,u.user_name,u.user_true_name,u.user_email,c.college_name,u.user_grade,u.user_identity
+        SELECT u.user_id,u.user_name,u.user_true_name,u.user_email,u.user_college,c.college_name,u.user_grade,u.user_identity
         FROM users as u JOIN college as c ON u.user_college=c.college_id
         WHERE u.user_name = #{userName} AND u.user_passwd = #{userPwd};
     </select>

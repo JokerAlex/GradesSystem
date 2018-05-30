@@ -16,16 +16,17 @@ public class User {
 
     /**
      *登录使用
-     * @Param: [id, username, name, email, college, grade, loginTime]
+     * @Param: [id, username, name, email, collegeId, college, grade, loginTime]
      * @return:
      * @Author: Alex
      * @Date:
     */
-    public User(int id, String username, String name, String email, String college, String grade, String loginTime, int identity) {
+    public User(int id, String username, String name, String email,int collegeId, String college, String grade, String loginTime, int identity) {
         this.id = id;
         this.userName = username;
         this.name = name;
         this.email = email;
+        this.collegeId = collegeId;
         this.college = college;
         this.grade = grade;
         this.loginTime = loginTime;
