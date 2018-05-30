@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.grades.mapping.StudentMapper">
+
+    <resultMap id="stuResultMap" type="Student">
+        <id property="id" column="student_id"/>
+        <result property="name" column="student_name"/>
+    </resultMap>
+
+    <!--检查学生是否在名单内-->
+    <select id="getStu" resultMap="stuResultMap">
+        SELECT
+            student_id,
+            student_name
+        FROM students
+        WHERE student_id = #{stuId} AND student_name = #{stuName};
+    </select>
+
+    <!--管理员查看，用户查看-->
+    <select id="getAllStu" resultMap="stuResultMap">
+        SELECT student_id,student_name,student_grade FROM students
+        <where>
+            <if test="grade != null and !grade.trim().equals(&quot;&quot;)">
+                student_grade = #{grade}
+            </if>
+        </where>
+    </select>
+    <!--批量插入学生名单-->
+    <insert id="insertStuBatch" parameterType="java.util.List">
+        INSERT INTO students VALUES
+        <foreach collection="stuList" item="item" index="index" separator=",">
+            (#{item.id},#{item.name},#{item.grade})
+        </foreach>
+    </insert>
+    <!--单个插入学生名单-->
+    <insert id="insertStu" parameterType="Student">
+        INSERT INTO students VALUES (#{id}, #{name},#{grade});
+    </insert>
+    <!--学生名单更新-->
+    <update id="updateStu" parameterType="Student">
+        UPDATE students
+        SET student_id = #{id}, student_name = #{name},student_grade = #{grade};
+    </update>
+
+</mapper>

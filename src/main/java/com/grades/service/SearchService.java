@@ -1,6 +1,7 @@
 package com.grades.service;
 
 import com.grades.model.QueryRecord;
+import com.grades.model.Student;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,4 +14,6 @@ public interface SearchService {
     Map<String,String> getOne(String tableName, String id, String name);
 
     QueryRecord getTablesByQueryName(String queryName);
+
+    Student checkStu(Student student);
 }

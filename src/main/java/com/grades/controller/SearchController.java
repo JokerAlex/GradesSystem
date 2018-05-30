@@ -2,6 +2,7 @@ package com.grades.controller;
 
 
 import com.grades.model.QueryRecord;
+import com.grades.model.Student;
 import com.grades.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,5 +42,12 @@ public class SearchController {
     @RequestMapping(value = "/getTablesByQueryName")
     public QueryRecord getTables(@RequestBody String queryName){
         return searchService.getTablesByQueryName(queryName);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/checkStu")
+    public Student checkStu(@RequestBody Student student){
+        System.out.println(student.getId()+student.getName());
+        return searchService.checkStu(student);
     }
 }

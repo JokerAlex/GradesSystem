@@ -2,7 +2,9 @@ package com.grades.serviceImpl;
 
 import com.grades.mapping.QueryIdMapper;
 import com.grades.mapping.Search;
+import com.grades.mapping.StudentMapper;
 import com.grades.model.QueryRecord;
+import com.grades.model.Student;
 import com.grades.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +18,13 @@ public class SearchServiceImpl implements SearchService {
 
     private Search search;
     private QueryIdMapper queryIdMapper;
+    private StudentMapper studentMapper;
 
     @Autowired
-    public SearchServiceImpl(Search search,QueryIdMapper queryIdMapper){
+    public SearchServiceImpl(Search search,QueryIdMapper queryIdMapper,StudentMapper studentMapper){
         this.search = search;
         this.queryIdMapper = queryIdMapper;
+        this.studentMapper = studentMapper;
     }
 
     public List<LinkedHashMap<String, String>> getAll(String tableName) {
@@ -49,5 +53,13 @@ public class SearchServiceImpl implements SearchService {
             return null;
         }
         return queryIdMapper.getRecordIdAndTable(queryName);
+    }
+
+    public Student checkStu(Student student){
+        if (student != null){
+            Student stu = studentMapper.getStu(student.getId(),student.getName());
+            return stu;
+        }
+        return null;
     }
 }
