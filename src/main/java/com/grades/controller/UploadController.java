@@ -74,11 +74,11 @@ public class UploadController {
     /**
      * 获取状态信息
      * @return
-     */
+     *//*
     @ResponseBody
     @RequestMapping(value = "/getUploadStatus")
     public String getUploadStatus(){
         return uploadServiceImpl.getUploadStatus();
-    }
+    }*/
 
 }

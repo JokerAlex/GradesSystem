@@ -191,9 +191,9 @@
       error:function (data) {
       }
   });
-    setTimeout(progress,10);
+    //setTimeout(progress,10);
   }
-
+window.setInterval(progress,10);
   /*function readAndWrite(){
       $.ajax({
           type : "get",
@@ -225,7 +225,7 @@
         $("#progress_reminder").show();
         $("#sub").hide();
           uploadfile();
-          progress();
+          //progress();
       });
   });
 //导航栏

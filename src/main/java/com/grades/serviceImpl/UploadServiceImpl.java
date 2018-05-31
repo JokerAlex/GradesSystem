@@ -43,7 +43,7 @@ public class UploadServiceImpl implements UploadService {
     }
 
 
-    public String getUploadStatus(){
+    /*public String getUploadStatus(){
         String readProgress;
         String writeProgress;
         if (errorCode != 1){
@@ -66,12 +66,12 @@ public class UploadServiceImpl implements UploadService {
                 "\"errorCode\":\""+errorCode+"\"," +
                 "\"errorInfo\":\""+errorInfo+"\"}";
     }
-
+*/
     public int getErrorCode(){
         return this.errorCode;
     }
 
-    public float getReadProgress(){
+    /*public float getReadProgress(){
         if (ExcelReader.getReadProgress() != 0 && readResultRows != 0) {
             return ((float) ExcelReader.getReadProgress() / (float) readResultRows) * 100;
         }
@@ -81,7 +81,7 @@ public class UploadServiceImpl implements UploadService {
     public float getWriteProgress(){
         float result = ((float)writeProgress/(float)readResultList.size())*100;
         return result;
-    }
+    }*/
 
     @Autowired
     public UploadServiceImpl(TableInfoMapper tableInfoMapper){
@@ -98,6 +98,7 @@ public class UploadServiceImpl implements UploadService {
         this.errorCode = 1;
         this.errorInfo = "";
         User user = new User();
+        boolean isDelExcel = false;
 
         //文件上传
 
@@ -133,15 +134,25 @@ public class UploadServiceImpl implements UploadService {
                 this.errorInfo = "读取文件时发生错误";
                 e.printStackTrace();
             }
+        }else {
+           isDelExcel = delExcel(filePath);
         }
 
         //文件写库
 
         if (errorCode == 1){
             this.fileWrite(user.getId(),this.tableName,this.readResultList);
+        } else {
+            if (isDelExcel != true){
+                isDelExcel = delExcel(filePath);
+            }
         }
 
+        if (isDelExcel != true){
+            isDelExcel = delExcel(filePath);
+        }
         //返回信息
+        System.out.println("isDelExcel--------->"+isDelExcel);
         if (errorCode == 1){
             return "{\"uploadResult\":\"true\"}";
         } else {
@@ -250,5 +261,15 @@ public class UploadServiceImpl implements UploadService {
         this.uploadStatus = 0;
 
 
+    }
+
+    public boolean delExcel(String path){
+        File file = new File(path);
+        if(file.isFile() && file.exists()){
+            file.delete();
+            return true;
+        }else{
+            return false;
+        }
     }
 }
