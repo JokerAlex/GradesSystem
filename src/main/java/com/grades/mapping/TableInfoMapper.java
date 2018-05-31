@@ -11,7 +11,7 @@ public interface TableInfoMapper {
 
     List<TableInfo> getAllTablesByGrade(String userGrade);
 
-    List<TableInfo> searchTables(@Param("userId") int userId,@Param("userGrade") String userGrade,@Param("tableName") String tableName);
+    List<TableInfo> searchTables(@Param("userId") int userId,@Param("userGrade") String userGrade,@Param("userCollege") int userCollege, @Param("tableName") String tableName);
 
     String findTable(String table_info_name);
 

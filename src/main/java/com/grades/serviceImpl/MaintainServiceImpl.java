@@ -155,7 +155,7 @@ public class MaintainServiceImpl implements MaintainService {
         if (tableName == null || tableName.trim().equals("")){
             tableName = "";
         }
-        return tableInfoMapper.searchTables(user.getId(),grade,tableName);
+        return tableInfoMapper.searchTables(user.getId(),grade,user.getCollegeId(),tableName);
     }
 
     /**

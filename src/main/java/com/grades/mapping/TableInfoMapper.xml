@@ -12,14 +12,23 @@
 
     <!--获取用户名下所有表-->
     <select id="getAllTablesByUser" resultMap="tableInfoResultMap">
-        SELECT table_info_id,table_info_name,table_info_userid,table_info_pv
+        SELECT
+            table_info_id,
+            table_info_name,
+            table_info_userid,
+            table_info_pv
         FROM table_info
         WHERE table_info_userid = #{userId};
     </select>
     <!--获取同学院同年级所有表-->
     <select id="getAllTablesByGrade" resultMap="tableInfoResultMap">
-        SELECT table_info_id,table_info_name,table_info_userid,table_info_pv
-        FROM table_info JOIN users ON table_info_userid = users.user_id
+        SELECT
+            table_info_id,
+            table_info_name,
+            table_info_userid,
+            table_info_pv
+        FROM table_info
+            JOIN users ON table_info_userid = users.user_id
         WHERE users.user_grade = #{userGrade};
     </select>
     <!-- 查询表 -->
@@ -28,15 +37,18 @@
         FROM table_info
         JOIN users ON table_info_userid = users.user_id
         <where>
-        <if test="userGrade == null || userGrade.trim().equals(&quot;&quot;)">
-            users.user_id = #{userId}
-        </if>
-        <if test="userGrade != null &amp;&amp; !userGrade.trim().equals(&quot;&quot;)">
-            AND users.user_grade = #{userGrade}
-        </if>
-        <if test="tableName != null &amp;&amp; !tableName.trim().equals(&quot;&quot;)">
-            AND table_info.table_info_name LIKE CONCAT(CONCAT('%', #{tableName}), '%')
-        </if>
+            <if test="userGrade == null || userGrade.trim().equals(&quot;&quot;)">
+                users.user_id = #{userId}
+            </if>
+            <if test="userGrade != null &amp;&amp; !userGrade.trim().equals(&quot;&quot;)">
+                AND users.user_grade = #{userGrade}
+            </if>
+            <if test="userGrade != null &amp;&amp; !userGrade.trim().equals(&quot;&quot;)">
+                AND users.user_college = #{userCollege}
+            </if>
+            <if test="tableName != null &amp;&amp; !tableName.trim().equals(&quot;&quot;)">
+                AND table_info.table_info_name LIKE CONCAT(CONCAT('%', #{tableName}), '%')
+            </if>
         </where>
     </select>
     <!--删除表信息-->
@@ -51,16 +63,20 @@
     </update>
     <!--插入表信息-->
     <insert id="insertTableInfo" parameterType="TableInfo" useGeneratedKeys="true" keyProperty="table_info_id">
-        INSERT INTO table_info (table_info_name,table_info_userid)
-        VALUES (#{name},#{userId});
+        INSERT INTO table_info (table_info_name, table_info_userid)
+        VALUES (#{name}, #{userId});
     </insert>
     <!--更新访问量-->
     <update id="updatePageViews">
-        UPDATE table_info SET table_info_pv = table_info_pv + 1 WHERE table_info_id = #{tableId};
+        UPDATE table_info
+        SET table_info_pv = table_info_pv + 1
+        WHERE table_info_id = #{tableId};
     </update>
     <!-- 查找表名 -->
     <select id="findTable" parameterType="String" resultType="String">
-        SELECT table_info_name FROM table_info WHERE table_info_name = #{table_info_name};
+        SELECT table_info_name
+        FROM table_info
+        WHERE table_info_name = #{table_info_name};
     </select>
 
     <!-- 创建新上传的成绩表 -->
