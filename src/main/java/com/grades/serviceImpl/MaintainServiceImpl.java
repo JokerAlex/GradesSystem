@@ -195,7 +195,7 @@ public class MaintainServiceImpl implements MaintainService {
      */
     public JSONObject insertNewRecord(String[] tableNames, int userId){
         //用时间作为发布记录的名称
-        String queryName = new Date().toString().replace(" ","");
+        String queryName = new Date().toString().replace(" ","")+(int)(Math.random()*100);
         boolean insertRecordResult = queryIdMapper.insertRecordId(queryName,userId);
         boolean insertTableResult = false;
         int insertCode = -1;
