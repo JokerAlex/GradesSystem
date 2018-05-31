@@ -14,7 +14,6 @@ import java.util.Map;
 
 @Controller
 @SessionAttributes({"user"})
-@RequestMapping("/GradesSystem")
 public class LoginController {
 
     private LoginService loginService;

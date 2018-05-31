@@ -95,7 +95,7 @@ $(document).ready(function () {
     $.ajax({
         type : "get",
         async : true,
-        url : "/GradesSystem/college.do",
+        url : "../college.do",
         dataType : "json",
         success : function (data) {
             for (var i = 0; i < data.length; i++) {
@@ -106,7 +106,7 @@ $(document).ready(function () {
     $.ajax({
         type : "get",
         async : true,
-        url : "/GradesSystem/grade.do",
+        url : "../grade.do",
         dataType : "json",
         success : function (data) {
             for (var i = 0; i < data.length; i++) {
@@ -158,7 +158,7 @@ $("#sub").click(function(){
     //检查用户名是否可用
     $.ajax({
           type : "post",
-          url : "/GradesSystem/checkUserName.do" ,
+          url : "../checkUserName.do" ,
           async : true,
           data:$("#username").val(),
           contentType: "application/json;charset=utf-8",
@@ -182,7 +182,7 @@ $("#sub").click(function(){
     if(check==true){
       $.ajax({
         type : "post",
-        url : "/GradesSystem/register.do" ,
+        url : "../register.do" ,
         async : true,
         data: JSON.stringify(user),
         contentType: "application/json;charset=utf-8",
@@ -222,7 +222,7 @@ function remove_input_class(){
 function check_username(){
    $.ajax({
           type : "post",
-          url : "/GradesSystem/checkUserName.do" ,
+          url : "../checkUserName.do" ,
           async : true,
           data:$("#username").val(),
           contentType: "application/json;charset=utf-8",

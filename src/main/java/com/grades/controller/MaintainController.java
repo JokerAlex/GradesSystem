@@ -14,7 +14,6 @@ import java.util.Map;
 
 @Controller
 @SessionAttributes({"user"})
-@RequestMapping(value = "/GradesSystem")
 public class MaintainController {
     private MaintainService maintainService;
     @Autowired

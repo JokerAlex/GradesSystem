@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @SessionAttributes({"user"})
-@RequestMapping(value = "/GradesSystem")
 public class UploadController {
 
     private UploadServiceImpl uploadServiceImpl;

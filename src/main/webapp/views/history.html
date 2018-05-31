@@ -49,7 +49,7 @@ function loadTable(){
         $(this).remove();
     });
     $.ajax({
-        url:"/GradesSystem/getRecords.do",
+        url:"../getRecords.do",
         type:"get",
         contentType: "application/json;charset=utf-8",
         dataType:"json",
@@ -148,7 +148,7 @@ function qrcodeShow(){
         $("#qrcode").html("");//清空历史二维码
         $('#qrcode').qrcode({
             render: "canvas",
-            text: "http://localhost:8080/views/QueryListPstu.html?queryName="+queryIdName
+            text: "http://localhost:8080/GradesSystem/views/QueryListPstu.html?queryName="+queryIdName
         });
     });
 }
@@ -160,7 +160,7 @@ function delTable(){
         console.log(queryId);
         alert("您确定要删除？");
         $.ajax({
-            url:"/GradesSystem/delRecords.do",
+            url:"../delRecords.do",
             type:"post",
             contentType: "application/json;charset=utf-8",
             data: queryId,

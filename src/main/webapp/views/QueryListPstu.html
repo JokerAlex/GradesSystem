@@ -51,7 +51,7 @@
             console.log(url_sub);
             $.ajax({
                 type: "post",
-                url: "/GradesSystem/getTablesByQueryName.do",
+                url: "../getTablesByQueryName.do",
                 dataType: "json",
                 contentType: "application/json;charset=utf-8",
                 data: url_sub,
@@ -87,7 +87,7 @@
                 };
                 $.ajax({
                     type: "post",
-                    url: "/GradesSystem/getOne.do",
+                    url: "../getOne.do",
                     dataType: "json",
                     contentType: "application/json;charset=utf-8",
                     data: JSON.stringify(info_list),
@@ -152,7 +152,7 @@
                 console.log(stu_info);
                 $.ajax({
                     type: "post",
-                    url: "/GradesSystem/checkStu.do",
+                    url: "../checkStu.do",
                     dataType: "json",
                     contentType: "application/json;charset=utf-8",
                     data: JSON.stringify(stu_info),

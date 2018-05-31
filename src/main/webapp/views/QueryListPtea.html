@@ -145,7 +145,7 @@
             console.log(tableNames);
             $.ajax({
                 type: "post",
-                url: "/GradesSystem/insertRecord.do",
+                url: "../insertRecord.do",
                 data: {
                     tableNames : tableNames
                 },
@@ -156,7 +156,7 @@
                         $("#qrcode").html("");//清空历史二维码
                         $('#qrcode').qrcode({
                             render: "canvas",
-                            text: "http://localhost:8080/views/QueryListPstu.html?queryName="+data.address
+                            text: "http://localhost:8080/GradesSystem/views/QueryListPstu.html?queryName="+data.address
                         });
                         console.log(data.address);
                     }
@@ -191,7 +191,7 @@
             console.log(tableInfo);
             $.ajax({
                 type: "post",
-                url: "/GradesSystem/delTables.do",
+                url: "../delTables.do",
                 data: JSON.stringify(tableInfo),
                 contentType: "application/json;charset=utf-8",
                 dataType: "json",
@@ -225,7 +225,7 @@
     function loadtables(search_table){
         $.ajax({
             type: "post",
-            url: "/GradesSystem/getTables.do",
+            url: "../getTables.do",
             async: true,
             data: JSON.stringify(search_table),
             contentType: "application/json;charset=utf-8",

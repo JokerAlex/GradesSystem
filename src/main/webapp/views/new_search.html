@@ -82,7 +82,7 @@
       // $("div.form-group").addClass("has-success");
       $.ajax({
           type : "post",
-          url : "/GradesSystem/checkTableName" ,
+          url : "../checkTableName.do" ,
           async : true,
           data:$("#listname").val(),
           contentType: "application/json;charset=utf-8",
@@ -127,7 +127,7 @@
   function uploadfile(){
       var formData = new FormData($("#uploadForm")[0]);
     $.ajax({
-          url : "/GradesSystem/upload.do",
+          url : "../upload.do",
           type : "post",
           async : false,
           data : formData,
@@ -154,7 +154,7 @@
   function progress(){
     $.ajax({
           type : "get",
-          url : "/GradesSystem/getUploadStatus.do",
+          url : "../getUploadStatus.do",
           async : true,
           contentType: "application/json;charset=utf-8",
           dataType: "json",
