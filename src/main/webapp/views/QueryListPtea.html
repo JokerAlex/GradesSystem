@@ -7,6 +7,7 @@
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.js"></script>
     <script type="text/javascript" src="js/jquery.qrcode.js"></script>
+    <script src="js/jquerycookie.js"></script>
 </head>
 <body style="overflow: scroll">
 <div class="container" style="height:600px">
@@ -29,7 +30,9 @@
                 <button id="btn4" class="button" style="border-radius:10%;height:50px;width:70%;opacity: 0.5">发布列表
                 </button>
             </div>
-            <div style="float: right"><span id="welcomespan" style="color:grey;font-size:17px">welcome xxx</span></div>
+            <div style="float: right"><a id="welcomespan"
+                style="color: #bfc9ca;display: block;font-size: 17px;margin-top: 15px;text-align: center">welcome</a></div>
+
 
 
             <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
@@ -50,7 +53,12 @@
         <tr>
             <td colspan="3">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-md-2">
+                        <label class="radio-inline">
+                            <input type="checkbox" name="all" id="selectall" value="true" onclick="select_all()"> 全选
+                        </label>
+                    </div>
+                    <div class="col-md-4 col-md-2">
                         <label class="radio-inline">
                             <input type="checkbox" name="fudaoyuan" id="checkbox" value="true" onclick="do_search()"> 辅导员
                         </label>
@@ -72,26 +80,54 @@
 
 
         <!--这是表单正式开始的第一行-->
+        <tr>
+            <td><input type="checkbox" name="test"></td>
+            <td>ads</td>
+            <td>asd</td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" name="test"></td>
+            <td>ads</td>
+            <td>asd</td>
+        </tr>
+        <tr>
+            <td><input type="checkbox" name="test"></td>
+            <td>ads</td>
+            <td>asd</td>
+        </tr>
 
     </table>
 
 </div>
 <script type="text/javascript">
     //欢迎span  以及登出
-    $(document).ready(function () {
-        //GET username
-    });
-    var testgetusernmae = "test";
+    var getusernmae = $.cookie('name');
+    $("#welcomespan").html("欢迎您&nbsp&nbsp" + getusernmae + "!");
     $("#welcomespan").mouseenter(function () {
-        $(this).html("log out?");
-        $(this).css("color", "red");
+        $(this).html("登出");
+        $(this).css("color", "#ff7b4d");
     });
     $("#welcomespan").mouseleave(function () {
-        $(this).html("welcome&nbsp&nbsp" + testgetusernmae + "!");
-        $(this).css("color", "grey");
+        $(this).html("欢迎您&nbsp&nbsp" + getusernmae + "!");
+        $(this).css("color", "#bfc9ca");
     });
     $("#welcomespan").click(function () {
-        window.location.href = "http://www.baidu.com";
+        if(confirm("您确定要登出吗？")){
+            $.ajax({
+                type: "get",
+                url: "../logout.do",
+                dataType: "json",
+                success: function (data) {
+                    $.cookie('name',null);
+                    window.location.href="login.html"
+                },
+                error: function (data) {
+                }
+            });
+        }
+        else{
+            return false;
+        }
     });
 
 
@@ -133,10 +169,10 @@
     $("#btnqrcode").click(function () {
         var i = 0;
         var tableNames = new Array();
-        $(":checkbox").each(function (index) {
+        $(":checkbox[name='tablechecked']").each(function (index) {
             if ($(this).prop("checked")) {
                 i++;
-                tableNames.push($("span#tablerelname").eq(index-1).text());
+                tableNames.push($("span#tablerelname").eq(index).text());
             }
         });
         console.log(i);
@@ -180,7 +216,7 @@
                 i++;
                 var arr = {
                     "id": $(this).val(),
-                    "name": $("span#tablerelname").eq(index-1).text()
+                    "name": $("span#tablerelname").eq(index-2).text()
                 }
                 tableInfo.push(arr);
             }
@@ -223,6 +259,11 @@
 
     //加载
     function loadtables(search_table){
+        $("#search_table tr").each(function(index){
+            if(index>0){
+                $(this).remove();
+            }
+        });
         $.ajax({
             type: "post",
             url: "../getTables.do",
@@ -232,7 +273,7 @@
             dataType: "json",
             success: function (data) {
                 for (var i = 0; i < data.length; i++) {
-                    $("#search_table").append("<tr><td style='width:20%'><label><input type='checkbox' value="
+                    $("#search_table").append("<tr><td style='width:20%'><label><input name='tablechecked' type='checkbox' value="
                         + data[i].id + "></label></td><td style='width:50%'><span id='tablerelname' style='display: none'>"
                         + data[i].name + "</span>"
                         + data[i].name.substring(data[i].name.indexOf("_") + 1)
@@ -246,30 +287,58 @@
     }
     $(document).ready(function () {
         do_search();
+        //检查当前复选框的选择情况
+        check_selectall();
+        $(":checkbox[name='tablechecked']").click(function(){
+            check_selectall();
         });
+    });
 
     //模糊搜索匹配
     function do_search() {
         var usergrade = "false";
         var search_name = "";
 
-        if ($("#checkbox").prop("checked"))
+        if ($("#checkbox").prop("checked")){
             usergrade = "true";
-        else usergrade = "false";
+            $("#delbtn").attr('disabled',true);
+        }
+        else{
+            usergrade = "false";
+            $("#delbtn").attr('disabled',false);
+        }
 
         search_name = $("#search").val();
-        $("tr").each(function (index) {
-            if (index == 0) ;
-            else {
-                $(this).remove();
-            }
-        });
+        // $("tr").each(function (index) {
+        //     if (index == 0) ;
+        //     else {
+        //         $(this).remove();
+        //     }
+        // });
         var search_table = {
             userGrade: usergrade.toString(),
             tableName: search_name.toString()
         };
         console.log(search_table);
         loadtables(search_table);
+    }
+
+    function select_all(){
+        var select = true;
+        select = $("#selectall").prop('checked');
+        console.log(select);
+        $(":checkbox").each(function(index){
+            if(index > 1){
+                $(this).prop('checked',select);
+                console.log(index);
+            }
+        });
+    }
+
+    function check_selectall(){
+        if($(":checkbox[name='tablechecked']").length != $(":checkbox[name='tablechecked']:checked").length)
+            $("#selectall").prop("checked",false);
+        else $("#selectall").prop("checked",true);
     }
 </script>
 </body>

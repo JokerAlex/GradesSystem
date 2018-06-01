@@ -25,28 +25,34 @@ public class StudentMapperTest {
     public void insertTest(){
         Workbook wb = null;
         try {
-            wb = ExcelReader.getWorkbook("/Users/alex/Documents/资料/z工作室/成绩发布与查询/数据/2016名单.xlsx");
+            wb = ExcelReader.getWorkbook("/Users/alex/Documents/资料/z工作室/成绩发布与查询/数据/2016级学号姓名.xlsx");
         } catch (Exception e) {
             e.printStackTrace();
         }
         Sheet sheet = ExcelReader.getSheet(wb,0);
         List<List<String>> listResult = ExcelReader.getExcelRows(sheet,-1,-1);
-        List<Student> studentList = new ArrayList<Student>();
-        for (int i= 0;i<listResult.size();i++) {
-            if (i == 0){
+        //List<Student> studentList = new ArrayList<Student>();
+        for (List<String> list:listResult){
+            for (String s:list){
+                System.out.print(s+"\t");
+            }
+            System.out.println();
+        }
+        /*for (int i = 0; i < listResult.size(); i++) {
+            if (i == 0) {
                 continue;
             }
-           Student student = new Student(listResult.get(i).get(0),listResult.get(i).get(1),listResult.get(i).get(2));
-           studentList.add(student);
+            Student student = new Student(listResult.get(i).get(0), listResult.get(i).get(1), listResult.get(i).get(2));
+            studentList.add(student);
         }
 
-        for (Student stu : studentList){
-            System.out.println(stu.getId()+stu.getName()+stu.getGrade());
+        for (Student stu : studentList) {
+            System.out.println(stu.getId() + stu.getName() + stu.getGrade());
         }
 
         int result = studentMapper.insertStuBatch(studentList);
 
-        System.out.println(result == studentList.size());
+        System.out.println(result == studentList.size());*/
     }
 
     @Test

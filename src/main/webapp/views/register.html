@@ -1,255 +1,275 @@
 <!doctype html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<link rel="stylesheet" href="css/button.css">
-<link rel="stylesheet" href="css/font-awesome.min.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/button.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
 
-<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div class="container" style="height:600px ">
-<!--登陆框框-->
+    <!--登陆框框-->
 
-<div style="margin:0 auto;margin-top:5%; width:50%; height:100%; background-color: #FAFAFA;border-radius:5%;opacity: 0.9">
-<form id="registerForm">
-  <div class="form-group" style="margin:0 auto; margin-top:15%; width:80%;">
-    <center><h1>注册</h1></center>
-    <hr style="width:300px;height:1px;border:none;border-top:1px solid #d6d6d6;"/>
+    <div style="margin:0 auto;margin-top:5%; width:50%; height:100%; background-color: #FAFAFA;border-radius:5%;opacity: 0.9">
+        <form id="registerForm">
+            <div class="form-group" style="margin:0 auto; margin-top:15%; width:80%;">
+                <center><h1>注册</h1></center>
+                <hr style="width:300px;height:1px;border:none;border-top:1px solid #d6d6d6;"/>
 
-    <label for="exampleInputEmail1"></label>
-    <div class="input-group">
-    <div class="input-group-addon"><i class="fa fa-user fa-lg"></i>&nbsp用户名</div>
-    <input type="text" class="form-control" id="username" placeholder="请输入用户名" oninput="remove_input_class(),check_username()">
+                <label for="exampleInputEmail1"></label>
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-user fa-lg"></i>&nbsp用户名</div>
+                    <input type="text" class="form-control" id="username" placeholder="请输入用户名"
+                           oninput="remove_input_class(),check_username()">
+                </div>
+                <div class="alert alert-success" role="alert" id="username_alert"></div>
+
+                <label for="exampleInputEmail1"></label>
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-address-card fa-lg"></i>&nbsp&nbsp姓名</div>
+                    <input type="text" class="form-control" id="usertruename" placeholder="请输入姓名"
+                           oninput="remove_input_class()">
+                </div>
+
+                <label for="exampleInputPassword1"></label>
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-lock fa-lg"></i>&nbsp&nbsp密码&nbsp&nbsp</div>
+                    <input type="password" class="form-control" id="password" placeholder="请输入您的密码"
+                           oninput="remove_input_class()">
+                </div>
+
+                <label for="exampleInputPassword1"></label>
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-lock fa-lg"></i>确认密码</div>
+                    <input type="password" class="form-control" id="password2" placeholder="请再次输入您的密码"
+                           oninput="remove_input_class(),change_pwdform()">
+                </div>
+
+                <div class="alert alert-danger" role="alert" id="pwd_alert">两次密码输入不一致</div>
+
+                <label for="exampleInputEmail1"></label>
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-envelope-o fa-lg"></i>&nbsp&nbsp邮箱</div>
+                    <input type="text" class="form-control" id="email" placeholder="请输入您的邮箱地址"
+                           oninput="remove_input_class()">
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1">身份</label><br>
+                    <select class="form-control" id="identity">
+                        <option value="1">辅导员</option>
+                        <option value="2">教师</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1">学院</label><br>
+                    <select class="form-control" id="collegeId">
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1">年级</label><br>
+                    <select class="form-control" id="grade">
+                    </select>
+                </div>
+
+
+                <div class="alert alert-danger" role="alert" id="sub_alert">注册信息不能为空</div>
+                <br>
+                <center>
+                    <button type="button" class="btn btn-default" id="sub" style="width:100%">提交</button>
+                    <a href="login.html.html"
+                       style="color: #bfc9ca;display: block;font-size: 13px;margin-top: 15px;text-align: center">已有账号，去登录？</a>
+                </center>
+
+            </div>
+        </form>
     </div>
-    <div class="alert alert-success" role="alert" id="username_alert"></div>
-
-    <label for="exampleInputEmail1"></label>
-    <div class="input-group">
-    <div class="input-group-addon"><i class="fa fa-address-card fa-lg"></i>&nbsp&nbsp姓名</div>
-    <input type="text" class="form-control" id="usertruename" placeholder="请输入姓名" oninput="remove_input_class()">
-    </div>
-
-    <label for="exampleInputPassword1"></label>
-    <div class="input-group">
-    <div class="input-group-addon"><i class="fa fa-lock fa-lg"></i>&nbsp&nbsp密码&nbsp&nbsp</div>
-    <input type="password" class="form-control" id="password" placeholder="请输入您的密码" oninput="remove_input_class()">
-    </div>
-
-      <label for="exampleInputPassword1"></label>
-      <div class="input-group">
-          <div class="input-group-addon"><i class="fa fa-lock fa-lg"></i>确认密码</div>
-          <input type="password" class="form-control" id="password2" placeholder="请再次输入您的密码" oninput="remove_input_class(),change_pwdform()">
-      </div>
-      
-  <div class="alert alert-danger" role="alert" id="pwd_alert">两次密码输入不一致</div>
-
-  <label for="exampleInputEmail1"></label>
-    <div class="input-group">
-    <div class="input-group-addon"><i class="fa fa-envelope-o fa-lg"></i>&nbsp&nbsp邮箱</div>
-    <input type="text" class="form-control" id="email" placeholder="请输入您的邮箱地址" oninput="remove_input_class()">
-    </div>
-
-<div class="form-group">
-  <label for="exampleInputEmail1">身份</label><br>
-    <select class="form-control" id="identity">
-        <option value="1">辅导员</option>
-        <option value="2">教师</option>
-    </select>
-</div>
-
-<div class="form-group">
-  <label for="exampleInputEmail1">学院</label><br>
-    <select class="form-control" id="collegeId">
-    </select>
-</div>
-
-<div class="form-group">
-  <label for="exampleInputEmail1">年级</label><br>
-    <select class="form-control" id="grade">
-    </select>
-</div>
-
-
-  
-
-  
-
-  <div class="alert alert-danger" role="alert" id="sub_alert">注册信息不能为空</div>
-  <br>
-  <center><button type="button" class="btn btn-default" id="sub" style="width:100%">提交</button>
-  <a href="register.html"style="color: #bfc9ca;display: block;font-size: 13px;margin-top: 15px;text-align: center">haven't register?</a>
-  </center>
-
-  </div>
-</form>
-</div>
 </div>
 
 
 <script type="text/javascript">
-$(document).ready(function () {
-  $("div.alert").hide();
-    $.ajax({
-        type : "get",
-        async : true,
-        url : "../college.do",
-        dataType : "json",
-        success : function (data) {
-            for (var i = 0; i < data.length; i++) {
-                $("#collegeId").append("<option value='"+data[i].collegeId+"'>" + data[i].collegeName + "</option>");
+    $(document).ready(function () {
+        $("div.alert").hide();
+        $.ajax({
+            type: "get",
+            async: true,
+            url: "../college.do",
+            dataType: "json",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    $("#collegeId").append("<option value='" + data[i].collegeId + "'>" + data[i].collegeName + "</option>");
+                }
             }
-        }
-    });
-    $.ajax({
-        type : "get",
-        async : true,
-        url : "../grade.do",
-        dataType : "json",
-        success : function (data) {
-            for (var i = 0; i < data.length; i++) {
-                $("#grade").append("<option value='"+data[i].gradeId+"'>" + data[i].gradeId + "</option>");
+        });
+        $.ajax({
+            type: "get",
+            async: true,
+            url: "../grade.do",
+            dataType: "json",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    $("#grade").append("<option value='" + data[i].gradeId + "'>" + data[i].gradeId + "</option>");
+                }
             }
-        }
+        });
     });
-});
-//选择教师或辅导员 隐藏grade
-$("#identity").change(function(){
-  if($(this).val()==2)$("#grade").parent().hide();
-  else $("#grade").parent().show();
-});
+    //选择教师或辅导员 隐藏grade
+    $("#identity").change(function () {
+        if ($(this).val() == 2) $("#grade").parent().hide();
+        else $("#grade").parent().show();
+    });
 
 
-function change_pwdform(){
-  $("#password2").parent().removeClass("has-success");
-  $("#password2").parent().removeClass("has-error");
-  if($("#password").val() =="" || $("#password2").val()=="");
-  else{
-    if ($("#password").val() != $("#password2").val()){
-      $("#password2").parent().removeClass("has-success");
-      $("#password2").parent().addClass("has-error");
-      $("#pwd_alert").show();
-    }
-    else{
-      $("#password2").parent().removeClass("has-error");
-      $("#pwd_alert").hide();
-      $("#password2").parent().addClass("has-success");
-    }
-  }
-}
-var check = true;
-$("#sub").click(function(){
-  //检查是否为空
-    $("input").each(function(){
-      if($(this).val()==""){
-        $(this).parent().addClass("has-error");
-        check = false;
-        //return false;
-        //console.log("a");
-      }
-    });
-    //检查密码是否一致
-    if ($("#password").val() != $("#password2").val()){
-        //alert("两次输入的密码不一致");
-        check = false;
-    };
-    //检查用户名是否可用
-    $.ajax({
-          type : "post",
-          url : "../checkUserName.do" ,
-          async : true,
-          data:$("#username").val(),
-          contentType: "application/json;charset=utf-8",
-          dataType: "json",
-          success: function (data) {
-            var json = eval(data);
-            if(json.registerCode !== "1")check = false;
-        },
-      error:function (data) {
-      }
-    });
-    var user = {
-        userName:$("#username").val(),
-        passWd:$("#password").val(),
-        name:$("#usertruename").val(),
-        email:$("#email").val(),
-        collegeId:parseInt($("#collegeId").val()),
-        grade:$("#grade").val(),
-        identity:$("#identity").val(),
-    };
-    if(check==true){
-      $.ajax({
-        type : "post",
-        url : "../register.do" ,
-        async : true,
-        data: JSON.stringify(user),
-        contentType: "application/json;charset=utf-8",
-        dataType: "json",
-        success: function (data) {
-            console.log(data);
-           if (data != null) {
-               var result = eval(data);
-               console.log(result);
-               if (result.registerCode === "1"){
-                   alert(result.resultMsg);
-                   window.location.href = "login.html";
-               } else {
-                   alert(result.resultMsg);
-               }
-           }
-        },
-        error: function (data) {
-            alert(data+"网络错误");
+    function change_pwdform() {
+        $("#password2").parent().removeClass("has-success");
+        $("#password2").parent().removeClass("has-error");
+        if ($("#password").val() == "" || $("#password2").val() == "") ;
+        else {
+            if ($("#password").val() != $("#password2").val()) {
+                $("#password2").parent().removeClass("has-success");
+                $("#password2").parent().addClass("has-error");
+                $("#pwd_alert").show();
+            }
+            else {
+                $("#password2").parent().removeClass("has-error");
+                $("#pwd_alert").hide();
+                $("#password2").parent().addClass("has-success");
+            }
         }
-      });
     }
-    else{
-      $("#sub_alert").show();
-      check = true;
+
+    var check = true;
+    $("#sub").click(function () {
+        //检查是否为空
+        $("input").each(function () {
+            if ($(this).val() == "") {
+                $(this).parent().addClass("has-error");
+                check = false;
+                //return false;
+                //console.log("a");
+            }
+        });
+        //检查密码是否一致
+        if ($("#password").val() != $("#password2").val()) {
+            //alert("两次输入的密码不一致");
+            check = false;
+        }
+        ;
+        //检查用户名是否可用
+        $.ajax({
+            type: "post",
+            url: "../checkUserName.do",
+            async: true,
+            data: $("#username").val(),
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                var json = eval(data);
+                if (json.registerCode !== "1") check = false;
+            },
+            error: function (data) {
+            }
+        });
+        var user;
+        if ($("#identity").val() === "1") {
+            user = {
+                userName: $("#username").val(),
+                passWd: $("#password").val(),
+                name: $("#usertruename").val(),
+                email: $("#email").val(),
+                collegeId: parseInt($("#collegeId").val()),
+                grade: $("#grade").val(),
+                identity: $("#identity").val(),
+            };
+        } else {
+            user = {
+                userName: $("#username").val(),
+                passWd: $("#password").val(),
+                name: $("#usertruename").val(),
+                email: $("#email").val(),
+                collegeId: parseInt($("#collegeId").val()),
+                identity: $("#identity").val(),
+            };
+        }
+
+        if (check == true) {
+            $.ajax({
+                type: "post",
+                url: "../register.do",
+                async: true,
+                data: JSON.stringify(user),
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    if (data != null) {
+                        var result = eval(data);
+                        console.log(result);
+                        if (result.registerCode === "1") {
+                            alert(result.resultMsg);
+                            window.location.href = "login.html";
+                        } else {
+                            alert(result.resultMsg);
+                        }
+                    }
+                },
+                error: function (data) {
+                    alert(data + "网络错误");
+                }
+            });
+        }
+        else {
+            $("#sub_alert").show();
+            check = true;
+        }
+    });
+
+    function remove_input_class() {
+        $("input").each(function () {
+            if ($(this).val() != "") {
+                //console.log($(this).val());
+                $(this).parent().removeClass("has-error");
+                $("#sub_alert").hide();
+            }
+        });
     }
-});
-function remove_input_class(){
-  $("input").each(function(){
-    if($(this).val() != ""){
-       //console.log($(this).val());
-      $(this).parent().removeClass("has-error");
-      $("#sub_alert").hide();
+
+    function check_username() {
+        $.ajax({
+            type: "post",
+            url: "../checkUserName.do",
+            async: true,
+            data: $("#username").val(),
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                var json = eval(data);
+                if (json.registerCode === "1") {
+                    $("#username_alert").show();
+                    $("#username_alert").text("用户名可用");
+                    $("#username_alert").removeClass("alert-danger");
+                    $("#username_alert").addClass("alert-success");
+                    $("#username").parent().removeClass("has-error");
+                    $("#username").parent().addClass("has-success");
+                }
+                else {
+                    $("#username_alert").show();
+                    $("#username_alert").text("用户名不可用");
+                    $("#username_alert").removeClass("alert-success");
+                    $("#username_alert").addClass("alert-daner");
+                    $("#username").parent().addClass("has-success");
+                    $("#username").parent().addClass("has-error");
+                }
+            },
+            error: function (data) {
+            }
+        });
     }
-  });
-}
-function check_username(){
-   $.ajax({
-          type : "post",
-          url : "../checkUserName.do" ,
-          async : true,
-          data:$("#username").val(),
-          contentType: "application/json;charset=utf-8",
-          dataType: "json",
-          success: function (data) {
-            var json = eval(data);
-          if(json.registerCode === "1"){
-            $("#username_alert").show();
-            $("#username_alert").text("用户名可用");
-            $("#username_alert").removeClass("alert-danger");
-            $("#username_alert").addClass("alert-success");
-            $("#username").parent().removeClass("has-error");
-            $("#username").parent().addClass("has-success");
-          }
-          else{
-            $("#username_alert").show();
-            $("#username_alert").text("用户名不可用");
-            $("#username_alert").removeClass("alert-success");
-            $("#username_alert").addClass("alert-daner");
-            $("#username").parent().addClass("has-success");
-            $("#username").parent().addClass("has-error");
-          }
-        },
-      error:function (data) {
-      }
-  });
-}
 </script>
 </body>
 </html>

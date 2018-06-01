@@ -6,7 +6,8 @@
 <link rel="stylesheet" href="css/button.css">
 <script src="js/jquery.js"></script>
 <script src="js/bootstrap.js"></script>
-<script type="text/javascript" src="js/jquery.qrcode.js"></script>
+<script type="text/javascript" src="js/jqueryqrcode.js"></script>
+<script src="js/jquerycookie.js">x</script>
 </head>
 <body style="overflow: scroll">
 <div class="container" style="height:600px">
@@ -17,7 +18,8 @@
 <div class=col-md-3><button id="btn2" class="button" style="border-radius:10%;height:50px;width:70%">查询列表</button></div>
 <div class=col-md-3><button id="btn3" class="button" style="border-radius:10%;height:50px;width:70%">个人信息</button></div>
 <div class=col-md-3><button id="btn4" class="button" style="border-radius:10%;height:50px;width:70%">发布列表</button></div>
-<div style="float: right"><span id="welcomespan" style="color:grey;font-size:17px">welcome xxx</span></div>
+<div style="float: right"><a id="welcomespan"
+    style="color: #bfc9ca;display: block;font-size: 17px;margin-top: 15px;text-align: center">welcome</a></div>
 
 
 
@@ -90,22 +92,37 @@ function loadTable(){
 $(document).ready(function(){
   loadTable();
 });
+
 //欢迎span  以及登出
-$(document).ready(function(){
-  //GET username
-});
-var testgetusernmae = "test";
-$("#welcomespan").mouseenter(function(){
-  $(this).html("log out?");
-  $(this).css("color","red");
-});
-$("#welcomespan").mouseleave(function(){
-  $(this).html("welcome&nbsp&nbsp"+testgetusernmae+"!");
-  $(this).css("color","grey");
-});
-$("#welcomespan").click(function(){
-  window.location.href="http://www.baidu.com";
-});
+var getusernmae = $.cookie('name');
+    $("#welcomespan").html("欢迎您&nbsp&nbsp" + getusernmae + "!");
+    $("#welcomespan").mouseenter(function () {
+        $(this).html("登出");
+        $(this).css("color", "#ff7b4d");
+    });
+    $("#welcomespan").mouseleave(function () {
+        $(this).html("欢迎您&nbsp&nbsp" + getusernmae + "!");
+        $(this).css("color", "#bfc9ca");
+    });
+    $("#welcomespan").click(function () {
+        if(confirm("您确定要登出吗？")){
+            $.ajax({
+                type: "get",
+                url: "../logout.do",
+                dataType: "json",
+                success: function (data) {
+                    $.cookie('name',null);
+                    window.location.href="login.html"
+                },
+                error: function (data) {
+                }
+            });
+        }
+        else{
+            return false;
+        }
+    });
+
 
 
 //导航栏

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
@@ -39,12 +40,6 @@ public class MaintainController {
         return maintainService.getAllTables(user, searchMap.get("userGrade"), searchMap.get("tableName"));
     }
 
-    /*@ResponseBody
-    @RequestMapping(value = "/getT")
-    public List<TableInfo> getTable(HttpServletRequest request){
-        User user = (User)request.getSession().getAttribute("user");
-        return maintainService.getAllTables(user,null,null);
-    }*/
 
     /**
      * 删除表
@@ -54,9 +49,6 @@ public class MaintainController {
     @ResponseBody
     @RequestMapping(value = "/delTables")
     public String delTable(@RequestBody List<TableInfo> tableInfo){
-        for (TableInfo tableInfo1:tableInfo){
-            System.out.println(tableInfo1.getId()+"-------->"+tableInfo1.getName());
-        }
         return maintainService.delTable(tableInfo);
     }
 
@@ -151,7 +143,18 @@ public class MaintainController {
     public String updateUserInfo(HttpServletRequest request,@RequestBody User user){
         User userTemp = (User)request.getSession().getAttribute("user");
         user.setId(userTemp.getId());
+        //request.getSession().removeAttribute("user");
+        request.getSession().setAttribute("user",user);
         return maintainService.updateUserInfo(user);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/getUserInfo")
+    public JSONObject getUserInfo(HttpSession session){
+        User user = (User) session.getAttribute("user");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("userInfo",user);
+        return jsonObject;
     }
 
     /**

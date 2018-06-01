@@ -1,5 +1,6 @@
 package com.grades.serviceImpl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.grades.mapping.TableInfoMapper;
 import com.grades.model.*;
 import com.grades.service.UploadService;
@@ -71,6 +72,18 @@ public class UploadServiceImpl implements UploadService {
         return this.errorCode;
     }
 
+    public String getErrorInfo(){
+        return this.errorInfo;
+    }
+
+    public void setErrorCode(int errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public void setErrorInfo(String errorInfo) {
+        this.errorInfo = errorInfo;
+    }
+
     /*public float getReadProgress(){
         if (ExcelReader.getReadProgress() != 0 && readResultRows != 0) {
             return ((float) ExcelReader.getReadProgress() / (float) readResultRows) * 100;
@@ -94,9 +107,9 @@ public class UploadServiceImpl implements UploadService {
      * @param request
      * @return {"uploadResult:"false/true"}
      */
-    public String upload(CommonsMultipartFile file, HttpServletRequest request) {
-        this.errorCode = 1;
-        this.errorInfo = "";
+    public JSONObject upload(CommonsMultipartFile file, HttpServletRequest request) {
+        setErrorCode(1);
+        setErrorInfo("");
         User user = new User();
         boolean isDelExcel = false;
 
@@ -113,15 +126,15 @@ public class UploadServiceImpl implements UploadService {
                 // FileUtils.copyInputStreamToFile()这个方法里对IO进行了自动操作，不需要额外的再去关闭IO流
                 FileUtils.copyInputStreamToFile(file.getInputStream(), destFile);// 复制临时文件到指定目录下
             } catch (IOException e) {
-                this.errorCode = -1;
-                this.errorInfo = "文件上传时错误";
+                setErrorCode(-1);
+                setErrorInfo("文件上传时错误");
                 e.printStackTrace();
             }
             this.uploadStatus = 1;
             this.filePath = path+fileName;
         } else {
-            this.errorCode = -1;
-            this.errorInfo = "文件上传时错误";
+            setErrorCode(-1);
+            setErrorInfo("文件上传时错误");
         }
 
         //文件读取
@@ -130,8 +143,8 @@ public class UploadServiceImpl implements UploadService {
             try {
                 this.fileRead(filePath);
             } catch (Exception e) {
-                this.errorCode = -2;
-                this.errorInfo = "读取文件时发生错误";
+                setErrorCode(-2);
+                setErrorInfo("读取文件时发生错误");
                 e.printStackTrace();
             }
         }else {
@@ -153,11 +166,15 @@ public class UploadServiceImpl implements UploadService {
         }
         //返回信息
         System.out.println("isDelExcel--------->"+isDelExcel);
-        if (errorCode == 1){
+        /*if (errorCode == 1){
             return "{\"uploadResult\":\"true\"}";
         } else {
             return "{\"uploadResult\":\"false\"}";
-        }
+        }*/
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("errorCode",getErrorCode());
+        jsonObject.put("errorInfo",getErrorInfo());
+        return jsonObject;
     }
 
     /**
@@ -198,8 +215,19 @@ public class UploadServiceImpl implements UploadService {
         if (readResultList.size() == readResultRows){
             this.uploadStatus = 2;
         } else {
-            this.errorCode = -2;
-            this.errorInfo = "读取文件时发生错误";
+            setErrorCode(-2);
+            setErrorInfo("读取文件时发生错误");
+        }
+        int numberOfNull = 0;
+        List<String> title = readResultList.get(0);
+        for (String s:title){
+            if (s.equals("NULL")){
+                numberOfNull++;
+            }
+        }
+        if (numberOfNull != 0){
+            setErrorCode(-6);
+            setErrorInfo("表格不符合规范，尝试将数据部分粘贴到新的EXcel文件后重拾！");
         }
 
 
@@ -243,19 +271,19 @@ public class UploadServiceImpl implements UploadService {
                 }
             }
         } else {
-            this.errorCode = -3;
-            this.errorInfo = "创建数据表时错误";
+            setErrorCode(-3);
+            setErrorInfo("创建数据表时错误");
         }
         if (insertResult){
             //表信息更新
             updateTableInfoResult = tableInfoMapper.insertTableInfo(new TableInfo(0, tableName, userId, 0));
             if (!updateTableInfoResult){
-                this.errorCode = -5;
-                this.errorInfo = "更新数据表信息时错误";
+                setErrorCode(-5);
+                setErrorInfo("更新数据表信息时错误");
             }
         } else {
-            this.errorCode = -4;
-            this.errorInfo = "插入数据时错误";
+            setErrorCode(-4);
+            setErrorInfo("插入数据时错误");
         }
         //文件写入数据库完成，uploadStatus重置为0
         this.uploadStatus = 0;

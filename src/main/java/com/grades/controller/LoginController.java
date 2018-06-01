@@ -55,6 +55,13 @@ public class LoginController {
     }
 
     @ResponseBody
+    @RequestMapping(value = "/logout")
+    public String doLogout(HttpSession session){
+        session.removeAttribute("user");
+        return "{\"resultCode\":\"1\"}";
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/checkUserName")
     public String checkUserName(@RequestBody String userName){
         return loginService.checkUserName(userName);

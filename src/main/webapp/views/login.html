@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/button.css">
     <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="js/jquerycookie.js"></script>
 </head>
 <body>
 <div class="container" style="height:600px">
@@ -93,6 +94,7 @@
                     $("#login_reminder").hide();
                     $("div.form-group").removeClass("has-error");
                     $("div.form-group").addClass("has-success");
+                    $.cookie('name',data.user.name);
                     window.location.href = "homepage.html";
                 } else {
                     $("#login_reminder").show();

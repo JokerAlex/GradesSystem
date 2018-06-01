@@ -36,10 +36,12 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        var info_list = {};
         var stu_id = "";
         var stu_name = "";
-        jq_alert();
+        //jq_alert();
         //change table
+        loadQueryTables();
         $("#table_list").show();
         $("#grade_list").hide();
 
@@ -75,34 +77,14 @@
             //查询
             $("a").click(function (index) {
                 //table change
-
-                $("#table_list").hide();
-                $("#grade_list").show();
                 var tableName = $(this).attr("value");
                 console.log(tableName);
                 info_list = {
-                    name: stu_name,
-                    id: stu_id,
+                    name: "",
+                    id: "",
                     tableName: tableName
                 };
-                $.ajax({
-                    type: "post",
-                    url: "../getOne.do",
-                    dataType: "json",
-                    contentType: "application/json;charset=utf-8",
-                    data: JSON.stringify(info_list),
-                    success: function (data) {
-                        var grademap = eval(data);
-                        for (var key in grademap) {
-                            if (grademap[key] !== "NULL") {
-                                $("#grade_list tr").eq(-1).before("<tr><td>" + key + "</td><td>" + grademap[key] + "</td></tr>");
-                            }
-                        }
-                    },
-                    error: function (data) {
-                        console.log(data);
-                    }
-                });
+                jq_alert();
             });
         }
 
@@ -134,14 +116,47 @@
                 '<label for="exampleInputName2">姓名</label>' +
                 '<input type="text" class="form-control" id="stu_name">' +
                 '</div>';
-            htm += '<button class="btn btn-info" style="width:100%" id="confirm">认证</button><br>';
+            htm += '<button class="btn btn-info" style="width:100%" id="confirm">确认</button><br>';
             htm += '</div></div>';
             $('body').append(htm);
             var al = $('#jq-alert');
+            $("#confirm").click(function(){
+                stu_id = $("#stu_id").val();
+                stu_name = $("#stu_name").val();
+                if(stu_id &&stu_name){
+                    al.remove();
+                    info_list.name = stu_name;
+                    info_list.id = stu_id;
+                    $.ajax({
+                        type: "post",
+                        url: "../getOne.do",
+                        dataType: "json",
+                        contentType: "application/json;charset=utf-8",
+                        data: JSON.stringify(info_list),
+                        success: function (data) {
+                            var grademap = eval(data);
+                            for (var key in grademap) {
+                                if (grademap[key] !== "NULL") {
+                                    $("#grade_list tr").eq(-1).before("<tr><td>" + key + "</td><td>" + grademap[key] + "</td></tr>");
+                                }
+                            }
+                            $("#table_list").hide();
+                            $("#grade_list").show();
+                        },
+                        error: function (data) {
+                            console.log(data);
+                        }
+                    });
+                    //loadQueryTables();
+                }
+                else{
+                    alert("学号和姓名不能为空");
+                }
+            });
             // $("#cancel").click(function(){
             //   al.remove();
             // });
-            $("#confirm").click(function () {
+            /*$("#confirm").click(function () {
                 console.log("ok");
                 stu_id = $("#stu_id").val();
                 stu_name = $("#stu_name").val();
@@ -164,6 +179,7 @@
 
                         }
                         else {
+                            console.log(data);
                             alert("认证失败,请重新认证");
 
                         }
@@ -172,7 +188,7 @@
 
                     }
                 });
-            });
+            });*/
         }
     });
 </script>

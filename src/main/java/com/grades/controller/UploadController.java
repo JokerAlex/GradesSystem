@@ -1,6 +1,7 @@
 package com.grades.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.grades.model.*;
 import com.grades.serviceImpl.UploadServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +46,9 @@ public class UploadController {
      */
     @ResponseBody
     @RequestMapping(value = "/upload")
-    public String doUploadReadWrite(@RequestParam(value = "file") CommonsMultipartFile file, HttpServletRequest request){
-        String result = uploadServiceImpl.upload(file,request);
-        return result;
+    public JSONObject doUploadReadWrite(@RequestParam(value = "file") CommonsMultipartFile file, HttpServletRequest request){
+        JSONObject jsonObject = uploadServiceImpl.upload(file,request);
+        return jsonObject;
     }
 
     @ResponseBody

@@ -4,6 +4,7 @@ import com.grades.model.*;
 import com.grades.service.MaintainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -43,7 +44,8 @@ public class AdminController {
 
     @ResponseBody
     @RequestMapping(value = "/insertCollege")
-    public String insertCollge(){
+    public String insertCollge(@RequestBody College college){
+
         return null;
     }
 }

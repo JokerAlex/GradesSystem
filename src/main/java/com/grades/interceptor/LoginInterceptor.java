@@ -17,7 +17,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             return true;
         }
         //不符合条件的，跳转到登陆界面
-        httpServletResponse.sendRedirect("/views/login.html");
+        httpServletResponse.sendRedirect("/GradesSystem/views/login.html");
         return false;
     }
 
