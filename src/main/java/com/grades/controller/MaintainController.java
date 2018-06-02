@@ -4,6 +4,7 @@ package com.grades.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.grades.model.*;
 import com.grades.service.MaintainService;
+import com.grades.utils.GetUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -141,17 +142,22 @@ public class MaintainController {
     @ResponseBody
     @RequestMapping(value = "/changePerInfo")
     public String updateUserInfo(HttpServletRequest request,@RequestBody User user){
-        User userTemp = (User)request.getSession().getAttribute("user");
+        String sessionId = GetUser.getUser(request.getCookies());
+        System.out.println("changePerInfo------------->sessionId:"+sessionId);
+        User userTemp = (User)request.getSession().getAttribute(sessionId);
         user.setId(userTemp.getId());
-        //request.getSession().removeAttribute("user");
-        request.getSession().setAttribute("user",user);
+        System.out.println("userTemp----->"+userTemp.toString());
+        System.out.println("user--------->"+user.toString());
+        request.getSession().setAttribute(sessionId,user);
         return maintainService.updateUserInfo(user);
     }
 
     @ResponseBody
     @RequestMapping(value = "/getUserInfo")
-    public JSONObject getUserInfo(HttpSession session){
-        User user = (User) session.getAttribute("user");
+    public JSONObject getUserInfo(HttpServletRequest request){
+        String sessionId = GetUser.getUser(request.getCookies());
+        System.out.println("getUserInfo---------->sessionId:"+sessionId);
+        User user = (User) request.getSession().getAttribute(sessionId);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("userInfo",user);
         return jsonObject;

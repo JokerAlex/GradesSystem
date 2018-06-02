@@ -145,4 +145,20 @@ public class User {
     public void setIdentity(int identity) {
         this.identity = identity;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", name='" + name + '\'' +
+                ", passWd='" + passWd + '\'' +
+                ", email='" + email + '\'' +
+                ", collegeId=" + collegeId +
+                ", college='" + college + '\'' +
+                ", grade='" + grade + '\'' +
+                ", loginTime='" + loginTime + '\'' +
+                ", identity=" + identity +
+                '}';
+    }
 }
