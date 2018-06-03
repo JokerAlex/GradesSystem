@@ -10,7 +10,7 @@ import java.util.List;
 public interface UploadService {
 
 
-    JSONObject upload(CommonsMultipartFile file, HttpServletRequest request);
+    JSONObject upload(CommonsMultipartFile file, String tableName, HttpServletRequest request);
 
     String checkTableName(String talbeName);
 

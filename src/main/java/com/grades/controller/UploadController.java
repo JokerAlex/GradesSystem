@@ -4,6 +4,7 @@ package com.grades.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.grades.model.*;
 import com.grades.serviceImpl.UploadServiceImpl;
+import com.grades.utils.GetUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +33,8 @@ public class UploadController {
     @ResponseBody
     @RequestMapping(value = "/checkTableName")
     public String checkTableName(@RequestBody String tableName, HttpServletRequest request){
-        User user = (User) request.getSession().getAttribute("user");
+        String sessionId = GetUser.getUser(request.getCookies());
+        User user = (User) request.getSession().getAttribute(sessionId);
         System.out.println(tableName);
         String result = uploadServiceImpl.checkTableName(user.getId()+"_"+tableName);
         return result;
@@ -46,12 +48,12 @@ public class UploadController {
      */
     @ResponseBody
     @RequestMapping(value = "/upload")
-    public JSONObject doUploadReadWrite(@RequestParam(value = "file") CommonsMultipartFile file, HttpServletRequest request){
-        JSONObject jsonObject = uploadServiceImpl.upload(file,request);
+    public JSONObject doUploadReadWrite(@RequestParam(value = "file") CommonsMultipartFile file,@RequestParam(value = "tableName") String tableName, HttpServletRequest request){
+        JSONObject jsonObject = uploadServiceImpl.upload(file,tableName,request);
         return jsonObject;
     }
 
-    @ResponseBody
+    /*@ResponseBody
     @RequestMapping(value = "/readAndWrite")
     public String readAneWrite( HttpServletRequest request){
         User user = (User) request.getSession().getAttribute("user");
@@ -68,7 +70,7 @@ public class UploadController {
         }
 
         return "{\"isFinish\":\"false\"";
-    }
+    }*/
 
 
     /**

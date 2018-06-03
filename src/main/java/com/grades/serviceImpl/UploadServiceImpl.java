@@ -5,6 +5,7 @@ import com.grades.mapping.TableInfoMapper;
 import com.grades.model.*;
 import com.grades.service.UploadService;
 import com.grades.utils.ExcelReader;
+import com.grades.utils.GetUser;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -21,7 +22,6 @@ import java.util.List;
 public class UploadServiceImpl implements UploadService {
 
     private String filePath;//文件保存位置
-    private String tableName;//设置的表名
     private List<List<String>> readResultList = new ArrayList<List<String>>();//读取结果
     private int readResultRows = 0;//总行数
     private int writeProgress = 0;//写入进度
@@ -33,10 +33,6 @@ public class UploadServiceImpl implements UploadService {
 
     public List<List<String>> getReadResultList() {
         return this.readResultList;
-    }
-
-    public String getTableName(){
-        return this.tableName;
     }
 
     public String getFilePath(){
@@ -107,7 +103,7 @@ public class UploadServiceImpl implements UploadService {
      * @param request
      * @return {"uploadResult:"false/true"}
      */
-    public JSONObject upload(CommonsMultipartFile file, HttpServletRequest request) {
+    public JSONObject upload(CommonsMultipartFile file, String tableName, HttpServletRequest request) {
         setErrorCode(1);
         setErrorInfo("");
         User user = new User();
@@ -118,7 +114,8 @@ public class UploadServiceImpl implements UploadService {
         if (!file.isEmpty() && request != null){
             //获取文件类型
             String fileType = file.getOriginalFilename().substring(file.getOriginalFilename().indexOf("."));
-            user = (User) request.getSession().getAttribute("user");
+            String sessionId = GetUser.getUser(request.getCookies());
+            user = (User) request.getSession().getAttribute(sessionId);
             String fileName = user.getId() + System.currentTimeMillis() + fileType;
             String path = request.getSession().getServletContext().getRealPath("/upload/");
             File destFile = new File(path,fileName);
@@ -154,7 +151,7 @@ public class UploadServiceImpl implements UploadService {
         //文件写库
 
         if (errorCode == 1){
-            this.fileWrite(user.getId(),this.tableName,this.readResultList);
+            this.fileWrite(user.getId(),user.getId()+"_"+tableName,this.readResultList);
         } else {
             if (isDelExcel != true){
                 isDelExcel = delExcel(filePath);
@@ -188,7 +185,6 @@ public class UploadServiceImpl implements UploadService {
             result = tableInfoMapper.findTable(tableName);
         }
         if (result == null){
-            this.tableName = tableName;
             return "{\"isAvailable\":\"true\"}";
         }
         return "{\"isAvailable\":\"false\"}";
@@ -243,13 +239,12 @@ public class UploadServiceImpl implements UploadService {
     public void fileWrite(int userId, String tableName, List<List<String>> lists) {
         this.writeProgress = 0;//写入进度初始化为0
         int groupSize = 20;//分组大小
-        String tempTableName = tableName;
         boolean createResult;
         boolean insertResult = false;
         boolean updateTableInfoResult = false;
         //创建表
         List<String> listHead = lists.get(0);
-        createResult = tableInfoMapper.createTable(tempTableName, listHead);
+        createResult = tableInfoMapper.createTable(tableName, listHead);
         System.out.println(createResult);
         if (!createResult){
             //去掉头部-列名
@@ -264,7 +259,7 @@ public class UploadServiceImpl implements UploadService {
                 }else {
                     temp.addAll(lists.subList(i,i + groupSize));
                 }
-                insertResult = tableInfoMapper.insertData(tempTableName, temp);
+                insertResult = tableInfoMapper.insertData(tableName, temp);
                 writeProgress += groupSize;
                 if (!insertResult){
                     break;

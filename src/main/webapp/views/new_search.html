@@ -117,7 +117,6 @@
         if(listname!="" && fileinput!="")$("#sub").attr("disabled",false);
     }
 
-
     var isUploadFinish = false;
     function uploadfile(){
         var formData = new FormData($("#uploadForm")[0]);
@@ -126,8 +125,9 @@
             type : "post",
             async : true,
             data : formData,
-            processData : false,
-            contentType : false,
+            cache: false,//上传文件无需缓存
+            processData: false,//用于对data参数进行序列化处理 这里必须false
+            contentType: false, //必须
             beforeSend : function(){
                 console.log("正在上传");
             },
