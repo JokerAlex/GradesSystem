@@ -63,7 +63,7 @@ public class LoginController {
     @ResponseBody
     @RequestMapping(value = "/logout")
     public String doLogout(HttpServletRequest request){
-        request.getSession().removeAttribute(GetUser.getUser(request.getCookies()));
+        request.getSession().removeAttribute(request.getSession().getId());
         return "{\"resultCode\":\"1\"}";
     }
 

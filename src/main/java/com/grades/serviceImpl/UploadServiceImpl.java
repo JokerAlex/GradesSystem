@@ -114,7 +114,7 @@ public class UploadServiceImpl implements UploadService {
         if (!file.isEmpty() && request != null){
             //获取文件类型
             String fileType = file.getOriginalFilename().substring(file.getOriginalFilename().indexOf("."));
-            String sessionId = GetUser.getUser(request.getCookies());
+            String sessionId = request.getSession().getId();
             user = (User) request.getSession().getAttribute(sessionId);
             String fileName = user.getId() + System.currentTimeMillis() + fileType;
             String path = request.getSession().getServletContext().getRealPath("/upload/");

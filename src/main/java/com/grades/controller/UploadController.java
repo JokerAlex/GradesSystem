@@ -33,9 +33,9 @@ public class UploadController {
     @ResponseBody
     @RequestMapping(value = "/checkTableName")
     public String checkTableName(@RequestBody String tableName, HttpServletRequest request){
-        String sessionId = GetUser.getUser(request.getCookies());
+        String sessionId = request.getSession().getId();
         User user = (User) request.getSession().getAttribute(sessionId);
-        System.out.println(tableName);
+        //System.out.println(tableName);
         String result = uploadServiceImpl.checkTableName(user.getId()+"_"+tableName);
         return result;
     }

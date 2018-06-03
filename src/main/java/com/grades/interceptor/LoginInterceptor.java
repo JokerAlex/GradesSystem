@@ -13,10 +13,10 @@ import javax.servlet.http.HttpSession;
 public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         //获取session
-        String sessionId = GetUser.getUser(httpServletRequest.getCookies());
-        System.out.println("intereceptor--------->sessionId---->"+sessionId);
-        HttpSession session = httpServletRequest.getSession();
-        User user = (User)session.getAttribute(sessionId);
+        //String sessionId = GetUser.getUser(httpServletRequest.getCookies());
+        //System.out.println("intereceptor--------->sessionId---->"+sessionId);
+        //HttpSession session = httpServletRequest.getSession();
+        User user = (User) httpServletRequest.getSession().getAttribute(httpServletRequest.getSession().getId());
         if (user != null){
             return true;
         }

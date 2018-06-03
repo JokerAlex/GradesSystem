@@ -36,8 +36,9 @@ public class MaintainController {
     @ResponseBody
     @RequestMapping(value = "/getTables")
     public List<TableInfo> getTables(@RequestBody Map<String,String> searchMap, HttpServletRequest request){
-        User user = (User)request.getSession().getAttribute("user");
-        System.out.println(user.getId()+user.getUserName()+searchMap.get("userGrade")+searchMap.get("tableName"));
+        //String sesisonId = GetUser.getUser(request.getCookies());
+        User user = (User)request.getSession().getAttribute(request.getSession().getId());
+        //System.out.println(user.getId()+user.getUserName()+searchMap.get("userGrade")+searchMap.get("tableName"));
         return maintainService.getAllTables(user, searchMap.get("userGrade"), searchMap.get("tableName"));
     }
 
@@ -70,7 +71,7 @@ public class MaintainController {
     @ResponseBody
     @RequestMapping(value = "/getRecords")
     public List<QueryRecord> getRecords(HttpServletRequest request){
-        User user = (User)request.getSession().getAttribute("user");
+        User user = (User)request.getSession().getAttribute(request.getSession().getId());
         return maintainService.getQueryRecords(user.getId());
     }
 
@@ -84,7 +85,7 @@ public class MaintainController {
     @ResponseBody
     @RequestMapping(value = "/insertRecord")
     public JSONObject insertRecord(@RequestParam(value = "tableNames[]") String[] tableNames, HttpServletRequest request){
-        User user = (User)request.getSession().getAttribute("user");
+        User user = (User)request.getSession().getAttribute(request.getSession().getId());
         JSONObject jsonObject = maintainService.insertNewRecord(tableNames,user.getId());
         return jsonObject;
     }
@@ -98,7 +99,7 @@ public class MaintainController {
     @ResponseBody
     @RequestMapping(value = "/delRecords")
     public String delRecords(@RequestBody String queryId,HttpServletRequest request){
-        User user = (User)request.getSession().getAttribute("user");
+        User user = (User)request.getSession().getAttribute(request.getSession().getId());
         return maintainService.delRecord(queryId,user.getId());
     }
 
@@ -120,8 +121,8 @@ public class MaintainController {
      */
     @ResponseBody
     @RequestMapping(value = "/changPwd")
-    public String changPwd(HttpServletRequest request, String oldPwd, String newPwd){
-        User user = (User)request.getSession().getAttribute("user");
+    public JSONObject changPwd(HttpServletRequest request, String oldPwd, String newPwd){
+        User user = (User)request.getSession().getAttribute(request.getSession().getId());
         return maintainService.changPwd(user, oldPwd, newPwd);
     }
 
@@ -142,7 +143,7 @@ public class MaintainController {
     @ResponseBody
     @RequestMapping(value = "/changePerInfo")
     public String updateUserInfo(HttpServletRequest request,@RequestBody User user){
-        String sessionId = GetUser.getUser(request.getCookies());
+        String sessionId = request.getSession().getId();
         System.out.println("changePerInfo------------->sessionId:"+sessionId);
         User userTemp = (User)request.getSession().getAttribute(sessionId);
         user.setId(userTemp.getId());
@@ -155,8 +156,8 @@ public class MaintainController {
     @ResponseBody
     @RequestMapping(value = "/getUserInfo")
     public JSONObject getUserInfo(HttpServletRequest request){
-        String sessionId = GetUser.getUser(request.getCookies());
-        System.out.println("getUserInfo---------->sessionId:"+sessionId);
+        String sessionId = request.getSession().getId();
+        System.out.println("getUserInfo---------->sessionId:"+sessionId+"----->"+request.getSession().getId());
         User user = (User) request.getSession().getAttribute(sessionId);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("userInfo",user);

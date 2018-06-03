@@ -3,7 +3,7 @@ package com.grades.utils;
 import javax.servlet.http.Cookie;
 
 public class GetUser {
-    public static String getUser(Cookie[] cookies){
+    /*public static String getUser(Cookie[] cookies){
         if (cookies == null){
             return null;
         }
@@ -13,5 +13,5 @@ public class GetUser {
             }
         }
         return null;
-    }
+    }*/
 }
