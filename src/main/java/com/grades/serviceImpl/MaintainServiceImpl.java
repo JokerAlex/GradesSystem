@@ -37,20 +37,28 @@ public class MaintainServiceImpl implements MaintainService {
      * @param newPwd
      * @return {"oldPwd":"false/true","isPwdSame":"true/false","changeResult":"false/true"}
      */
-    public String changPwd(User user, String oldPwd, String newPwd) {
+    public JSONObject changPwd(User user, String oldPwd, String newPwd) {
+        boolean isPassRight = false;
+        boolean isSame = true;
+        boolean isChange = false;
+        JSONObject jsonObject = new JSONObject();
         if ((oldPwd != null && !oldPwd.equals(""))
                 && (newPwd != null && !newPwd.equals(""))){
             String uid = userMapper.checkPwd(user.getId(),oldPwd);
-            if (uid == null){
-                return "{\"oldPwd\":\"false\",\"isPwdSame\":\"true\",\"changeResult\":\"false\"}";
+            if (uid != null){
+                isPassRight = true;
+                if (!oldPwd.equals(newPwd)){
+                    isSame = false;
+                    isChange = userMapper.changPwd(newPwd,user.getId());
+
+                }
             }
-            if (oldPwd.equals(newPwd)){
-                return "{\"oldPwd\":\"true\",\"isPwdSame\":\"true\",\"changeResult\":\"false\"}";
-            }
-            boolean flag = userMapper.changPwd(newPwd,user.getId());
-            return "{\"oldPwd\":\"false\",\"isPwdSame\":\"false\",\"changeResult\":\""+flag+"\"}";
+
         }
-        return "{\"oldPwd\":\"false\",\"changeResult\":\"false\"}";
+        jsonObject.put("isPassRight",isPassRight);
+        jsonObject.put("isSame",isSame);
+        jsonObject.put("isChange",isChange);
+        return jsonObject;
     }
 
     /**

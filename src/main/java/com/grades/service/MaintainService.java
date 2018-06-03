@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface MaintainService {
 
-    String changPwd(User user, String oldPwd, String newPwd);
+    JSONObject changPwd(User user, String oldPwd, String newPwd);
 
     String updateUserInfo(User user);
 
