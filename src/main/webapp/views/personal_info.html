@@ -160,8 +160,11 @@
         //设置个人信息value
         console.log(user_info);
         $("#username").attr("placeholder", user_info.username);
+        $("#username").val(user_info.username);
         $("#name").attr("placeholder", user_info.name);
+        $("#name").val(user_info.name);
         $("#email").attr("placeholder", user_info.email);
+        $("#email").val(user_info.email);
         if(user_info.identity === 1)$("#identity").attr("placeholder", "辅导员");
         else $("#identity").attr("placeholder", "教师");
 
@@ -186,7 +189,7 @@
             });
             $("#submit_btn").click(function () {
                 var user_change_info = {
-                    userName: $("#username").val(),
+                    userName: user_info.username,
                     name: $("#name").val(),
                     email: $("#email").val(),
                     collegeId: $("#collegeId").val(),
@@ -200,6 +203,7 @@
                     contentType: "application/json;charset=utf-8",
                     data: JSON.stringify(user_change_info),
                     success: function () {
+                        $.cookie('name',user_change_info.name);
                         alert("修改成功!");
                         window.location.href = "homepage.html";
                     },
