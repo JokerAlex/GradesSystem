@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,6 +52,19 @@ public class UploadController {
     public JSONObject doUploadReadWrite(@RequestParam(value = "file") CommonsMultipartFile file,@RequestParam(value = "tableName") String tableName, HttpServletRequest request){
         JSONObject jsonObject = uploadServiceImpl.upload(file,tableName,request);
         return jsonObject;
+    }
+
+
+    @ExceptionHandler(Exception.class)
+    public ModelAndView handleException(Exception ex, HttpServletRequest request) {
+        ModelAndView modelAndView = new ModelAndView();
+        String message = null;
+        if(ex instanceof org.springframework.web.multipart.MaxUploadSizeExceededException){
+            message = "文件大小超出2M";
+        }
+        modelAndView.addObject("message",message);
+        modelAndView.setViewName("error");
+        return modelAndView;
     }
 
     /*@ResponseBody

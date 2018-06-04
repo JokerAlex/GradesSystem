@@ -134,6 +134,11 @@ public class UploadServiceImpl implements UploadService {
             setErrorInfo("文件上传时错误");
         }
 
+        if (new File(filePath).length() > 2*1024*1024){
+            setErrorCode(-8);
+            setErrorInfo("文件大小超过2M");
+        }
+
         //文件读取
 
         if (errorCode == 1){
@@ -142,7 +147,6 @@ public class UploadServiceImpl implements UploadService {
             } catch (Exception e) {
                 setErrorCode(-2);
                 setErrorInfo("读取文件时发生错误");
-                e.printStackTrace();
             }
         }else {
            isDelExcel = delExcel(filePath);
@@ -200,32 +204,38 @@ public class UploadServiceImpl implements UploadService {
         //存储单元初始化
         this.readResultList.clear();
         this.readResultRows = 0;
-        //获取工作表
-        Workbook wb = ExcelReader.getWorkbook(fileName);
-        //获取工作簿
-        Sheet sheet = ExcelReader.getSheet(wb,0);
-        //获取总行数
-        readResultRows = ExcelReader.getRowNumber(sheet);
-        //读取数据
-        readResultList = ExcelReader.getExcelRows(sheet,-1,-1);
-        if (readResultList.size() == readResultRows){
-            this.uploadStatus = 2;
-        } else {
-            setErrorCode(-2);
-            setErrorInfo("读取文件时发生错误");
-        }
-        int numberOfNull = 0;
-        List<String> title = readResultList.get(0);
-        for (String s:title){
-            if (s.equals("NULL")){
-                numberOfNull++;
+        //判断文件格式是否正确
+        String fileType = fileName.substring(fileName.indexOf(".")+1);
+        if (fileName.equals("xls") || fileType.equals("xlsx")){
+            //获取工作表
+            Workbook wb = ExcelReader.getWorkbook(fileName);
+            //获取工作簿
+            Sheet sheet = ExcelReader.getSheet(wb,0);
+            //获取总行数
+            readResultRows = ExcelReader.getRowNumber(sheet);
+            //读取数据
+            readResultList = ExcelReader.getExcelRows(sheet,-1,-1);
+            if (readResultList.size() == readResultRows){
+                this.uploadStatus = 2;
+            } else {
+                setErrorCode(-2);
+                setErrorInfo("读取文件时发生错误");
             }
+            int numberOfNull = 0;
+            List<String> title = readResultList.get(0);
+            for (String s:title){
+                if (s.equals("NULL")){
+                    numberOfNull++;
+                }
+            }
+            if (numberOfNull != 0){
+                setErrorCode(-6);
+                setErrorInfo("表格不符合规范，尝试将数据部分粘贴到新的Excel文件后重试！");
+            }
+        } else {
+            setErrorCode(-7);
+            setErrorInfo("请上传Excel文件");
         }
-        if (numberOfNull != 0){
-            setErrorCode(-6);
-            setErrorInfo("表格不符合规范，尝试将数据部分粘贴到新的EXcel文件后重拾！");
-        }
-
 
     }
 
