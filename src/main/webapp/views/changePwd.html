@@ -1,0 +1,241 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/button.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/jquerycookie.js"></script>
+</head>
+<body>
+<div class="container" style="height:600px ">
+    <!--导航栏-->
+    <div style="width:100%">
+            <div class="row">
+                <div class=col-md-3>
+                    <button id="btn1" class="button" style="border-radius:10%;height:50px;width:70%;opacity: 0.5">新建查询
+                    </button>
+                </div>
+                <div class=col-md-3>
+                    <button id="btn2" class="button" style="border-radius:10%;height:50px;width:70%;opacity: 0.5">查询列表
+                    </button>
+                </div>
+                <div class=col-md-3>
+                    <button id="btn3" class="button" style="border-radius:10%;height:50px;width:70%;opacity: 0.5">个人信息
+                    </button>
+                </div>
+                <div class=col-md-3>
+                    <button id="btn4" class="button" style="border-radius:10%;height:50px;width:70%;opacity: 0.5">发布列表
+                    </button>
+                </div>
+                <div style="float: right"><a id="welcomespan"
+                    style="color: #bfc9ca;display: block;font-size: 17px;margin-top: 15px;text-align: center">welcome</a>
+                </div>
+            </div>
+    <!--登陆框框-->
+    <div style="margin:0 auto;margin-top:5%; width:50%; height:100%; background-color: #FAFAFA;border-radius:5%;opacity: 0.9">
+        <form id="registerForm">
+            <div class="form-group" style="margin:0 auto; margin-top:15%; width:80%;">
+                <center><h1>修改密码</h1></center>
+                <hr style="width:300px;height:1px;border:none;border-top:1px solid #d6d6d6;"/>
+
+
+                <label for="exampleInputEmail1"></label>
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-address-card fa-lg"></i>&nbsp&nbsp原密码</div>
+                    <input type="password" class="form-control" id="oldPwd" placeholder="请输入原密码"
+                           oninput="remove_input_class(),change_pwdform()">
+                </div>
+                <div class="alert alert-danger" role="alert" id="oldpwd_alert">原密码输入错误</div>
+                <label for="exampleInputPassword1"></label>
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-lock fa-lg"></i>&nbsp&nbsp新密码&nbsp&nbsp</div>
+                    <input type="password" class="form-control" id="password" placeholder="请输入您的新密码"
+                           oninput="remove_input_class()">
+                </div>
+                
+                <label for="exampleInputPassword1"></label>
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-lock fa-lg"></i>确认新密码</div>
+                    <input type="password" class="form-control" id="password2" placeholder="请再次输入您的密码"
+                           oninput="remove_input_class(),change_pwdform()">
+                </div>
+
+                <div class="alert alert-danger" role="alert" id="pwd_alert"></div>
+                <br>
+                
+                <center>
+                    <button type="button" class="btn btn-default" id="sub" style="width:100%">提交</button>
+                </center>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+//导航栏
+$(document).ready(function () {
+        $(".button:lt(4)").mouseenter(function () {
+            $(this).css("height", "300px");
+            $(this).css("opacity", 1);
+        });
+        $(".button:lt(4)").mouseleave(function () {
+            $(".button:lt(4)").css("height", "50px");
+            $(".button:lt(4)").css("opacity", 0.5);
+        });
+
+        $("#btn1").click(function () {
+            window.location.href = "new_search.html"
+        });
+        $("#btn2").click(function () {
+            window.location.href = "QueryListPtea.html"
+        });
+        $("#btn3").click(function () {
+            window.location.href = "personal_info.html"
+        });
+        $("#btn4").click(function () {
+            window.location.href = "history.html"
+        });
+    });
+    $(document).ready(function () {
+        $("#oldpwd_alert").hide();
+        $("#pwd_alert").hide();
+        //欢迎span  以及登出
+        var getusernmae = $.cookie('name');
+        $("#welcomespan").html("欢迎您&nbsp&nbsp" + getusernmae + "!");
+        $("#welcomespan").mouseenter(function () {
+            $(this).html("登出");
+            $(this).css("color", "#ff7b4d");
+        });
+        $("#welcomespan").mouseleave(function () {
+            $(this).html("欢迎您&nbsp&nbsp" + getusernmae + "!");
+            $(this).css("color", "#bfc9ca");
+        });
+        $("#welcomespan").click(function () {
+            if(confirm("您确定要登出吗？")){
+                $.ajax({
+                    type: "get",
+                    url: "../logout.do",
+                    dataType: "json",
+                    success: function (data) {
+                        window.location.href="homepage.html";
+                    },
+                    error: function (data) {
+                    }
+                });
+            }
+            else{
+                return false;
+            }
+        });
+    });
+    function change_pwdform() {
+        $("#oldPwd").parent().removeClass("has-error");
+        $("#oldpwd_alert").hide();
+        $("#password2").parent().removeClass("has-success");
+        $("#password2").parent().removeClass("has-error");
+        if ($("#password").val() == "" || $("#password2").val() == "") ;
+        else {
+            if ($("#password").val() != $("#password2").val()) {
+                $("#password2").parent().removeClass("has-success");
+                $("#password2").parent().addClass("has-error");
+                $("#pwd_alert").show();
+                $("#pwd_alert").text("两次密码输入不一致");
+            }
+            else {
+                $("#password2").parent().removeClass("has-error");
+                $("#pwd_alert").hide();
+                $("#password2").parent().addClass("has-success");
+            }
+        }
+    }
+
+    var check = true;
+    $("#sub").click(function () {
+        //检查是否为空
+        $("input").each(function () {
+            if ($(this).val() == "") {
+                $(this).parent().addClass("has-error");
+                check = false;
+                //return false;
+                //console.log("a");
+            }
+        });
+        //检查密码是否一致
+        if ($("#password").val() != $("#password2").val()) {
+            //alert("两次输入的密码不一致");
+            check = false;
+        }
+        
+        
+
+        if (check == true) {
+            pwd_info = {
+                oldPwd:$("#oldPwd").val(),
+                newPwd:$("#password").val()
+            };
+            $.ajax({
+                type: "post",
+                url: "../changePwd.do",
+                async: true,
+                data: JSON.stringify(pwd_info),
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    if(data.isChange == true){
+                        alert("密码修改成功，请重新登录");
+                        //成功则登出
+                        $.ajax({
+                            type: "get",
+                            url: "../logout.do",
+                            dataType: "json",
+                            success: function (data) {
+                                window.location.href = "login.html";
+                            },
+                            error: function (data) {
+                            }
+                        });
+                    }
+                    else{
+                        //失败判断两个分支
+                        if(data.isPassRight === false){
+                            $("#oldpwd_alert").show();
+                            $("#oldPwd").parent().addClass("has-error");
+                        }
+                        else{
+                            if(data.isSame == true){
+                                $("#password2").parent().addClass("has-error");
+                                $("#pwd_alert").show();
+                                $("#pwd_alert").text("新密码与原密码一致");
+                            }
+                        }
+                    }
+                },
+                error: function (data) {
+                    alert(data + "网络错误");
+                }
+            });
+        }
+        else {
+            //$("#sub_alert").show();
+            check = true;
+        }
+    });
+
+    function remove_input_class() {
+        $("input").each(function () {
+            if ($(this).val() != "") {
+                //console.log($(this).val());
+                $(this).parent().removeClass("has-error");
+                //$("#sub_alert").hide();
+            }
+        });
+    }
+</script>
+</body>
+</html>x

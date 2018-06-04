@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.grades.mapping.*;
 import com.grades.model.*;
 import com.grades.service.MaintainService;
+import com.grades.utils.PasswordEncrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class MaintainServiceImpl implements MaintainService {
     private QueryIdMapper queryIdMapper;
 
     @Autowired
-    public MaintainServiceImpl(UserMapper userMapper, CollegeMapper collegeMapper, TableInfoMapper tableInfoMapper, GradeMapper gradeMapper, QueryIdMapper queryIdMapper){
+    public MaintainServiceImpl(UserMapper userMapper, CollegeMapper collegeMapper, TableInfoMapper tableInfoMapper, GradeMapper gradeMapper, QueryIdMapper queryIdMapper) {
         this.userMapper = userMapper;
         this.collegeMapper = collegeMapper;
         this.tableInfoMapper = tableInfoMapper;
@@ -32,6 +33,7 @@ public class MaintainServiceImpl implements MaintainService {
 
     /**
      * 修改密码，新密码不能与原密码相同
+     *
      * @param user
      * @param oldPwd
      * @param newPwd
@@ -43,39 +45,43 @@ public class MaintainServiceImpl implements MaintainService {
         boolean isChange = false;
         JSONObject jsonObject = new JSONObject();
         if ((oldPwd != null && !oldPwd.equals(""))
-                && (newPwd != null && !newPwd.equals(""))){
-            String uid = userMapper.checkPwd(user.getId(),oldPwd);
-            if (uid != null){
+                && (newPwd != null && !newPwd.equals(""))) {
+            System.out.println(user.toString() + oldPwd + newPwd);
+            String encryptOldPass = PasswordEncrypt.encrypt(oldPwd);
+            String encryptNewPass = PasswordEncrypt.encrypt(newPwd);
+            User u = userMapper.findUserByName(user.getUserName(), encryptOldPass);
+            if (u != null) {
+                System.out.println(u.toString());
                 isPassRight = true;
-                if (!oldPwd.equals(newPwd)){
+                if (!encryptNewPass.equals(encryptOldPass)) {
                     isSame = false;
-                    isChange = userMapper.changPwd(newPwd,user.getId());
-
+                    isChange = userMapper.changPwd(encryptNewPass, user.getId());
                 }
             }
-
         }
-        jsonObject.put("isPassRight",isPassRight);
-        jsonObject.put("isSame",isSame);
-        jsonObject.put("isChange",isChange);
+        jsonObject.put("isPassRight", isPassRight);
+        jsonObject.put("isSame", isSame);
+        jsonObject.put("isChange", isChange);
         return jsonObject;
     }
 
     /**
      * 用户信息更新
+     *
      * @param user
      * @return {"updateResult":"true/false"}
      */
     public String updateUserInfo(User user) {
-        if (user == null){
+        if (user == null) {
             return "{\"updateResult\":\"false\"}";
         }
         boolean flag = userMapper.updateUserInfo(user);
-        return "{\"updateResult\":\""+flag+"\"}";
+        return "{\"updateResult\":\"" + flag + "\"}";
     }
 
     /**
      * 获取所有学院信息
+     *
      * @return List<College>
      */
     public List<College> getAllColleges() {
@@ -84,11 +90,12 @@ public class MaintainServiceImpl implements MaintainService {
 
     /**
      * 插入学院信息
+     *
      * @param collegeList
      * @return int（数据条数）
      */
     public int insertCollege(List<College> collegeList) {
-        if (collegeList.size() != 0){
+        if (collegeList.size() != 0) {
             return collegeMapper.insertCollege(collegeList);
         }
         return 0;
@@ -96,19 +103,21 @@ public class MaintainServiceImpl implements MaintainService {
 
     /**
      * 学院信息删除
+     *
      * @param collegeId
      * @return {"delResult":"false/true"}
      */
     public String delCollege(String collegeId) {
         boolean delResult = false;
-        if (collegeId !=null && !collegeId.trim().equals("")){
+        if (collegeId != null && !collegeId.trim().equals("")) {
             delResult = collegeMapper.delCollege(Integer.valueOf(collegeId));
         }
-        return "{\"delResult\":\""+delResult+"\"}";
+        return "{\"delResult\":\"" + delResult + "\"}";
     }
 
     /**
      * 学院信息更新
+     *
      * @param collegeId
      * @param collegeName
      * @param collegeIdOld
@@ -121,13 +130,14 @@ public class MaintainServiceImpl implements MaintainService {
         if (isCollegeId || isCollegeName) {
             int id = Integer.valueOf(collegeId);
             int idOld = Integer.valueOf(collegeIdOld);
-            updateResult = collegeMapper.updateCollege(id,collegeName,idOld);
+            updateResult = collegeMapper.updateCollege(id, collegeName, idOld);
         }
-        return "{\"updateResult\":\""+updateResult+"\"}";
+        return "{\"updateResult\":\"" + updateResult + "\"}";
     }
 
     /**
      * 获取所有年级信息
+     *
      * @return List<Grade>
      */
     public List<Grade> getAllGrades() {
@@ -136,11 +146,12 @@ public class MaintainServiceImpl implements MaintainService {
 
     /**
      * 插入年级信息
+     *
      * @param gradeList
-     * @return int(插入数据条数）
+     * @return int(插入数据条数 ）
      */
     public int insertGrade(List<Grade> gradeList) {
-        if (gradeList.size() != 0){
+        if (gradeList.size() != 0) {
             return gradeMapper.insertGrade(gradeList);
         }
         return 0;
@@ -148,6 +159,7 @@ public class MaintainServiceImpl implements MaintainService {
 
     /**
      * 获取用户上传的所有表(模糊查询)
+     *
      * @param user
      * @param userGrade
      * @param tableName
@@ -155,19 +167,20 @@ public class MaintainServiceImpl implements MaintainService {
      */
     public List<TableInfo> getAllTables(User user, String userGrade, String tableName) {
         String grade;
-        if (userGrade.equals("false")){
+        if (userGrade.equals("false")) {
             grade = "";
-        }else {
+        } else {
             grade = user.getGrade();
         }
-        if (tableName == null || tableName.trim().equals("")){
+        if (tableName == null || tableName.trim().equals("")) {
             tableName = "";
         }
-        return tableInfoMapper.searchTables(user.getId(),grade,user.getCollegeId(),tableName);
+        return tableInfoMapper.searchTables(user.getId(), grade, user.getCollegeId(), tableName);
     }
 
     /**
      * 删除表及其信息
+     *
      * @param tableInfos
      * @return {"delResult":"true/false","dropResult":"true/false"}
      */
@@ -187,38 +200,40 @@ public class MaintainServiceImpl implements MaintainService {
 
     /**
      * 获取用户所有发布记录
+     *
      * @param userId
      * @return List<QueryRecord>
      */
-    public List<QueryRecord> getQueryRecords(int userId){
+    public List<QueryRecord> getQueryRecords(int userId) {
         return queryIdMapper.getRecordIdAndTables(userId);
     }
 
     /**
      * 生成新的发布记录
+     *
      * @param tableNames
      * @param userId
      * @return {"insertRecordResult":"true/false","insertTableResult":"true/false"}
      */
-    public JSONObject insertNewRecord(String[] tableNames, int userId){
+    public JSONObject insertNewRecord(String[] tableNames, int userId) {
         //用时间作为发布记录的名称
-        String queryName = new Date().toString().replace(" ","")+(int)(Math.random()*100);
-        boolean insertRecordResult = queryIdMapper.insertRecordId(queryName,userId);
+        String queryName = new Date().toString().replace(" ", "") + (int) (Math.random() * 100);
+        boolean insertRecordResult = queryIdMapper.insertRecordId(queryName, userId);
         boolean insertTableResult = false;
         int insertCode = -1;
         String inserResult = "";
-        int[] queryId = queryIdMapper.getRecordId(queryName,userId);
-        if (insertRecordResult){
+        int[] queryId = queryIdMapper.getRecordId(queryName, userId);
+        if (insertRecordResult) {
             List tableList = new ArrayList();
-            for (String tableName:tableNames){
+            for (String tableName : tableNames) {
                 tableList.add(tableName);
             }
-            insertTableResult = queryIdMapper.insertIdAndTables(queryId[0],tableList,"该表可查询");
-            if (insertTableResult){
+            insertTableResult = queryIdMapper.insertIdAndTables(queryId[0], tableList, "该表可查询");
+            if (insertTableResult) {
 
             }
         }
-        if (insertRecordResult && insertTableResult){
+        if (insertRecordResult && insertTableResult) {
             insertCode = 0;
             inserResult = "记录生成成功";
         } else {
@@ -226,39 +241,40 @@ public class MaintainServiceImpl implements MaintainService {
             inserResult = "记录生错误";
         }
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("insertCode",insertCode);
-        jsonObject.put("insertResult",inserResult);
-        jsonObject.put("address",queryName);
+        jsonObject.put("insertCode", insertCode);
+        jsonObject.put("insertResult", inserResult);
+        jsonObject.put("address", queryName);
         return jsonObject;
     }
 
     /**
      * 删除发布记录
+     *
      * @param queryId
      * @param userId
      * @return {"isDel":"true/false"}
      */
-    public String delRecord(String queryId,int userId){
+    public String delRecord(String queryId, int userId) {
         boolean isDel = false;
         List queryIds = new ArrayList();
-        if (queryId != null){//删除选中记录
+        if (queryId != null) {//删除选中记录
             queryIds.add(Integer.valueOf(queryId));
             boolean isTableRecordDel = queryIdMapper.delIdAndTables(queryIds);
-            boolean isRecordDel = queryIdMapper.delQueryId(queryIds,userId);
-            if (isTableRecordDel && isRecordDel){
+            boolean isRecordDel = queryIdMapper.delQueryId(queryIds, userId);
+            if (isTableRecordDel && isRecordDel) {
                 isDel = true;
             }
         } else {//删除全部记录
-           int[] queryIdMapperRecordId = queryIdMapper.getRecordId(null,userId);
-           for (int i : queryIdMapperRecordId){
-               queryIds.add(i);
-           }
-           boolean isTableRecordDel = queryIdMapper.delIdAndTables(queryIds);
-           boolean isRecordDel = queryIdMapper.delQueryId(queryIds,userId);
-           if (isTableRecordDel && isRecordDel){
-               isDel = true;
-           }
+            int[] queryIdMapperRecordId = queryIdMapper.getRecordId(null, userId);
+            for (int i : queryIdMapperRecordId) {
+                queryIds.add(i);
+            }
+            boolean isTableRecordDel = queryIdMapper.delIdAndTables(queryIds);
+            boolean isRecordDel = queryIdMapper.delQueryId(queryIds, userId);
+            if (isTableRecordDel && isRecordDel) {
+                isDel = true;
+            }
         }
-        return "{\"isDel\":\""+isDel+"\"}";
+        return "{\"isDel\":\"" + isDel + "\"}";
     }
 }

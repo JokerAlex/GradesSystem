@@ -115,15 +115,14 @@ public class MaintainController {
     /**
      * 修改密码
      * @param request
-     * @param oldPwd
-     * @param newPwd
+     * @param map
      * @return {"oldPwd":"false/true","isPwdSame":"true/false","changeResult":"false/true"}
      */
     @ResponseBody
-    @RequestMapping(value = "/changPwd")
-    public JSONObject changPwd(HttpServletRequest request, String oldPwd, String newPwd){
+    @RequestMapping(value = "/changePwd")
+    public JSONObject changPwd(HttpServletRequest request, @RequestBody Map<String,String> map){
         User user = (User)request.getSession().getAttribute(request.getSession().getId());
-        return maintainService.changPwd(user, oldPwd, newPwd);
+        return maintainService.changPwd(user, map.get("oldPwd"), map.get("newPwd"));
     }
 
     /**
@@ -144,11 +143,13 @@ public class MaintainController {
     @RequestMapping(value = "/changePerInfo")
     public String updateUserInfo(HttpServletRequest request,@RequestBody User user){
         String sessionId = request.getSession().getId();
-        System.out.println("changePerInfo------------->sessionId:"+sessionId);
         User userTemp = (User)request.getSession().getAttribute(sessionId);
         user.setId(userTemp.getId());
-        System.out.println("userTemp----->"+userTemp.toString());
-        System.out.println("user--------->"+user.toString());
+        user.setUserName(userTemp.getUserName());
+        user.setLoginTime(userTemp.getLoginTime());
+        user.setIdentity(userTemp.getIdentity());
+        /*System.out.println("userTemp----->"+userTemp.toString());
+        System.out.println("user--------->"+user.toString());*/
         request.getSession().setAttribute(sessionId,user);
         return maintainService.updateUserInfo(user);
     }
@@ -157,7 +158,7 @@ public class MaintainController {
     @RequestMapping(value = "/getUserInfo")
     public JSONObject getUserInfo(HttpServletRequest request){
         String sessionId = request.getSession().getId();
-        System.out.println("getUserInfo---------->sessionId:"+sessionId+"----->"+request.getSession().getId());
+        //System.out.println("getUserInfo---------->sessionId:"+sessionId+"----->"+request.getSession().getId());
         User user = (User) request.getSession().getAttribute(sessionId);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("userInfo",user);
