@@ -55,7 +55,7 @@
                 <div class="row">
                     <div class="col-md-4 col-md-2">
                         <label class="radio-inline">
-                            <input type="checkbox" name="all" id="selectall" value="true" onclick="select_all()"> 全选
+                            <input type="checkbox" name="all" id="selectall"  onclick="select_all()"> 全选
                         </label>
                     </div>
                     <div class="col-md-4 col-md-2">
@@ -167,17 +167,17 @@
 
     //二维码
     $("#btnqrcode").click(function () {
-        var i = 0;
+        //var i = 0;
         var tableNames = new Array();
         $(":checkbox[name='tablechecked']").each(function (index) {
             if ($(this).prop("checked")) {
-                i++;
+                //i++;
                 tableNames.push($("span#tablerelname").eq(index).text());
             }
         });
-        console.log(i);
-        if(i == 0)alert("您没有勾选！");
-        else{
+        //console.log(i);
+        //if(i == 0)alert("您没有勾选！");
+        //else{
             console.log(tableNames);
             $.ajax({
                 type: "post",
@@ -204,19 +204,19 @@
                     alert(data + "获取表格信息失败");
                 }
             });
-        }
+        //}
     });
 
     //删除
     $("#delbtn").click(function () {
         var i = 0;
         var tableInfo = new Array();
-        $(":checkbox").each(function (index) {
+        $(":checkbox[name='tablechecked']").each(function (index) {
             if ($(this).prop("checked")) {
                 i++;
                 var arr = {
                     "id": $(this).val(),
-                    "name": $("span#tablerelname").eq(index-2).text()
+                    "name": $("span#tablerelname").eq(index).text()
                 }
                 tableInfo.push(arr);
             }
@@ -274,7 +274,7 @@
             success: function (data) {
                 for (var i = 0; i < data.length; i++) {
                     $("#search_table").append("<tr><td style='width:20%'><label><input name='tablechecked' type='checkbox' value="
-                        + data[i].id + "></label></td><td style='width:50%'><span id='tablerelname' style='display: none'>"
+                        + data[i].id + " onclick='check_selectall()'></label></td><td style='width:50%'><span id='tablerelname' style='display: none'>"
                         + data[i].name + "</span>"
                         + data[i].name.substring(data[i].name.indexOf("_") + 1)
                         + "</td><td><a class='look'>查看</a></td></tr>");
@@ -286,10 +286,11 @@
         });
     }
     $(document).ready(function () {
+        $("#btnqrcode").attr('disabled',true);
         do_search();
         //检查当前复选框的选择情况
         check_selectall();
-        $(":checkbox[name='tablechecked']").click(function(){
+        $(":checkbox").click(function(){
             check_selectall();
         });
     });
@@ -324,21 +325,23 @@
     }
 
     function select_all(){
-        var select = true;
+        var select;
         select = $("#selectall").prop('checked');
         console.log(select);
-        $(":checkbox").each(function(index){
-            if(index > 1){
+        $(":checkbox[name='tablechecked']").each(function(){
                 $(this).prop('checked',select);
-                console.log(index);
-            }
+                //console.log(index);
         });
     }
 
     function check_selectall(){
+        $("#selectall").prop('checked',false);
         if($(":checkbox[name='tablechecked']").length != $(":checkbox[name='tablechecked']:checked").length)
             $("#selectall").prop("checked",false);
         else $("#selectall").prop("checked",true);
+        //判断是否可点qrcode btn
+        if($(":checkbox[name='tablechecked']:checked").length == 0)$("#btnqrcode").attr("disabled",true);
+        else $("#btnqrcode").attr("disabled",false);
     }
 </script>
 </body>
