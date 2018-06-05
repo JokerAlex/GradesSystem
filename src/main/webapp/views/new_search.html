@@ -25,11 +25,12 @@
       <div class="form-group " style="margin:0 auto; margin-top:20%; width:80%">
         <center><h1>上传文件</h1></center>
         <hr style="width:300px;height:1px;border:none;border-top:1px solid #d6d6d6;"/>
-        <input type="text" class="form-control " id="listname" name="tableName" placeholder="设置名称如第一学期期末成绩" onblur="checklistname()">
+        <input type="text" class="form-control " id="listname" name="tableName" placeholder="设置名称,如第一学期期末成绩" oninput="checklistname()">
         <span id="listnamestatus" style="float: right;">test</span>
         <br>
-        <label for="exampleInputFile">File input</label>
+        <label for="exampleInputFile">在这上传文件</label>
         <input type="file" id="listfile" name="file">
+        <div class="alert alert-danger" role="alert" id="file_alert"></div>
       </div>
       <br>
       <center>
@@ -43,7 +44,6 @@
 </div>
 
 <script type="text/javascript">
-
    //欢迎span  以及登出
    var getusernmae = $.cookie('name');
     $("#welcomespan").html("欢迎您&nbsp&nbsp" + getusernmae + "!");
@@ -75,10 +75,15 @@
     });
 
 
-    function checklistname(){
-        // $("div.form-group").removeClass("has-error");
-        // $("div.form-group").addClass("has-success");
-        $.ajax({
+//表名和文件的可用性标志值
+var is_file_available = false;
+var is_tablename_available = false;
+//检查表名可用性
+function checklistname(){
+    var tablename = $("#listname").val();
+    if(tablename == "");
+    else   {
+            $.ajax({
             type : "post",
             url : "../checkTableName.do" ,
             async : true,
@@ -94,6 +99,7 @@
                     $("div.form-group").addClass("has-success");
                     $("#listnamestatus").css("color","#5bec22");
                     $("#listnamestatus").html("该表名可用");
+                    is_tablename_available = true;
                     $("#listnamestatus").show();
                 }
                 else{
@@ -101,22 +107,84 @@
                     $("div.form-group").addClass("has-error");
                     $("#listnamestatus").css("color","#ed0718");
                     $("#listnamestatus").html("该表名不可用");
+                    is_tablename_available = false;
                     $("#listnamestatus").show();
                 }
             },
             error:function (data) {
             }
         });
+    }
+    check_is_sub_available();
+}
 
-        checktablenull();
+//检测文件后缀以及大小
+$("#listfile").on("change",function(){
+    console.log("asd");
+        $("#file_alert").hide();
+        var location=$(this).val(); 
+        var point = location.lastIndexOf("."); 
+        var type = location.substr(point)
+        type = type.toLowerCase(); 
+        console.log(type);
+        try {
+            var fileSize = 0;
+            //for IE
+            if ($.support.msie) {
+            //before making an object of ActiveXObject, 
+            //please make sure ActiveX is enabled in your IE browser
+            var objFSO = new ActiveXObject("Scripting.FileSystemObject"); 
+            var filePath = $(this)[0].value;
+            var objFile = objFSO.getFile(filePath);
+            var fileSize = objFile.size; //size in kb
+            fileSize = fileSize / 1048576; //size in mb 
+            }
+            //for FF, Safari, Opeara and Others
+            else {
+            fileSize = $(this)[0].files[0].size //size in kb
+            fileSize = fileSize / 1048576; //size in mb 
+            }
+            console.log(fileSize + "MB");
+            }
+        catch (e) {
+        alert("Error is :" + e);
+        }
+        //type fileSize
+        if(type == ".xls" || type == ".xlsx"){
+            if(fileSize >= 2.0){
+                $("#sub").attr("disabled",true);
+                $("#file_alert").text("文件超过2M，请您上传小于2M的文件");
+                $("#file_alert").show();
+                resetFileInput();
+            }
+            else{
+                is_file_available = true;
+                check_is_sub_available();
+            }
+        }
+        else{
+            $("#sub").attr("disabled",true);
+            $("#file_alert").text("请您上传后缀名为xls或xlsx的文件");
+            $("#file_alert").show();
+            resetFileInput();
+        }
+    });
+
+//清空file的值
+function resetFileInput(){
+    var file = $("#listfile");  
+    file.val("");
+    // file.after(file.clone().val(""));   
+    // file.remove();   
+}
+//判断表名以及文件的可用性
+    function check_is_sub_available(){
+        if(is_file_available && is_tablename_available)$("#sub").attr('disabled',false);
+        else  $("#sub").attr('disabled',true);
     }
 
-    function checktablenull(){
-        var listname = $("#listname").val();
-        var fileinput= $("#listfile").val();
-        if(listname!="" && fileinput!="")$("#sub").attr("disabled",false);
-    }
 
+//上传
     var isUploadFinish = false;
     function uploadfile(){
         var formData = new FormData($("#uploadForm")[0]);
@@ -132,7 +200,7 @@
                 console.log("正在上传");
             },
             success : function(data){
-                console.log("-----aaaa----"+data);
+                console.log("-----上传成功----"+data);
                 $("#xuanzhuan").hide();
                 if(data.errorCode === 1 ) {
                     isUploadFinish = true;
@@ -141,8 +209,11 @@
                         window.location.href = "QueryListPtea.html";
                     },1000);
                 } else {
-                    alert(data.errorInfo);
+                    //alert(data.errorInfo);
+                    $("#file_alert").show();
+                    $("#file_alert").text(data.errorInfo);
                     $("#sub").show();
+                    resetFileInput();
                 }
             },
             error : function(){
@@ -151,75 +222,16 @@
         });
     }
 
-    // function progress(){
-    //   $.ajax({
-    //         type : "get",
-    //         url : "../getUploadStatus.do",
-    //         async : true,
-    //         contentType: "application/json;charset=utf-8",
-    //         dataType: "json",
-    //         success: function (data) {
-    //         var json = eval(data);
-    //         var uploadStatus = parseInt(json.uploadStatus);
-    //         var readProgress = parseFloat(json.readProgress);
-    //         var writeProgress = parseFloat(json.writeProgress);
-    //         var errorCode = parseInt(json.errorCode);
-    //         if(errorCode == 1){
-    //           if(uploadStatus == 0){
-    //             //未上传完成 do nothing
-    //           }
-    //           else if(uploadStatus == 1){
-    //             //读取进度条
-    //               console.log(readProgress);
-    //             $("div.progress-bar").css("width",readProgress+'%');
-    //             $("#progress_reminder").text("正在读取文件");
-    //           }
-    //           else if(uploadStatus == 2){
-    //             //写入进度条
-    //             $("div.progress-bar").css("width",writeProgress+'%');
-    //             $("#progress_reminder").text("正在写入数据库");
-    //             if(writeProgress == 100.0){
-    //                 alert("写入成功!");
-    //             }
-    //           }
-    //         }
-    //         else{
-    //             alert(json.errorInfo);
-    //             return false;
-    //         }
-    //       },
-    //     error:function (data) {
-    //     }
-    // });
-    //   //setTimeout(progress,10);
-    // }
-    // window.setInterval(progress,10);
-    /*function readAndWrite(){
-        $.ajax({
-            type : "get",
-            url : "/GradesSystem/readAndWrite.do" ,
-            async : true,
-            contentType: "application/json;charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                var result = eval(data);
-                if (result.isFinish === "true"){
-                    console.log(data);
-                } else {
-                    alert("文件读写出错");
-                }
-            }
-        });
-    }*/
 
     $(document).ready(function(){
+        $("#file_alert").hide();
         $("#uploadsuccess").hide();
         $("#xuanzhuan").hide();
         $("#listnamestatus").hide();
         $("#sub").attr("disabled",true);
-        $("#listfile").on("change",function(){
-            checktablenull();
-        });
+        // $("#listfile").on("change",function(){
+        //     checktablenull();
+        // });
         $("#sub").click(function(){
             $("#xuanzhuan").show();
             $("#sub").hide();
