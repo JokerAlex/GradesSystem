@@ -24,12 +24,13 @@ public class ExcelReaderTest {
 
     @Test
     public void dataRead() throws Exception {
-        Workbook wb = ExcelReader.getWorkbook("D:\\资料\\学习资料\\z工作室\\成绩发布与查询\\数据\\最高成绩总表.xlsx");
+        Workbook wb = ExcelReader.getWorkbook("/Users/alex/Documents/资料/z工作室/成绩发布与查询/数据/2016级学号姓名.xlsx");
         Sheet sheet = ExcelReader.getSheet(wb,0);
-        List<List<String>> listResult = ExcelReader.getExcelRows(sheet,-1,-1);
+        List<List<String>> read = ExcelReader.getExcelRows(sheet,-1,-1);
+        List<List<String>> listResult = ExcelReader.removeNull(read);
         int i = 0;
         for (List<String> rowList: listResult) {
-            System.out.print(i++);
+            System.out.print(++i +"\t");
             for (String cell:rowList){
                 System.out.print(cell+"\t");
             }
