@@ -190,8 +190,8 @@ public class MaintainServiceImpl implements MaintainService {
             if (tableInfos.size() == tableInfoMapper.delTable(tableInfos)) {
                 delResult = true;
                 for (int i = 0; i < tableInfos.size(); i++) {
-                    tableInfoMapper.dropTable(tableInfos.get(i).getName());
-                    queryIdMapper.updateTableStatus("该表已删除", tableInfos.get(i).getName());
+                    tableInfoMapper.dropTable(tableInfos.get(i).getTableName());
+                    queryIdMapper.updateTableStatus("该表已删除", tableInfos.get(i).getTableName());
                 }
             }
         }

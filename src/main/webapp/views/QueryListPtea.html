@@ -215,8 +215,8 @@
             if ($(this).prop("checked")) {
                 i++;
                 var arr = {
-                    "id": $(this).val(),
-                    "name": $("span#tablerelname").eq(index).text()
+                    "tableId": $(this).val(),
+                    "tableName": $("span#tablerelname").eq(index).text()
                 }
                 tableInfo.push(arr);
             }
@@ -274,9 +274,9 @@
             success: function (data) {
                 for (var i = 0; i < data.length; i++) {
                     $("#search_table").append("<tr><td style='width:20%'><label><input name='tablechecked' type='checkbox' value="
-                        + data[i].id + " onclick='check_selectall()'></label></td><td style='width:50%'><span id='tablerelname' style='display: none'>"
-                        + data[i].name + "</span>"
-                        + data[i].name.substring(data[i].name.indexOf("_") + 1)
+                        + data[i].tableId + " onclick='check_selectall()'></label></td><td style='width:50%'><span id='tablerelname' style='display: none'>"
+                        + data[i].tableName + "</span>"
+                        + data[i].tableName.substring(data[i].tableName.indexOf("_") + 1)
                         + "</td><td><a class='look'>查看</a></td></tr>");
                 }
             },

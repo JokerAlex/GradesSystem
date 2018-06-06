@@ -3,8 +3,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.grades.mapping.QueryIdMapper">
 
-    <resultMap id="tableStatusResult" type="TableStatus">
-        <result property="tableName" column="table_info_name"/>
+    <resultMap id="tableInfoResult" type="TableInfo">
+        <id property="tableId" column="table_id"/>
+        <result property="tableName" column="table_name"/>
         <result property="tableStatus" column="table_status"/>
     </resultMap>
 
@@ -14,32 +15,36 @@
         <!--
         <association property="tableStatus" resultMap="tableStatusResult" javaType="TableStatus" column="table_info_name"/>
         -->
-        <collection property="tableStatus" resultMap="tableStatusResult"/>
+        <collection property="tableInfo" resultMap="tableInfoResult"/>
     </resultMap>
 
     <!--
      query_id表
      -->
-    <!-- 获取发布记录id及id下的表 -->
+    <!-- 获取发布记录id及id下的表-用户查看 -->
     <select id="getRecordIdAndTables" parameterType="int" resultMap="recordIdAndTable">
         SELECT
             qi.query_id_id               AS query_id,
             qi.query_id_idname           AS id_name,
-            qt.query_record_table_name   AS table_info_name,
+            ti.table_info_id             AS table_id,
+            qt.query_record_table_name   AS table_name,
             qt.query_record_table_status AS table_status
         FROM query_id qi
             JOIN query_tables qt ON qi.query_id_id = qt.query_id_id
+            JOIN table_info ti ON qt.query_record_table_name = ti.table_info_name
         WHERE qi.query_id_userid = #{userId};
     </select>
-    <!-- 获取发布记录id及id下的表 -->
+    <!-- 获取发布记录id及id下的表-学生查询 -->
     <select id="getRecordIdAndTable" parameterType="String" resultMap="recordIdAndTable">
         SELECT
             qi.query_id_id               AS query_id,
             qi.query_id_idname           AS id_name,
-            qt.query_record_table_name   AS table_info_name,
+            ti.table_info_id             AS table_id,
+            qt.query_record_table_name   AS table_name,
             qt.query_record_table_status AS table_status
         FROM query_id qi
             JOIN query_tables qt ON qi.query_id_id = qt.query_id_id
+            JOIN table_info ti ON qt.query_record_table_name = ti.table_info_name
         WHERE qi.query_id_idname = #{queryIdName};
     </select>
     <!-- 获取新生成的记录的id -->

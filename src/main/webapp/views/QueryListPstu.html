@@ -59,7 +59,7 @@
                 data: url_sub,
                 success: function (data) {
                     var json = eval(data);
-                    var tableStatus = json.tableStatus;
+                    var tableStatus = json.tableInfo;
                     var i = 0;
                     for (i = 0; i < tableStatus.length; i++) {
                         $("#table_list").append("<tr><td>" + tableStatus[i].tableName.substring(tableStatus[i].tableName.indexOf("_") + 1) + "</td><td>" + tableStatus[i].tableStatus + "</td><td><a id='search_table' value='" + tableStatus[i].tableName + "'>查询</a></td></tr>");

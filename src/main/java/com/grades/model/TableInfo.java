@@ -1,48 +1,60 @@
 package com.grades.model;
 
 public class TableInfo {
-    private int id;
-    private String name;
+    private int tableId;
+    private String tableName;
     private int userId;
+    private String userTrueName;
     private int pageViews;
+    private String tableStatus;
 
     public TableInfo() {
     }
 
-    public TableInfo(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public TableInfo(int id, String name, int userId, int pageViews) {
-        this.id = id;
-        this.name = name;
+    public TableInfo(String tableName, int userId) {
+        this.tableName = tableName;
         this.userId = userId;
+    }
+
+    public TableInfo(int tableId, String tableName, int userId, String userTrueName, int pageViews, String tableStatus) {
+        this.tableId = tableId;
+        this.tableName = tableName;
+        this.userId = userId;
+        this.userTrueName = userTrueName;
         this.pageViews = pageViews;
+        this.tableStatus = tableStatus;
     }
 
-    public int getId() {
-        return id;
+    public int getTableId() {
+        return tableId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setTableId(int tableId) {
+        this.tableId = tableId;
     }
 
-    public String getName() {
-        return name;
+    public String getTableName() {
+        return tableName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 
-    public int getUserid() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserid(int userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public String getUserTrueName() {
+        return userTrueName;
+    }
+
+    public void setUserTrueName(String userTrueName) {
+        this.userTrueName = userTrueName;
     }
 
     public int getPageViews() {
@@ -51,5 +63,13 @@ public class TableInfo {
 
     public void setPageViews(int pageViews) {
         this.pageViews = pageViews;
+    }
+
+    public String getTableStatus() {
+        return tableStatus;
+    }
+
+    public void setTableStatus(String tableStatus) {
+        this.tableStatus = tableStatus;
     }
 }

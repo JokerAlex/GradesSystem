@@ -5,15 +5,15 @@ import java.util.List;
 public class QueryRecord {
     private int queryRecordId;
     private String queryIdName;
-    private List<TableStatus> tableStatus;
+    private List<TableInfo> tableInfo;
 
     public QueryRecord() {
     }
 
-    public QueryRecord(int queryRecordId, String queryIdName, List<TableStatus> tableStatus) {
+    public QueryRecord(int queryRecordId, String queryIdName, List<TableInfo> tableInfo) {
         this.queryRecordId = queryRecordId;
         this.queryIdName = queryIdName;
-        this.tableStatus = tableStatus;
+        this.tableInfo = tableInfo;
     }
 
     public int getQueryRecordId() {
@@ -32,11 +32,11 @@ public class QueryRecord {
         this.queryIdName = queryIdName;
     }
 
-    public List<TableStatus> getTableStatus() {
-        return tableStatus;
+    public List<TableInfo> getTableInfo() {
+        return tableInfo;
     }
 
-    public void setTableStatus(List<TableStatus> tableStatus) {
-        this.tableStatus = tableStatus;
+    public void setTableInfo(List<TableInfo> tableInfo) {
+        this.tableInfo = tableInfo;
     }
 }

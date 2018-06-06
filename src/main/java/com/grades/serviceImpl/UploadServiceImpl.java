@@ -230,7 +230,7 @@ public class UploadServiceImpl implements UploadService {
 
         if (getErrorCode() == 1){
             try {
-                tableInfoMapper.insertTableInfo(new TableInfo(0, tableName, userId, 0));
+                tableInfoMapper.insertTableInfo(new TableInfo(tableName, userId));
             } catch (Exception e){
                 setErrorCode(-5);
                 setErrorInfo("数据库内部错误：更新数据表信息时异常");

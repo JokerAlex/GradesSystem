@@ -4,9 +4,10 @@
 <mapper namespace="com.grades.mapping.TableInfoMapper">
 
     <resultMap id="tableInfoResultMap" type="TableInfo">
-        <id property="id" column="table_info_id"/>
-        <result property="name" column="table_info_name"/>
+        <id property="tableId" column="table_info_id"/>
+        <result property="tableName" column="table_info_name"/>
         <result property="userId" column="table_info_userid"/>
+        <result property="userTrueName" column="user_true_name"/>
         <result property="pageViews" column="table_info_pv"/>
     </resultMap>
 
@@ -33,21 +34,26 @@
     </select>
     <!-- 查询表 -->
     <select id="searchTables" resultMap="tableInfoResultMap">
-        SELECT table_info_id,table_info_name,table_info_userid,table_info_pv
-        FROM table_info
-        JOIN users ON table_info_userid = users.user_id
+        SELECT
+        ti.table_info_id,
+        ti.table_info_name,
+        ti.table_info_userid,
+        u.user_true_name,
+        ti.table_info_pv
+        FROM table_info ti
+        JOIN users u ON ti.table_info_userid = u.user_id
         <where>
             <if test="userGrade == null || userGrade.trim().equals(&quot;&quot;)">
-                users.user_id = #{userId}
+                u.user_id = #{userId}
             </if>
             <if test="userGrade != null &amp;&amp; !userGrade.trim().equals(&quot;&quot;)">
-                AND users.user_grade = #{userGrade}
+                AND u.user_grade = #{userGrade}
             </if>
             <if test="userGrade != null &amp;&amp; !userGrade.trim().equals(&quot;&quot;)">
-                AND users.user_college = #{userCollege}
+                AND u.user_college = #{userCollege}
             </if>
             <if test="tableName != null &amp;&amp; !tableName.trim().equals(&quot;&quot;)">
-                AND table_info.table_info_name LIKE CONCAT(CONCAT('%', #{tableName}), '%')
+                AND ti.table_info_name LIKE CONCAT('%', #{tableName}, '%')
             </if>
         </where>
     </select>
@@ -55,7 +61,7 @@
     <delete id="delTable" parameterType="list">
         DELETE FROM table_info WHERE table_info_id IN
         <foreach index="index" item="item" collection="list" open="(" close=")" separator=",">
-            #{item.id}
+            #{item.tableId}
         </foreach>
     </delete>
     <update id="dropTable" parameterType="String">
@@ -64,7 +70,7 @@
     <!--插入表信息-->
     <insert id="insertTableInfo" parameterType="TableInfo" useGeneratedKeys="true" keyProperty="table_info_id">
         INSERT INTO table_info (table_info_name, table_info_userid)
-        VALUES (#{name}, #{userId});
+        VALUES (#{tableName}, #{userId});
     </insert>
     <!--更新访问量-->
     <update id="updatePageViews">

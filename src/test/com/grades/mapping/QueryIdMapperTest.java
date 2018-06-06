@@ -21,7 +21,7 @@ public class QueryIdMapperTest {
 
         List<QueryRecord> queryRecordList = queryIdMapper.getRecordIdAndTables(1);
         for (QueryRecord qr:queryRecordList) {
-            for (TableStatus ta:qr.getTableStatus()) {
+            for (TableInfo ta:qr.getTableInfo()) {
                 System.out.println(qr.getQueryRecordId()+"\t"+qr.getQueryIdName()+"\t"+ta.getTableName()+"\t"+ta.getTableStatus());
             }
         }

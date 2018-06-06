@@ -3,8 +3,10 @@ package com.grades.serviceImpl;
 import com.grades.mapping.QueryIdMapper;
 import com.grades.mapping.Search;
 import com.grades.mapping.StudentMapper;
+import com.grades.mapping.TableInfoMapper;
 import com.grades.model.QueryRecord;
 import com.grades.model.Student;
+import com.grades.model.TableInfo;
 import com.grades.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,12 +21,14 @@ public class SearchServiceImpl implements SearchService {
     private Search search;
     private QueryIdMapper queryIdMapper;
     private StudentMapper studentMapper;
+    private TableInfoMapper tableInfoMapper;
 
     @Autowired
-    public SearchServiceImpl(Search search,QueryIdMapper queryIdMapper,StudentMapper studentMapper){
+    public SearchServiceImpl(Search search,QueryIdMapper queryIdMapper,StudentMapper studentMapper, TableInfoMapper tableInfoMapper){
         this.search = search;
         this.queryIdMapper = queryIdMapper;
         this.studentMapper = studentMapper;
+        this.tableInfoMapper = tableInfoMapper;
     }
 
     public List<LinkedHashMap<String, String>> getAll(String tableName) {
@@ -43,6 +47,7 @@ public class SearchServiceImpl implements SearchService {
         if (isTableNull && isIdNull && isNameNull){
             List<String> colNameList = search.getColNames(tableName);
             Map<String,String> map = search.getOne(colNameList,tableName,colNameList.get(0),id,colNameList.get(1),name);
+            //tableInfoMapper.updatePageViews();
             return map;
         }
         return null;
