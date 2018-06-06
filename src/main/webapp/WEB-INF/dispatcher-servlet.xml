@@ -42,9 +42,9 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
-    <!-- 异常处理 -->
+    <!-- 异常处理
     <bean class="com.grades.exception.ExceptionResolver"/>
-
+    -->
     <!--
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/views/"/>
