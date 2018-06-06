@@ -5,13 +5,13 @@ import com.grades.mapping.TableInfoMapper;
 import com.grades.model.*;
 import com.grades.service.UploadService;
 import com.grades.utils.ExcelReader;
-import com.grades.utils.GetUser;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
@@ -192,6 +192,7 @@ public class UploadServiceImpl implements UploadService {
      * @param lists
      * @return "{"createResult":"false/true","insertResult":"false/true","updateTableInfoResult":"false/true"}
      */
+    //@Transactional(rollbackFor={RuntimeException.class, Exception.class})
     public void fileWrite(int userId, String tableName, List<List<String>> lists) {
         int groupSize = 20;//分组大小
         //boolean insertResult = false;
@@ -220,6 +221,7 @@ public class UploadServiceImpl implements UploadService {
                     }
                     tableInfoMapper.insertData(tableName, temp);
                 } catch (Exception e){
+                    tableInfoMapper.dropTable(tableName);
                     setErrorCode(-4);
                     setErrorInfo("插入数据时错误");
                 }
