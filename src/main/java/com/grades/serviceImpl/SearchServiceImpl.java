@@ -40,14 +40,15 @@ public class SearchServiceImpl implements SearchService {
         return null;
     }
 
-    public Map<String, String> getOne(String tableName, String id, String name) {
+    public Map<String, String> getOne(String tableId, String tableName, String id, String name) {
+        boolean istableIdNull = tableId != null && !tableName.trim().equals("");
         boolean isTableNull = tableName != null && !tableName.trim().equals("");
         boolean isIdNull = id != null && !id.trim().equals("");
         boolean isNameNull = name != null && !name.trim().equals("");
-        if (isTableNull && isIdNull && isNameNull){
+        if (istableIdNull && isTableNull && isIdNull && isNameNull){
             List<String> colNameList = search.getColNames(tableName);
             Map<String,String> map = search.getOne(colNameList,tableName,colNameList.get(0),id,colNameList.get(1),name);
-            //tableInfoMapper.updatePageViews();
+            tableInfoMapper.updatePageViews(Integer.valueOf(tableId));
             return map;
         }
         return null;

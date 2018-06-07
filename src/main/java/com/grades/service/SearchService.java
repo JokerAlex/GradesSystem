@@ -11,7 +11,7 @@ public interface SearchService {
 
     List<LinkedHashMap<String,String>> getAll(String tableName);
 
-    Map<String,String> getOne(String tableName, String id, String name);
+    Map<String,String> getOne(String tableId, String tableName, String id, String name);
 
     QueryRecord getTablesByQueryName(String queryName);
 
