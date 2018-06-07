@@ -160,7 +160,8 @@ public class UploadServiceImpl implements UploadService {
         this.readResultList.clear();
         this.readResultRows = 0;
         //判断文件格式是否正确
-        String fileType = fileName.substring(fileName.indexOf(".")+1);
+        //System.out.println(fileName);
+        String fileType = fileName.substring(fileName.lastIndexOf(".")+1);
         if (fileName.equals("xls") || fileType.equals("xlsx")){
             //获取工作表
             Workbook wb = ExcelReader.getWorkbook(fileName);
@@ -202,7 +203,7 @@ public class UploadServiceImpl implements UploadService {
             tableInfoMapper.createTable(tableName, listHead);
         } catch (Exception e){
             setErrorCode(-3);
-            setErrorInfo("创建数据表时错误，尝试将数据部分粘贴到新的Excel文件后重试");
+            setErrorInfo("创建数据表时错误，尝试将数据部分粘贴到新的Excel文件后重试，或检查列名是否重复");
         }
 
         if (getErrorCode() == 1){
@@ -223,7 +224,7 @@ public class UploadServiceImpl implements UploadService {
                 } catch (Exception e){
                     tableInfoMapper.dropTable(tableName);
                     setErrorCode(-4);
-                    setErrorInfo("插入数据时错误");
+                    setErrorInfo("插入数据时错误，检查文件内容格式是否正确");
                 }
             }
         }
