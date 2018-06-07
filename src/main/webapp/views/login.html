@@ -13,29 +13,28 @@
 
     <div style="overflow:hidden;margin:0 auto;margin-top:5%; width:50%; height:70%; background-color: #FAFAFA;border-radius:5%;opacity: 0.9">
         <div class="form-group" style="margin:0 auto; margin-top:15%; width:80%">
-            <center><h1>Login</h1></center>
+            <center><h1>登录</h1></center>
             <hr style="width:300px;height:1px;border:none;border-top:1px solid #d6d6d6;"/>
-            <label for="exampleInputEmail1">Email address Or Username</label>
+            <label for="exampleInputEmail1"></label>
             <div class="input-group">
-                <div class="input-group-addon">user&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</div>
-                <input type="text" class="form-control" id="username" placeholder="username" oninput="remove_input_class()">
+                <div class="input-group-addon">用户名</div>
+                <input type="text" class="form-control" id="username" placeholder="输入用户名或邮箱" oninput="remove_input_class()">
             </div>
 
 
-            <label for="exampleInputPassword1">Password</label>
+            <label for="exampleInputPassword1"></label>
             <div class="input-group">
-                <div class="input-group-addon">password</div>
-                <input type="password" class="form-control" id="password" placeholder="Password" oninput="remove_input_class()">
+                <div class="input-group-addon">密码&nbsp&nbsp</div>
+                <input type="password" class="form-control" id="password" placeholder="输入密码" oninput="remove_input_class()">
             </div>
             <div style="text-align:right;color: grey"><label><input type="checkbox" id="remember"><span>记住密码</span></label></div>
 
             <div id="login_reminder" class="form-group" style="text-align:right;color:red"><span class="login_reminder_span"></span></div>
 
             <center>
-                <button type="button" class="btn btn-default" id="sub" style="width:100%">Submit</button>
+                <button type="button" class="btn btn-default" id="sub" style="width:100%">登录</button>
                 <a href="register.html"
-                   style="color: #bfc9ca;display: block;font-size: 13px;margin-top: 15px;text-align: center">haven't
-                    register?</a>
+                   style="color: #bfc9ca;display: block;font-size: 13px;margin-top: 15px;text-align: center">还没有注册？</a>
             </center>
 
         </div>
@@ -95,6 +94,7 @@
                     $("div.form-group").removeClass("has-error");
                     $("div.form-group").addClass("has-success");
                     $.cookie('name',data.user.name);
+                    $.cookie('identity',data.user.identity);
                     window.location.href = "homepage.html";
                 } else {
                     $("#login_reminder").show();

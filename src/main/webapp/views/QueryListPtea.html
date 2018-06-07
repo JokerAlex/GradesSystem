@@ -15,19 +15,19 @@
     <div style="width:100%">
         <div class="row">
             <div class=col-md-3>
-                <button id="btn1" class="button" style="border-radius:10%;height:50px;width:70%;opacity: 0.5">新建查询
+                <button id="btn1" class="button" style="border-radius:10%;height:50px;width:70%;">文件上传
                 </button>
             </div>
             <div class=col-md-3>
-                <button id="btn2" class="button" style="border-radius:10%;height:50px;width:70%;opacity: 0.5">查询列表
+                <button id="btn2" class="button" style="border-radius:10%;height:50px;width:70%;">文件列表
                 </button>
             </div>
             <div class=col-md-3>
-                <button id="btn3" class="button" style="border-radius:10%;height:50px;width:70%;opacity: 0.5">个人信息
+                <button id="btn3" class="button" style="border-radius:10%;height:50px;width:70%;">个人信息
                 </button>
             </div>
             <div class=col-md-3>
-                <button id="btn4" class="button" style="border-radius:10%;height:50px;width:70%;opacity: 0.5">发布列表
+                <button id="btn4" class="button" style="border-radius:10%;height:50px;width:70%;">发布列表
                 </button>
             </div>
             <div style="float: right"><a id="welcomespan"
@@ -51,7 +51,7 @@
            style="text-align:center;margin-top:2%;td.first-child:20%;td.second-child:50%">
         <!--表格首行导航栏-->
         <tr>
-            <td colspan="3">
+            <td colspan="4">
                 <div class="row">
                     <div class="col-md-4 col-md-2">
                         <label class="radio-inline">
@@ -98,8 +98,18 @@
 
     </table>
 
+
+
 </div>
+<table class="table table-striped" id="look_table"
+       style="text-align:center;">
+
+</table>
 <script type="text/javascript">
+    $("#look_table").hide();
+    $("#search_table").show();
+    $("div.container").css('height',600+'px');
+    if($.cookie('identity') === "2")$('#checkbox').attr('disabled',true);
     //欢迎span  以及登出
     var getusernmae = $.cookie('name');
     $("#welcomespan").html("欢迎您&nbsp&nbsp" + getusernmae + "!");
@@ -135,11 +145,11 @@
     $(document).ready(function () {
         $(".button:lt(4)").mouseenter(function () {
             $(this).css("height", "300px");
-            $(this).css("opacity", 1);
+            //$(this).css("opacity", 1);
         });
         $(".button:lt(4)").mouseleave(function () {
             $(".button:lt(4)").css("height", "50px");
-            $(".button:lt(4)").css("opacity", 0.5);
+            //$(".button:lt(4)").css("opacity", 0.5);
         });
 
         $("#btn1").click(function () {
@@ -250,11 +260,46 @@
     });
 
     //查看<a>标签
-    $("a.look").each(function (i) {
-        $(this).click(function () {
-            alert(get_listname(i + 1));
+    function look_a(){
+        $("#look_table tr").each(function(index){
+            $(this).remove();
         });
-    });
+        $("a.look").click(function(){
+            $('div.container').css('height',50+'px');
+            $('#search_table').hide();
+            $('#look_table').show();
+            var tableName = $(this).attr('value');
+            console.log(tableName);
+            $.ajax({
+                type: "post",
+                url: "../getAll.do",
+                data: tableName,
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    var grademap = eval(data);
+                    var table_str = "<tr>";
+                    for(var key in grademap[0]){
+                        table_str += "<td>"+key+"</td>";
+                    }
+                    table_str += "</tr>";
+                    $("#look_table").append(table_str);
+                    for(var i=0;i<grademap.length;i++){
+                        table_str = "<tr>";
+                        for(var keys in grademap[i]){
+                            table_str += "<td>"+grademap[i][keys]+"</td>";
+                        }
+                        table_str += "</tr>";
+                        $("#look_table").append(table_str);
+                    }
+                },
+                error: function (data) {
+                    alert(data + "获取表格信息失败");
+                }
+            });
+        });
+    }
 
 
     //加载
@@ -274,11 +319,12 @@
             success: function (data) {
                 for (var i = 0; i < data.length; i++) {
                     $("#search_table").append("<tr><td style='width:20%'><label><input name='tablechecked' type='checkbox' value="
-                        + data[i].tableId + " onclick='check_selectall()'></label></td><td style='width:50%'><span id='tablerelname' style='display: none'>"
+                        + data[i].tableId + " onclick='check_selectall()'></label></td><td style='width:30%'><span id='tablerelname' style='display: none'>"
                         + data[i].tableName + "</span>"
                         + data[i].tableName.substring(data[i].tableName.indexOf("_") + 1)
-                        + "</td><td><a class='look'>查看</a></td></tr>");
+                        + "</td><td style='width:30%'><span>访问次数:"+data[i].pageViews+"</span></td><td><a class='look' value='"+data[i].tableName+"'>查看</a></td></tr>");
                 }
+                look_a();
             },
             error: function (data) {
                 alert(data + "获取表格信息失败");

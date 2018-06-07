@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no" />
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/button.css">
     <link rel="stylesheet" href="css/style.css">
@@ -36,6 +37,16 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        //调整宽度
+        p_wx_width = $(window).width();
+        if(p_wx_width <= 400){
+            $("#table_list").css('width',100+'%');
+            $("#grade_list").css('width',100+'%');
+        }
+        else{
+            $("#table_list").css('width',80+'%');
+            $("#grade_list").css('width',80+'%');
+        }
         var info_list = {};
         var stu_id = "";
         var stu_name = "";
@@ -62,7 +73,10 @@
                     var tableStatus = json.tableInfo;
                     var i = 0;
                     for (i = 0; i < tableStatus.length; i++) {
-                        $("#table_list").append("<tr><td>" + tableStatus[i].tableName.substring(tableStatus[i].tableName.indexOf("_") + 1) + "</td><td>" + tableStatus[i].tableStatus + "</td><td><a id='search_table' value='" + tableStatus[i].tableName + "'>查询</a></td></tr>");
+                        $("#table_list").append("<tr><td>"
+                            + tableStatus[i].tableName.substring(tableStatus[i].tableName.indexOf("_") + 1) + "</td><td>"
+                            + tableStatus[i].tableStatus + "</td><td><a id='search_table' value='"
+                            + tableStatus[i].tableName + "'>查询</a><span id='record_num' style='display: none'>"+tableStatus[i].tableId+"</span></td></tr>");
                     }
                     searchGrade();
                 },
@@ -75,16 +89,20 @@
 
         function searchGrade() {
             //查询
-            $("a").click(function (index) {
-                //table change
-                var tableName = $(this).attr("value");
-                console.log(tableName);
-                info_list = {
-                    name: "",
-                    id: "",
-                    tableName: tableName
-                };
-                jq_alert();
+            $("a").each(function (index) {
+                $(this).click(function () {
+                    //table change
+                    console.log(index);
+                    var tableName = $(this).attr("value");
+                    console.log($("#record_num").eq(index).text());
+                    info_list = {
+                        name: "",
+                        id: "",
+                        tableName: tableName,
+                        tableId: $("#record_num").eq(index).text()
+                    };
+                    jq_alert();
+                });
             });
         }
 
@@ -142,53 +160,17 @@
                             }
                             $("#table_list").hide();
                             $("#grade_list").show();
+
                         },
                         error: function (data) {
                             console.log(data);
                         }
                     });
-                    //loadQueryTables();
                 }
                 else{
                     alert("学号和姓名不能为空");
                 }
             });
-            // $("#cancel").click(function(){
-            //   al.remove();
-            // });
-            /*$("#confirm").click(function () {
-                console.log("ok");
-                stu_id = $("#stu_id").val();
-                stu_name = $("#stu_name").val();
-                var stu_info = {
-                    id: $("#stu_id").val(),
-                    name: $("#stu_name").val()
-                };
-                console.log(stu_info);
-                $.ajax({
-                    type: "post",
-                    url: "../checkStu.do",
-                    dataType: "json",
-                    contentType: "application/json;charset=utf-8",
-                    data: JSON.stringify(stu_info),
-                    success: function (data) {
-                        console.log(data);
-                        if (data != null) {
-                            al.remove();
-                            loadQueryTables();
-
-                        }
-                        else {
-                            console.log(data);
-                            alert("认证失败,请重新认证");
-
-                        }
-                    },
-                    error: function () {
-
-                    }
-                });
-            });*/
         }
     });
 </script>
