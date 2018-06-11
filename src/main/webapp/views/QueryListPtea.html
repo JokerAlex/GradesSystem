@@ -64,7 +64,7 @@
                         </label>
                     </div>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" id="search" placeholder="查询成绩" oninput="do_search()">
+                        <input type="text" class="form-control" id="search" placeholder="查询成绩" oninput="do_search()" onkeyup="this.value=this.value.replace(/[^\u4e00-\u9fa5a-zA-Z0-9\w]/g,'')">
                     </div>
                     <div class="col-md-4 col-md-2">
                         <button type="button" class="btn btn-info" data-toggle="modal"
