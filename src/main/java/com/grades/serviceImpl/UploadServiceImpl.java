@@ -160,9 +160,8 @@ public class UploadServiceImpl implements UploadService {
         this.readResultList.clear();
         this.readResultRows = 0;
         //判断文件格式是否正确
-        //System.out.println(fileName);
-        String fileType = fileName.substring(fileName.lastIndexOf(".")+1);
-        if (fileName.equals("xls") || fileType.equals("xlsx")){
+        //String fileType = fileName.substring(fileName.lastIndexOf(".")+1);
+        if (fileName.endsWith("xls") || fileName.endsWith("xlsx")){
             //获取工作表
             Workbook wb = ExcelReader.getWorkbook(fileName);
             //获取工作簿
