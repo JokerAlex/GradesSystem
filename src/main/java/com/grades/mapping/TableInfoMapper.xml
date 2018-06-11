@@ -76,7 +76,7 @@
     <update id="updatePageViews">
         UPDATE table_info
         SET table_info_pv = table_info_pv + 1
-        WHERE table_info_id = #{tableId};
+        WHERE table_info_name = #{tableName};
     </update>
     <!-- 查找表名 -->
     <select id="findTable" parameterType="String" resultType="String">

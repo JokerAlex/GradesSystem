@@ -34,7 +34,7 @@ public class SearchController {
     @RequestMapping(value = "getOne")
     public Map<String,String> getOne(@RequestBody Map<String,String> map){
         System.out.println(map.get("tableName")+map.get("id")+map.get("name"));
-        return searchService.getOne(map.get("tableId"),map.get("tableName"),map.get("id"),map.get("name"));
+        return searchService.getOne(map.get("tableName"),map.get("id"),map.get("name"));
     }
 
     @ResponseBody

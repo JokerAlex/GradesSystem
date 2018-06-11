@@ -21,7 +21,7 @@ public interface TableInfoMapper {
 
     boolean insertTableInfo(TableInfo tableInfo);
 
-    boolean updatePageViews(int tableId);
+    boolean updatePageViews(String tableName);
 
     boolean createTable(@Param("table_name") String table_name, @Param("list") List<String> list);
 
